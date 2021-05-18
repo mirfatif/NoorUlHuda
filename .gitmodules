@@ -1,0 +1,6 @@
+[submodule "adhan-java"]
+	path = adhan-java
+	url = https://github.com/mirfatif/adhan-java.git
+[submodule "Time4A"]
+	path = Time4A
+	url = https://github.com/mirfatif/Time4A.git

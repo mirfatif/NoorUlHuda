@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mirfatif.noorulhuda.ui.base.MyLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginTop="8dp"
+  android:layout_marginBottom="12dp"
+  android:layout_marginStart="8dp"
+  android:layout_marginEnd="8dp"
+  android:orientation="vertical">
+
+  <TextView
+    android:textStyle="bold"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="28dp"
+    android:text="@string/show_notification"
+    android:textColor="?attr/accent"
+    android:textSize="14sp" />
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:layoutDirection="rtl"
+    android:orientation="horizontal">
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/fajr_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/sun_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/zuhr_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/asr_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/maghrib_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/isha_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  <TextView
+    android:textStyle="bold"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="32dp"
+    android:text="@string/play_adhan"
+    android:textColor="?attr/accent"
+    android:textSize="14sp" />
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layoutDirection="rtl"
+    android:orientation="horizontal">
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/fajr_adhan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/sun_adhan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/zuhr_adhan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/asr_adhan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/maghrib_adhan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1">
+
+      <CheckBox
+        android:id="@+id/isha_adhan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:button="@drawable/check_with_line" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  <TextView
+    android:textStyle="bold"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="32dp"
+    android:text="@string/notification_adhan_offset"
+    android:textColor="?attr/accent"
+    android:textSize="14sp" />
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layoutDirection="rtl"
+    android:orientation="horizontal">
+
+    <TextView
+      android:id="@+id/fajr_offset"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/sun_offset"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/zuhr_offset"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/asr_offset"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/maghrib_offset"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/isha_offset"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+</com.mirfatif.noorulhuda.ui.base.MyLinearLayout>

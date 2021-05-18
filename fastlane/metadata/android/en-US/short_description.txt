@@ -1,0 +1,1 @@
+A simple, open source Quran reader app with extras, completely free forever

@@ -1,0 +1,8 @@
+include ':adhan'
+project(':adhan').projectDir = new File('adhan-java/adhan')
+
+include ':time4j-android'
+project(':time4j-android').projectDir = new File('Time4A/time4j-android')
+
+include ':app'
+rootProject.name = "Noor-ul-Huda"

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:paddingTop="16dp"
+  android:paddingBottom="16dp"
+  android:paddingStart="4dp"
+  android:paddingEnd="4dp"
+  android:scrollbars="vertical">
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+      android:id="@+id/search_help_v"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
+      android:paddingStart="20dp"
+      android:paddingEnd="20dp"
+      android:textColor="@color/fgSharp2"
+      android:textSize="16sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recycler_v"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+</androidx.core.widget.NestedScrollView>

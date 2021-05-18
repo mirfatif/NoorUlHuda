@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item
+    android:id="@+id/action_dark_theme"
+    android:checkable="true"
+    android:icon="@drawable/dark_mode"
+    android:title="@string/dark_theme_menu_item" />
+
+  <item
+    android:icon="@drawable/theme"
+    android:title="@string/theme_color_menu_item">
+    <menu>
+      <group android:checkableBehavior="single">
+        <item
+          android:id="@+id/action_theme_color_green"
+          android:title="@string/theme_color_green" />
+        <item
+          android:id="@+id/action_theme_color_blue"
+          android:title="@string/theme_color_blue" />
+        <item
+          android:id="@+id/action_theme_color_red"
+          android:title="@string/theme_color_red" />
+        <item
+          android:id="@+id/action_theme_color_gray"
+          android:title="@string/theme_color_gray" />
+      </group>
+    </menu>
+  </item>
+
+  <group android:id="@+id/group1">
+    <item
+      android:id="@+id/action_bookmarks"
+      android:icon="@drawable/bookmarks"
+      android:title="@string/bookmarks_menu_item" />
+
+    <item
+      android:id="@+id/action_tags"
+      android:icon="@drawable/tags"
+      android:title="@string/tags_menu_item" />
+  </group>
+
+  <group android:id="@+id/group2">
+    <item
+      android:id="@+id/action_search_fake"
+      android:icon="@drawable/search"
+      android:title="@string/search_menu_item" />
+
+    <item
+      android:id="@+id/action_goto"
+      android:icon="@drawable/go_to"
+      android:title="@string/goto_menu_item" />
+  </group>
+
+  <group android:id="@+id/group3">
+    <item
+      android:id="@+id/action_texts"
+      android:icon="@drawable/book"
+      android:title="@string/texts_menu_item" />
+
+    <item
+      android:id="@+id/action_translations"
+      android:icon="@drawable/language"
+      android:title="@string/translations_menu_item" />
+  </group>
+
+  <group android:id="@+id/group4">
+    <item
+      android:id="@+id/action_prayer_time"
+      android:icon="@drawable/prayer"
+      android:title="@string/prayer_time_menu_item" />
+
+    <item
+      android:id="@+id/action_supplications"
+      android:icon="@drawable/dua"
+      android:title="@string/supplications_menu_item" />
+  </group>
+
+  <group android:id="@+id/group5">
+    <item
+      android:id="@+id/action_backup_restore"
+      android:icon="@drawable/backup_restore"
+      android:title="@string/backup_restore_menu_item" />
+
+    <item
+      android:id="@+id/action_about"
+      android:icon="@drawable/info"
+      android:title="@string/about_menu_item" />
+  </group>
+
+</menu>

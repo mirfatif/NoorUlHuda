@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+  <string-array name="method_names">
+    <item>Moon-sighting Committee Worldwide</item>
+    <item>Muslim World League</item>
+    <item>Egyptian General Authority of Survey</item>
+    <item>University of Islamic Sciences, Karachi</item>
+    <item>Umm Al-Qura University, Makkah</item>
+    <item>Islamic Society of North America (ISNA)</item>
+    <item>Gulf Region</item>
+    <item>UAE and Gulf Region</item>
+    <item>Kuwait</item>
+    <item>Qatar</item>
+    <item>Majlis Ugama Islam Singapura, Singapore</item>
+    <item>Union Organization Islamic de France</item>
+    <item>Diyanet İşleri Başkanlığı, Turkey</item>
+    <item>Spiritual Administration of Muslims of Russia</item>
+    <item>Ithna-Ashari, Leva Research Institute, Qum</item>
+    <item>Institute of Geophysics, University of Tehran</item>
+  </string-array>
+
+  <string-array name="asr_calc_names">
+    <item>Standard (Shafi)</item>
+    <item>Hanafi</item>
+  </string-array>
+
+  <string-array name="high_lat_names">
+    <item>None</item>
+    <item>Middle of the Night</item>
+    <item>One-Seventh of the Night</item>
+    <item>Angle-Based</item>
+  </string-array>
+
+  <string-array name="home_widget_styles">
+    <item>Dark Background</item>
+    <item>Light Background</item>
+    <item>Dark Text</item>
+    <item>Light Text</item>
+  </string-array>
+
+  <integer-array name="search_chars">
+    <item order="1" u="621">1569</item>
+    <item order="2" u="622">1570</item>
+    <item order="3" u="623">1571</item>
+    <item order="4" u="624">1572</item>
+    <item order="5" u="625">1573</item>
+    <item order="6" u="626">1574</item>
+    <item order="7" u="627">1575</item>
+    <item order="8" u="628">1576</item>
+    <item order="9" u="629">1577</item>
+    <item order="10" u="62a">1578</item>
+    <item order="11" u="62b">1579</item>
+    <item order="12" u="62c">1580</item>
+    <item order="13" u="62d">1581</item>
+    <item order="14" u="62e">1582</item>
+    <item order="15" u="62f">1583</item>
+    <item order="16" u="630">1584</item>
+    <item order="17" u="631">1585</item>
+    <item order="18" u="632">1586</item>
+    <item order="19" u="633">1587</item>
+    <item order="20" u="634">1588</item>
+    <item order="21" u="635">1589</item>
+    <item order="22" u="636">1590</item>
+    <item order="23" u="637">1591</item>
+    <item order="24" u="638">1592</item>
+    <item order="25" u="639">1593</item>
+    <item order="26" u="63a">1594</item>
+    <item order="27" u="641">1601</item>
+    <item order="28" u="642">1602</item>
+    <item order="29" u="643">1603</item>
+    <item order="30" u="644">1604</item>
+    <item order="31" u="645">1605</item>
+    <item order="32" u="646">1606</item>
+    <item order="33" u="647">1607</item>
+    <item order="34" u="648">1608</item>
+    <item order="35" u="649">1609</item>
+    <item order="36" u="64a">1610</item>
+  </integer-array>
+
+  <string-array name="search_chars_desc">
+    <item order="1" u="621">Hamza</item>
+    <item order="2" u="622">Alef With Madda Above</item>
+    <item order="3" u="623">Alef With Hamza Above</item>
+    <item order="4" u="624">Waw With Hamza Above</item>
+    <item order="5" u="625">Alef With Hamza Below</item>
+    <item order="6" u="626">Yeh With Hamza Above</item>
+    <item order="7" u="627">Alef</item>
+    <item order="8" u="628">Beh</item>
+    <item order="9" u="629" tools:ignore="Typos">Teh Marbuta</item>
+    <item order="10" u="62a" tools:ignore="Typos">Teh</item>
+    <item order="11" u="62b">Theh</item>
+    <item order="12" u="62c">Jeem</item>
+    <item order="13" u="62d">Hah</item>
+    <item order="14" u="62e">Khah</item>
+    <item order="15" u="62f">Dal</item>
+    <item order="16" u="630">Zal</item>
+    <item order="17" u="631">Reh</item>
+    <item order="18" u="632">Zeh</item>
+    <item order="19" u="633">Seen</item>
+    <item order="20" u="634">Sheen</item>
+    <item order="21" u="635">Soad</item>
+    <item order="22" u="636">Doad</item>
+    <item order="23" u="637">Tah</item>
+    <item order="24" u="638">Zah</item>
+    <item order="25" u="639">Ain</item>
+    <item order="26" u="63a">Ghain</item>
+    <item order="27" u="641">Feh</item>
+    <item order="28" u="642">Qaf</item>
+    <item order="29" u="643">Kaf</item>
+    <item order="30" u="644">Lam</item>
+    <item order="31" u="645">Meem</item>
+    <item order="32" u="646">Noon</item>
+    <item order="33" u="647">Heh</item>
+    <item order="34" u="648">Waw</item>
+    <item order="35" u="649">Alef Maksura</item>
+    <item order="36" u="64a">Yeh</item>
+  </string-array>
+
+  <string-array name="county_names">
+    <item order="1">Afghanistan</item>
+    <item order="2">Aland Islands</item>
+    <item order="3">Albania</item>
+    <item order="4">Algeria</item>
+    <item order="5">American Samoa</item>
+    <item order="6">Andorra</item>
+    <item order="7">Angola</item>
+    <item order="8">Anguilla</item>
+    <item order="9">Antarctica</item>
+    <item order="10">Antigua and Barbuda</item>
+    <item order="11">Argentina</item>
+    <item order="12">Armenia</item>
+    <item order="13">Aruba</item>
+    <item order="14">Australia</item>
+    <item order="15">Austria</item>
+    <item order="16">Azerbaijan</item>
+    <item order="17">Bahamas</item>
+    <item order="18">Bahrain</item>
+    <item order="19">Bangladesh</item>
+    <item order="20">Barbados</item>
+    <item order="21">Belarus</item>
+    <item order="22">Belgium</item>
+    <item order="23">Belize</item>
+    <item order="24">Benin</item>
+    <item order="25">Bermuda</item>
+    <item order="26">Bhutan</item>
+    <item order="27">Bolivia</item>
+    <item order="28">Bonaire, Saint Eustatius and Saba</item>
+    <item order="29">Bosnia and Herzegovina</item>
+    <item order="30">Botswana</item>
+    <item order="31">Bouvet Island</item>
+    <item order="32">Brazil</item>
+    <item order="33">British Indian Ocean Territory</item>
+    <item order="34">British Virgin Islands</item>
+    <item order="35">Brunei</item>
+    <item order="36">Bulgaria</item>
+    <item order="37">Burkina Faso</item>
+    <item order="38">Burundi</item>
+    <item order="39">Cabo Verde</item>
+    <item order="40">Cambodia</item>
+    <item order="41">Cameroon</item>
+    <item order="42">Canada</item>
+    <item order="43">Cayman Islands</item>
+    <item order="44">Central African Republic</item>
+    <item order="45">Chad</item>
+    <item order="46">Chile</item>
+    <item order="47">China</item>
+    <item order="48">Christmas Island</item>
+    <item order="49">Cocos Islands</item>
+    <item order="50">Colombia</item>
+    <item order="51">Comoros</item>
+    <item order="52">Cook Islands</item>
+    <item order="53">Costa Rica</item>
+    <item order="54">Croatia</item>
+    <item order="55">Cuba</item>
+    <item order="56">Curacao</item>
+    <item order="57">Cyprus</item>
+    <item order="58">Czechia</item>
+    <item order="59">Democratic Republic of the Congo</item>
+    <item order="60">Denmark</item>
+    <item order="61">Djibouti</item>
+    <item order="62">Dominica</item>
+    <item order="63">Dominican Republic</item>
+    <item order="64">Ecuador</item>
+    <item order="65">Egypt</item>
+    <item order="66">El Salvador</item>
+    <item order="67">Equatorial Guinea</item>
+    <item order="68">Eritrea</item>
+    <item order="69">Estonia</item>
+    <item order="70">Eswatini</item>
+    <item order="71">Ethiopia</item>
+    <item order="72">Falkland Islands</item>
+    <item order="73">Faroe Islands</item>
+    <item order="74">Fiji</item>
+    <item order="75">Finland</item>
+    <item order="76">France</item>
+    <item order="77">French Guiana</item>
+    <item order="78">French Polynesia</item>
+    <item order="79">French Southern Territories</item>
+    <item order="80">Gabon</item>
+    <item order="81">Gambia</item>
+    <item order="82">Georgia</item>
+    <item order="83">Germany</item>
+    <item order="84">Ghana</item>
+    <item order="85">Gibraltar</item>
+    <item order="86">Greece</item>
+    <item order="87">Greenland</item>
+    <item order="88">Grenada</item>
+    <item order="89">Guadeloupe</item>
+    <item order="90">Guam</item>
+    <item order="91">Guatemala</item>
+    <item order="92">Guernsey</item>
+    <item order="93">Guinea</item>
+    <item order="94">Guinea-Bissau</item>
+    <item order="95">Guyana</item>
+    <item order="96">Haiti</item>
+    <item order="97">Heard Island and McDonald Islands</item>
+    <item order="98">Honduras</item>
+    <item order="99">Hong Kong</item>
+    <item order="100">Hungary</item>
+    <item order="101">Iceland</item>
+    <item order="102">India</item>
+    <item order="103">Indonesia</item>
+    <item order="104">Iran</item>
+    <item order="105">Iraq</item>
+    <item order="106">Ireland</item>
+    <item order="107">Isle of Man</item>
+    <item order="108">Israel</item>
+    <item order="109">Italy</item>
+    <item order="110">Ivory Coast</item>
+    <item order="111">Jamaica</item>
+    <item order="112">Japan</item>
+    <item order="113">Jersey</item>
+    <item order="114">Jordan</item>
+    <item order="115">Kazakhstan</item>
+    <item order="116">Kenya</item>
+    <item order="117">Kiribati</item>
+    <item order="118">Kosovo</item>
+    <item order="119">Kuwait</item>
+    <item order="120">Kyrgyzstan</item>
+    <item order="121">Laos</item>
+    <item order="122">Latvia</item>
+    <item order="123">Lebanon</item>
+    <item order="124">Lesotho</item>
+    <item order="125">Liberia</item>
+    <item order="126">Libya</item>
+    <item order="127">Liechtenstein</item>
+    <item order="128">Lithuania</item>
+    <item order="129">Luxembourg</item>
+    <item order="130">Macao</item>
+    <item order="131">Madagascar</item>
+    <item order="132">Malawi</item>
+    <item order="133">Malaysia</item>
+    <item order="134">Maldives</item>
+    <item order="135">Mali</item>
+    <item order="136">Malta</item>
+    <item order="137">Marshall Islands</item>
+    <item order="138">Martinique</item>
+    <item order="139">Mauritania</item>
+    <item order="140">Mauritius</item>
+    <item order="141">Mayotte</item>
+    <item order="142">Mexico</item>
+    <item order="143">Micronesia</item>
+    <item order="144">Moldova</item>
+    <item order="145">Monaco</item>
+    <item order="146">Mongolia</item>
+    <item order="147">Montenegro</item>
+    <item order="148">Montserrat</item>
+    <item order="149">Morocco</item>
+    <item order="150">Mozambique</item>
+    <item order="151">Myanmar</item>
+    <item order="152">Namibia</item>
+    <item order="153">Nauru</item>
+    <item order="154">Nepal</item>
+    <item order="155">Netherlands</item>
+    <item order="156">Netherlands Antilles</item>
+    <item order="157">New Caledonia</item>
+    <item order="158">New Zealand</item>
+    <item order="159">Nicaragua</item>
+    <item order="160">Niger</item>
+    <item order="161">Nigeria</item>
+    <item order="162">Niue</item>
+    <item order="163">Norfolk Island</item>
+    <item order="164">Northern Mariana Islands</item>
+    <item order="165">North Korea</item>
+    <item order="166">North Macedonia</item>
+    <item order="167">Norway</item>
+    <item order="168">Oman</item>
+    <item order="169">Pakistan</item>
+    <item order="170">Palau</item>
+    <item order="171">Palestinian Territory</item>
+    <item order="172">Panama</item>
+    <item order="173">Papua New Guinea</item>
+    <item order="174">Paraguay</item>
+    <item order="175">Peru</item>
+    <item order="176">Philippines</item>
+    <item order="177">Pitcairn</item>
+    <item order="178">Poland</item>
+    <item order="179">Portugal</item>
+    <item order="180">Puerto Rico</item>
+    <item order="181">Qatar</item>
+    <item order="182">Republic of the Congo</item>
+    <item order="183">Reunion</item>
+    <item order="184">Romania</item>
+    <item order="185">Russia</item>
+    <item order="186">Rwanda</item>
+    <item order="187">Saint Barthelemy</item>
+    <item order="188">Saint Helena</item>
+    <item order="189">Saint Kitts and Nevis</item>
+    <item order="190">Saint Lucia</item>
+    <item order="191">Saint Martin</item>
+    <item order="192">Saint Pierre and Miquelon</item>
+    <item order="193">Saint Vincent and the Grenadines</item>
+    <item order="194">Samoa</item>
+    <item order="195">San Marino</item>
+    <item order="196">Sao Tome and Principe</item>
+    <item order="197">Saudi Arabia</item>
+    <item order="198">Senegal</item>
+    <item order="199">Serbia</item>
+    <item order="200">Serbia and Montenegro</item>
+    <item order="201">Seychelles</item>
+    <item order="202">Sierra Leone</item>
+    <item order="203">Singapore</item>
+    <item order="204">Sint Maarten</item>
+    <item order="205">Slovakia</item>
+    <item order="206">Slovenia</item>
+    <item order="207">Solomon Islands</item>
+    <item order="208">Somalia</item>
+    <item order="209">South Africa</item>
+    <item order="210">South Georgia and the South Sandwich Islands</item>
+    <item order="211">South Korea</item>
+    <item order="212">South Sudan</item>
+    <item order="213">Spain</item>
+    <item order="214">Sri Lanka</item>
+    <item order="215">Sudan</item>
+    <item order="216">Suriname</item>
+    <item order="217">Svalbard and Jan Mayen</item>
+    <item order="218">Sweden</item>
+    <item order="219">Switzerland</item>
+    <item order="220">Syria</item>
+    <item order="221">Taiwan</item>
+    <item order="222">Tajikistan</item>
+    <item order="223">Tanzania</item>
+    <item order="224">Thailand</item>
+    <item order="225">Timor Leste</item>
+    <item order="226">Togo</item>
+    <item order="227">Tokelau</item>
+    <item order="228">Tonga</item>
+    <item order="229">Trinidad and Tobago</item>
+    <item order="230">Tunisia</item>
+    <item order="231">Turkey</item>
+    <item order="232">Turkmenistan</item>
+    <item order="233">Turks and Caicos Islands</item>
+    <item order="234">Tuvalu</item>
+    <item order="235">Uganda</item>
+    <item order="236">Ukraine</item>
+    <item order="237">United Arab Emirates</item>
+    <item order="238">United Kingdom</item>
+    <item order="239">United States</item>
+    <item order="240">United States Minor Outlying Islands</item>
+    <item order="241">Uruguay</item>
+    <item order="242">U.S. Virgin Islands</item>
+    <item order="243">Uzbekistan</item>
+    <item order="244">Vanuatu</item>
+    <item order="245">Vatican</item>
+    <item order="246">Venezuela</item>
+    <item order="247">Vietnam</item>
+    <item order="248">Wallis and Futuna</item>
+    <item order="249">Western Sahara</item>
+    <item order="250">Yemen</item>
+    <item order="251">Federal Republic of Yugoslavia</item>
+    <item order="252">Zambia</item>
+    <item order="253">Zimbabwe</item>
+  </string-array>
+
+  <string-array name="county_codes">
+    <item order="1">AF</item>
+    <item order="2">AX</item>
+    <item order="3">AL</item>
+    <item order="4">DZ</item>
+    <item order="5">AS</item>
+    <item order="6">AD</item>
+    <item order="7">AO</item>
+    <item order="8">AI</item>
+    <item order="9">AQ</item>
+    <item order="10">AG</item>
+    <item order="11">AR</item>
+    <item order="12">AM</item>
+    <item order="13">AW</item>
+    <item order="14">AU</item>
+    <item order="15">AT</item>
+    <item order="16">AZ</item>
+    <item order="17">BS</item>
+    <item order="18">BH</item>
+    <item order="19">BD</item>
+    <item order="20">BB</item>
+    <item order="21">BY</item>
+    <item order="22">BE</item>
+    <item order="23">BZ</item>
+    <item order="24">BJ</item>
+    <item order="25">BM</item>
+    <item order="26">BT</item>
+    <item order="27">BO</item>
+    <item order="28">BQ</item>
+    <item order="29">BA</item>
+    <item order="30">BW</item>
+    <item order="31">BV</item>
+    <item order="32">BR</item>
+    <item order="33">IO</item>
+    <item order="34">VG</item>
+    <item order="35">BN</item>
+    <item order="36">BG</item>
+    <item order="37">BF</item>
+    <item order="38">BI</item>
+    <item order="39">CV</item>
+    <item order="40">KH</item>
+    <item order="41">CM</item>
+    <item order="42">CA</item>
+    <item order="43">KY</item>
+    <item order="44">CF</item>
+    <item order="45">TD</item>
+    <item order="46">CL</item>
+    <item order="47">CN</item>
+    <item order="48">CX</item>
+    <item order="49">CC</item>
+    <item order="50">CO</item>
+    <item order="51">KM</item>
+    <item order="52">CK</item>
+    <item order="53">CR</item>
+    <item order="54">HR</item>
+    <item order="55">CU</item>
+    <item order="56">CW</item>
+    <item order="57">CY</item>
+    <item order="58">CZ</item>
+    <item order="59">CD</item>
+    <item order="60">DK</item>
+    <item order="61">DJ</item>
+    <item order="62">DM</item>
+    <item order="63">DO</item>
+    <item order="64">EC</item>
+    <item order="65">EG</item>
+    <item order="66">SV</item>
+    <item order="67">GQ</item>
+    <item order="68">ER</item>
+    <item order="69">EE</item>
+    <item order="70">SZ</item>
+    <item order="71">ET</item>
+    <item order="72">FK</item>
+    <item order="73">FO</item>
+    <item order="74">FJ</item>
+    <item order="75">FI</item>
+    <item order="76">FR</item>
+    <item order="77">GF</item>
+    <item order="78">PF</item>
+    <item order="79">TF</item>
+    <item order="80">GA</item>
+    <item order="81">GM</item>
+    <item order="82">GE</item>
+    <item order="83">DE</item>
+    <item order="84">GH</item>
+    <item order="85">GI</item>
+    <item order="86">GR</item>
+    <item order="87">GL</item>
+    <item order="88">GD</item>
+    <item order="89">GP</item>
+    <item order="90">GU</item>
+    <item order="91">GT</item>
+    <item order="92">GG</item>
+    <item order="93">GN</item>
+    <item order="94">GW</item>
+    <item order="95">GY</item>
+    <item order="96">HT</item>
+    <item order="97">HM</item>
+    <item order="98">HN</item>
+    <item order="99">HK</item>
+    <item order="100">HU</item>
+    <item order="101">IS</item>
+    <item order="102">IN</item>
+    <item order="103">ID</item>
+    <item order="104">IR</item>
+    <item order="105">IQ</item>
+    <item order="106">IE</item>
+    <item order="107">IM</item>
+    <item order="108">IL</item>
+    <item order="109">IT</item>
+    <item order="110">CI</item>
+    <item order="111">JM</item>
+    <item order="112">JP</item>
+    <item order="113">JE</item>
+    <item order="114">JO</item>
+    <item order="115">KZ</item>
+    <item order="116">KE</item>
+    <item order="117">KI</item>
+    <item order="118">XK</item>
+    <item order="119">KW</item>
+    <item order="120">KG</item>
+    <item order="121">LA</item>
+    <item order="122">LV</item>
+    <item order="123">LB</item>
+    <item order="124">LS</item>
+    <item order="125">LR</item>
+    <item order="126">LY</item>
+    <item order="127">LI</item>
+    <item order="128">LT</item>
+    <item order="129">LU</item>
+    <item order="130">MO</item>
+    <item order="131">MG</item>
+    <item order="132">MW</item>
+    <item order="133">MY</item>
+    <item order="134">MV</item>
+    <item order="135">ML</item>
+    <item order="136">MT</item>
+    <item order="137">MH</item>
+    <item order="138">MQ</item>
+    <item order="139">MR</item>
+    <item order="140">MU</item>
+    <item order="141">YT</item>
+    <item order="142">MX</item>
+    <item order="143">FM</item>
+    <item order="144">MD</item>
+    <item order="145">MC</item>
+    <item order="146">MN</item>
+    <item order="147">ME</item>
+    <item order="148">MS</item>
+    <item order="149">MA</item>
+    <item order="150">MZ</item>
+    <item order="151">MM</item>
+    <item order="152">NA</item>
+    <item order="153">NR</item>
+    <item order="154">NP</item>
+    <item order="155">NL</item>
+    <item order="156">AN</item>
+    <item order="157">NC</item>
+    <item order="158">NZ</item>
+    <item order="159">NI</item>
+    <item order="160">NE</item>
+    <item order="161">NG</item>
+    <item order="162">NU</item>
+    <item order="163">NF</item>
+    <item order="164">MP</item>
+    <item order="165">KP</item>
+    <item order="166">MK</item>
+    <item order="167">NO</item>
+    <item order="168">OM</item>
+    <item order="169">PK</item>
+    <item order="170">PW</item>
+    <item order="171">PS</item>
+    <item order="172">PA</item>
+    <item order="173">PG</item>
+    <item order="174">PY</item>
+    <item order="175">PE</item>
+    <item order="176">PH</item>
+    <item order="177">PN</item>
+    <item order="178">PL</item>
+    <item order="179">PT</item>
+    <item order="180">PR</item>
+    <item order="181">QA</item>
+    <item order="182">CG</item>
+    <item order="183">RE</item>
+    <item order="184">RO</item>
+    <item order="185">RU</item>
+    <item order="186">RW</item>
+    <item order="187">BL</item>
+    <item order="188">SH</item>
+    <item order="189">KN</item>
+    <item order="190">LC</item>
+    <item order="191">MF</item>
+    <item order="192">PM</item>
+    <item order="193">VC</item>
+    <item order="194">WS</item>
+    <item order="195">SM</item>
+    <item order="196">ST</item>
+    <item order="197">SA</item>
+    <item order="198">SN</item>
+    <item order="199">RS</item>
+    <item order="200">CS</item>
+    <item order="201">SC</item>
+    <item order="202">SL</item>
+    <item order="203">SG</item>
+    <item order="204">SX</item>
+    <item order="205">SK</item>
+    <item order="206">SI</item>
+    <item order="207">SB</item>
+    <item order="208">SO</item>
+    <item order="209">ZA</item>
+    <item order="210">GS</item>
+    <item order="211">KR</item>
+    <item order="212">SS</item>
+    <item order="213">ES</item>
+    <item order="214">LK</item>
+    <item order="215">SD</item>
+    <item order="216">SR</item>
+    <item order="217">SJ</item>
+    <item order="218">SE</item>
+    <item order="219">CH</item>
+    <item order="220">SY</item>
+    <item order="221">TW</item>
+    <item order="222">TJ</item>
+    <item order="223">TZ</item>
+    <item order="224">TH</item>
+    <item order="225">TL</item>
+    <item order="226">TG</item>
+    <item order="227">TK</item>
+    <item order="228">TO</item>
+    <item order="229">TT</item>
+    <item order="230">TN</item>
+    <item order="231">TR</item>
+    <item order="232">TM</item>
+    <item order="233">TC</item>
+    <item order="234">TV</item>
+    <item order="235">UG</item>
+    <item order="236">UA</item>
+    <item order="237">AE</item>
+    <item order="238">GB</item>
+    <item order="239">US</item>
+    <item order="240">UM</item>
+    <item order="241">UY</item>
+    <item order="242">VI</item>
+    <item order="243">UZ</item>
+    <item order="244">VU</item>
+    <item order="245">VA</item>
+    <item order="246">VE</item>
+    <item order="247">VN</item>
+    <item order="248">WF</item>
+    <item order="249">EH</item>
+    <item order="250">YE</item>
+    <item order="251">YU</item>
+    <item order="252">ZM</item>
+    <item order="253">ZW</item>
+  </string-array>
+
+</resources>

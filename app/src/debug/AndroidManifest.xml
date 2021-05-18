@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  package="com.mirfatif.noorulhuda">
+
+  <application tools:ignore="AllowBackup">
+
+    <provider
+      android:authorities="com.mirfatif.noorulhuda.debug.FileProvider"
+      android:name="androidx.core.content.FileProvider"
+      tools:ignore="ExportedContentProvider"
+      tools:replace="android:authorities" />
+
+  </application>
+
+</manifest>

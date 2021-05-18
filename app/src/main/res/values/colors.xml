@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="green">#6F8F63</color>
+  <color name="greenTrans1">#E66F8F63</color>
+  <color name="greenTrans2">#806F8F63</color>
+  <color name="greenTrans3">#406F8F63</color>
+  <color name="greenDark1">#65825A</color>
+  <color name="greenDark2">#5B7551</color>
+
+  <color name="blue">#2196F3</color>
+  <color name="blueTrans1">#E62196F3</color>
+  <color name="blueTrans2">#802196F3</color>
+  <color name="blueTrans3">#402196F3</color>
+  <color name="blueDark1">#208DE6</color>
+  <color name="blueDark2">#1E85D9</color>
+
+  <color name="red">#BA8787</color>
+  <color name="redTrans1">#E6BA8787</color>
+  <color name="redTrans2">#80BA8787</color>
+  <color name="redTrans3">#40BA8787</color>
+  <color name="redDark1">#AD7F7F</color>
+  <color name="redDark2">#A17575</color>
+
+  <color name="gray">#86909E</color>
+  <color name="grayTrans1">#E686909E</color>
+  <color name="grayTrans2">#8086909E</color>
+  <color name="grayTrans3">#4086909E</color>
+  <color name="grayDark1">#7C8591</color>
+  <color name="grayDark2">#717985</color>
+
+  <color name="disabledState">#7F7F7F</color>
+
+  <color name="fgSharp2">@android:color/black</color>
+  <color name="fgSharp1">#E6000000</color>
+  <color name="fgMedium">#CC000000</color>
+  <color name="fgLight1">#B3000000</color>
+  <color name="fgLight2">#99000000</color>
+
+  <color name="bgSharp2">@android:color/white</color>
+  <color name="bgSharp1">#F2F2F2</color>
+  <color name="bgMedium">#E6E6E6</color>
+  <color name="bgLight1">#D9D9D9</color>
+  <color name="bgLight2">#CCCCCC</color>
+
+  <color name="dynamicBgTrans">#B3FFFFFF</color>
+
+  <color name="widgetTextDark3">@android:color/black</color>
+  <color name="widgetTextDark2">#E6000000</color>
+  <color name="widgetTextDark1">#CC000000</color>
+  <color name="widgetTextLight3">@android:color/white</color>
+  <color name="widgetTextLight2">#E6FFFFFF</color>
+  <color name="widgetTextLight1">#CCFFFFFF</color>
+  <color name="widgetBgDark">#B3000000</color>
+  <color name="widgetBgLight">#B3FFFFFF</color>
+
+</resources>

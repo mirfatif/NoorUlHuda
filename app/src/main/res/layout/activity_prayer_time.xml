@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:scrollbars="vertical">
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginBottom="16dp"
+      android:background="?attr/accent" />
+
+    <include
+      android:id="@+id/widget"
+      layout="@layout/pr_time_act_widget" />
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginTop="16dp"
+      android:layout_marginBottom="8dp"
+      android:background="?attr/accentTrans2" />
+
+    <include
+      android:id="@+id/loc_cont"
+      layout="@layout/act_pr_location"
+      android:visibility="gone" />
+
+    <include
+      android:id="@+id/notify_cont"
+      layout="@layout/act_pr_notif"
+      android:visibility="gone" />
+
+    <include
+      android:id="@+id/calc_cont"
+      layout="@layout/act_pr_calc"
+      android:visibility="gone" />
+
+    <include
+      android:id="@+id/widget_cont"
+      layout="@layout/act_pr_widget"
+      android:visibility="gone" />
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:id="@+id/loc_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:background="?attr/accent">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:letterSpacing="0.1"
+        android:text="@string/location"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceButton"
+        android:textColor="@color/fgSharp2" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:id="@+id/calc_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:background="?attr/accent">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:letterSpacing="0.1"
+        android:text="@string/calculation"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceButton"
+        android:textColor="@color/fgSharp2" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:id="@+id/notif_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:background="?attr/accent">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:letterSpacing="0.1"
+        android:text="@string/notifications"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceButton"
+        android:textColor="@color/fgSharp2" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+      android:id="@+id/widget_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:background="?attr/accent">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:letterSpacing="0.1"
+        android:text="@string/widget"
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceButton"
+        android:textColor="@color/fgSharp2" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+</androidx.core.widget.NestedScrollView>
