@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:paddingTop="16dp"
+  android:paddingBottom="16dp"
+  android:paddingStart="4dp"
+  android:paddingEnd="4dp"
+  android:scrollbars="vertical">
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:paddingBottom="24dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+      android:id="@+id/surah_name_v"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="4dp"
+      android:gravity="center"
+      android:textAlignment="center"
+      android:textColor="@color/fgSharp2"
+      android:textSize="18sp"
+      android:visibility="invisible" />
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center">
+
+      <com.mirfatif.noorulhuda.quran.GoToPicker
+        android:id="@+id/value_picker"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:scrollbars="none" />
+
+      <com.mirfatif.noorulhuda.quran.GoToPicker
+        android:id="@+id/type_picker"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:descendantFocusability="blocksDescendants"
+        android:scrollbars="none" />
+
+    </LinearLayout>
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+</androidx.core.widget.NestedScrollView>

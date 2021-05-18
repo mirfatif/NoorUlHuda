@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:tools="http://schemas.android.com/tools"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <shortcut
+    android:icon="@mipmap/ic_dua"
+    android:shortcutId="supplications"
+    android:shortcutShortLabel="@string/supplications_menu_item"
+    tools:ignore="UnusedAttribute">
+    <intent
+      android:action="com.mirfatif.noorulhuda.action.NO_PARENT"
+      android:targetClass="com.mirfatif.noorulhuda.dua.DuaActivity"
+      android:targetPackage="com.mirfatif.noorulhuda" />
+  </shortcut>
+  <shortcut
+    android:icon="@mipmap/ic_prayer"
+    android:shortcutId="prayer_time"
+    android:shortcutShortLabel="@string/prayer_time_menu_item"
+    tools:ignore="UnusedAttribute">
+    <intent
+      android:action="com.mirfatif.noorulhuda.action.NO_PARENT"
+      android:targetClass="com.mirfatif.noorulhuda.prayer.PrayerTimeActivity"
+      android:targetPackage="com.mirfatif.noorulhuda" />
+  </shortcut>
+
+</shortcuts>

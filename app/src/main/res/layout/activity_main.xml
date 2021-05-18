@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:keepScreenOn="true"
+  android:layoutDirection="ltr">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="ltr"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:id="@+id/header_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="2"
+          android:paddingTop="4dp"
+          android:paddingBottom="4dp"
+          android:paddingStart="8dp"
+          android:paddingEnd="8dp"
+          android:gravity="left|center"
+          tools:ignore="RtlHardcoded">
+
+          <TextView
+            android:id="@+id/juz_value_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            tools:ignore="RtlSymmetry" />
+
+          <TextView
+            android:id="@+id/juz_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="8dp"
+            android:text="@string/juz"
+            tools:ignore="RtlSymmetry" />
+
+          <TextView
+            android:id="@+id/manzil_value_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            tools:ignore="RtlSymmetry" />
+
+          <TextView
+            android:id="@+id/manzil_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/manzil" />
+
+        </LinearLayout>
+
+        <TextView
+          android:id="@+id/page_v"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:paddingTop="4dp"
+          android:paddingBottom="4dp"
+          android:paddingStart="8dp"
+          android:paddingEnd="8dp"
+          android:gravity="center"
+          android:textAlignment="center" />
+
+        <LinearLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="2"
+          android:paddingTop="4dp"
+          android:paddingBottom="4dp"
+          android:paddingStart="8dp"
+          android:paddingEnd="8dp"
+          android:gravity="right|center"
+          tools:ignore="RtlHardcoded">
+
+          <TextView
+            android:id="@+id/surah_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            tools:ignore="RtlSymmetry" />
+
+          <TextView
+            android:id="@+id/surah_value_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/accentTrans2" />
+
+    </LinearLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+      android:id="@+id/pager"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:layoutDirection="rtl" />
+
+  </LinearLayout>
+
+  <com.mirfatif.noorulhuda.ui.base.MyFrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+      android:id="@+id/left_arrow"
+      android:layout_width="64dp"
+      android:layout_height="64dp"
+      android:layout_gravity="left|center_vertical"
+      android:src="@drawable/left_arrow"
+      android:visibility="gone"
+      tools:ignore="ContentDescription,RtlHardcoded" />
+
+    <ImageView
+      android:id="@+id/right_arrow"
+      android:layout_width="64dp"
+      android:layout_height="64dp"
+      android:layout_gravity="right|center_vertical"
+      android:rotation="180"
+      android:src="@drawable/left_arrow"
+      android:visibility="gone"
+      tools:ignore="ContentDescription,RtlHardcoded" />
+
+    <androidx.core.widget.ContentLoadingProgressBar
+      android:id="@+id/progress_bar"
+      style="@style/Widget.AppCompat.ProgressBar"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_marginTop="64dp"
+      android:layout_gravity="center_horizontal|top"
+      android:background="@drawable/pg_bar_circular_bg"
+      android:indeterminate="true"
+      android:indeterminateBehavior="cycle"
+      android:visibility="gone" />
+
+    <include
+      android:id="@+id/bottom_bar"
+      layout="@layout/bottom_bar" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+
+</FrameLayout>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mirfatif.noorulhuda.ui.base.MyLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_margin="8dp"
+  android:orientation="vertical">
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+      android:textStyle="bold"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_gravity="center_vertical"
+      android:text="@string/prayer_adj"
+      android:textColor="?attr/accent"
+      android:textSize="14sp" />
+
+    <ImageView
+      android:id="@+id/help_v"
+      android:layout_width="28dp"
+      android:layout_height="28dp"
+      android:padding="4dp"
+      android:background="?android:attr/selectableItemBackgroundBorderless"
+      android:src="@drawable/help"
+      tools:ignore="ContentDescription" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:layoutDirection="rtl"
+    android:orientation="horizontal">
+
+    <TextView
+      android:id="@+id/fajr_adj"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/sun_adj"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/zuhr_adj"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/asr_adj"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/maghrib_adj"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+    <TextView
+      android:id="@+id/isha_adj"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:layoutDirection="locale"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="16sp" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:orientation="horizontal">
+
+    <TextView
+      android:textStyle="bold"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="4dp"
+      android:text="@string/prayer_cal_method"
+      android:textColor="?attr/accent"
+      android:textSize="14sp" />
+
+    <Spinner
+      android:id="@+id/method_picker"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="-4dp"
+    android:layout_marginBottom="12dp"
+    android:layoutDirection="rtl"
+    android:orientation="horizontal">
+
+    <TextView
+      android:id="@+id/fajr_params"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:gravity="center_horizontal"
+      android:maxLines="1"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="14sp"
+      app:autoSizeTextType="uniform" />
+
+    <TextView
+      android:id="@+id/sun_params"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:gravity="center_horizontal"
+      android:maxLines="1"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="14sp"
+      app:autoSizeTextType="uniform" />
+
+    <TextView
+      android:id="@+id/zuhr_params"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:gravity="center_horizontal"
+      android:maxLines="1"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="14sp"
+      app:autoSizeTextType="uniform" />
+
+    <TextView
+      android:id="@+id/asr_params"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:gravity="center_horizontal"
+      android:maxLines="1"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="14sp"
+      app:autoSizeTextType="uniform" />
+
+    <TextView
+      android:id="@+id/maghrib_params"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:gravity="center_horizontal"
+      android:maxLines="1"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="14sp"
+      app:autoSizeTextType="uniform" />
+
+    <TextView
+      android:id="@+id/isha_params"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="2dp"
+      android:background="@drawable/tag_desc_bg"
+      android:gravity="center_horizontal"
+      android:maxLines="1"
+      android:textAlignment="center"
+      android:textColor="@color/fgMedium"
+      android:textSize="14sp"
+      app:autoSizeTextType="uniform" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+      android:textStyle="bold"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="4dp"
+      android:text="@string/asr_cal_method"
+      android:textColor="?attr/accent"
+      android:textSize="14sp" />
+
+    <Spinner
+      android:id="@+id/asr_method_picker"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+      android:textStyle="bold"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="4dp"
+      android:text="@string/high_lat_method"
+      android:textColor="?attr/accent"
+      android:textSize="14sp" />
+
+    <Spinner
+      android:id="@+id/high_lat_picker"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+</com.mirfatif.noorulhuda.ui.base.MyLinearLayout>

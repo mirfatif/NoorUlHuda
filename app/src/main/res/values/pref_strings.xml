@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- NOTE:
+       - Always and only use "pref_" prefix with names and values of preference keys.
+       - Use suffix "_nb" with key values which should not be backed up.
+       - Key name of default value must be the preference key value suffixed with "_default".
+       - All preference key names starting with "pref_filter_" are cleared on "Reset to Defaults".
+       - Only preference key names not ending with "_nb_key" are restored from backup file. -->
+
+  <!-- MainActivity Preferences -->
+  <string name="pref_main_crash_report_ts_nb_key" translatable="false">pref_main_crash_report_ts_nb</string>
+  <string name="pref_main_bookmarks_key" translatable="false">pref_main_bookmarks</string>
+  <string name="pref_settings_tasmia_ids_nb_key" translatable="false">pref_settings_tasmia_ids_nb</string>
+
+  <!-- MainActivity Preferences corresponding to default values -->
+  <string name="pref_main_crash_report_count_nb_key" translatable="false">pref_main_crash_report_count_nb</string>
+  <integer name="pref_main_crash_report_count_nb_default">1</integer>
+  <string name="pref_main_dark_theme_key" translatable="false">pref_main_dark_theme</string>
+  <bool name="pref_main_dark_theme_default">true</bool>
+  <string name="pref_main_theme_color_key" translatable="false">pref_main_theme_color</string>
+  <string name="pref_main_theme_color_default" translatable="false">@string/theme_color_green</string>
+  <string name="pref_main_page_view_key" translatable="false">pref_main_page_view</string>
+  <bool name="pref_main_page_view_default">true</bool>
+  <string name="pref_main_show_page_header_key" translatable="false">pref_main_show_page_header</string>
+  <bool name="pref_main_show_page_header_default">true</bool>
+  <string name="pref_main_font_nb_key" translatable="false">pref_main_font_nb</string>
+  <string name="pref_main_font_nb_default" translatable="false">@string/font_hafs</string>
+  <string name="pref_main_font_color_key" translatable="false">pref_main_font_color</string>
+  <integer name="pref_main_font_color_default">2</integer>
+  <string name="pref_main_bg_color_key" translatable="false">pref_main_bg_color</string>
+  <integer name="pref_main_bg_color_default">2</integer>
+  <string name="pref_main_font_size_key" translatable="false">pref_main_font_size</string>
+  <integer name="pref_main_font_size_default">16</integer>
+  <string name="pref_main_last_page_key" translatable="false">pref_main_last_page</string>
+  <integer name="pref_main_last_page_default">0</integer>
+  <string name="pref_main_last_aayah_key" translatable="false">pref_main_last_aayah</string>
+  <integer name="pref_main_last_aayah_default">0</integer>
+  <string name="pref_main_number_picker_type_key" translatable="false">pref_main_number_picker_type</string>
+  <integer name="pref_main_number_picker_type_default">1</integer>
+  <string name="pref_main_number_picker_value_key" translatable="false">pref_main_number_picker_value</string>
+  <integer name="pref_main_number_picker_value_default">1</integer>
+  <string name="pref_main_quran_db_nb_key" translatable="false">pref_main_quran_db_nb</string>
+  <string name="pref_main_quran_db_nb_default" translatable="false">@string/db_main</string>
+  <string name="pref_main_trans_db_nb_key" translatable="false">pref_main_trans_db_nb</string>
+  <string name="pref_main_trans_db_nb_default" translatable="false">@string/db_trans_none</string>
+  <string name="pref_main_trans_search_key" translatable="false">pref_main_trans_search</string>
+  <bool name="pref_main_trans_search_default">false</bool>
+  <string name="pref_main_last_quranic_dua_key" translatable="false">pref_main_last_quranic_dua</string>
+  <integer name="pref_main_last_quranic_dua_default">0</integer>
+  <string name="pref_main_last_masnoon_dua_key" translatable="false">pref_main_last_masnoon_dua</string>
+  <integer name="pref_main_last_masnoon_dua_default">0</integer>
+  <string name="pref_main_last_occasions_dua_key" translatable="false">pref_main_last_occasions_dua</string>
+  <integer name="pref_main_last_occasions_dua_default">0</integer>
+  <string name="pref_main_last_dua_page_key" translatable="false">pref_main_last_dua_page</string>
+  <integer name="pref_main_last_dua_page_default">0</integer>
+
+  <!-- AboutActivity -->
+  <string name="pref_settings_check_for_updates_key" translatable="false">pref_settings_check_for_updates</string>
+  <bool name="pref_settings_check_for_updates_default">true</bool>
+  <string name="pref_settings_check_for_updates_ts_nb_key" translatable="false">pref_settings_check_for_updates_ts_nb</string>
+
+  <!-- PrayerTimeActivity -->
+  <integer name="invalid_coordinate">-1000</integer>
+  <string name="pref_prayer_longitude_key" translatable="false">pref_prayer_longitude</string>
+  <integer name="pref_prayer_longitude_default">@integer/invalid_coordinate</integer>
+  <string name="pref_prayer_latitude_key" translatable="false">pref_prayer_latitude</string>
+  <integer name="pref_prayer_latitude_default">@integer/invalid_coordinate</integer>
+  <string name="pref_prayer_country_code_key" translatable="false">pref_prayer_country_code</string>
+  <string name="pref_prayer_country_code_default" translatable="false">null</string>
+  <string name="pref_prayer_city_name_key" translatable="false">pref_prayer_city_name</string>
+  <string name="pref_prayer_city_name_default" translatable="false">null</string>
+  <string name="pref_prayer_hijri_offset_key" translatable="false">pref_prayer_hijri_offset</string>
+  <integer name="pref_prayer_hijri_offset_default">0</integer>
+  <string name="pref_prayer_calc_method_key" translatable="false">pref_prayer_calc_method</string>
+  <integer name="pref_prayer_calc_method_default">0</integer>
+  <string name="pref_prayer_asr_calc_method_key" translatable="false">pref_prayer_asr_calc_method</string>
+  <integer name="pref_prayer_asr_calc_method_default">0</integer>
+  <string name="pref_prayer_high_lat_method_key" translatable="false">pref_prayer_high_lat_method</string>
+  <integer name="pref_prayer_high_lat_method_default">3</integer>
+  <string name="pref_prayer_loc_timezone_key" translatable="false">pref_prayer_loc_timezone</string>
+  <string name="pref_prayer_loc_timezone_default" translatable="false">null</string>
+  <string name="pref_prayer_widget_notif_key" translatable="false">pref_prayer_widget_notif</string>
+  <bool name="pref_prayer_widget_notif_default">true</bool>
+  <string name="pref_prayer_ask_to_exclude_batt_opt_nb_key" translatable="false">pref_prayer_ask_to_exclude_batt_opt_nb</string>
+  <bool name="pref_prayer_ask_to_exclude_batt_opt_nb_default">true</bool>
+  <string name="pref_prayer_home_widget_style_key" translatable="false">pref_prayer_home_widget_style</string>
+  <integer name="pref_prayer_home_widget_style_default">0</integer>
+
+</resources>

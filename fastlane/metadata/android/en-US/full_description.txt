@@ -1,0 +1,28 @@
+Noor-Ul-Huda is a simple, open source Quran reader app with extras, completely free forever.
+
+<b>Features</b>
+Customize your reading experience the way you want:
+
+* Choose from different Arabic <b>fonts</b>, adjust font contrast and <b>size</b>
+* Set comfortable <b>background tone</b> and screen brightness
+* Choose from <b>Page Mode</b> or continuous reading
+* <b>Dark theme</b> and multiple theme colors supported
+
+Make Quran reading more profitable:
+
+* <b>Translations</b> in different languages.
+* Quickly take notes by creating <b>Tags</b> with Title and Description.
+* Conveniently tag Āyahs by long pressing.
+* <b>Search</b> in Quranic text or translations.
+* <b>Share</b> or copy Āyahs (with translation) by long pressing.
+
+Easy navigation:
+
+* <b>Bookmark</b> Āyahs by long pressing.
+* Go to desired page, Surah, Juz or Manzil.
+
+More:
+
+* Quranic and Masnoon Supplications (<b>Duas</b>), general and for special occasions.
+* <b>Prayer Time</b> notifications and Adhan, and <b>Qibla</b> direction for set location.
+* <b>Backup and Restore</b> preferences, Tags and Bookmarks.

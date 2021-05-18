@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mirfatif.noorulhuda.ui.base.MyFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_gravity="bottom">
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp"
+    android:background="?attr/accentTrans1"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal">
+
+    <ImageView
+      android:id="@+id/action_trans_search"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:padding="4dp"
+      android:background="?android:attr/selectableItemBackgroundBorderless"
+      android:contentDescription="@string/trans_search_menu_item"
+      android:maxHeight="72dp"
+      android:src="@drawable/translation"
+      android:visibility="gone" />
+
+    <ImageView
+      android:id="@+id/action_search_help"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:padding="4dp"
+      android:background="?android:attr/selectableItemBackgroundBorderless"
+      android:contentDescription="@string/search_help_menu_item"
+      android:maxHeight="72dp"
+      android:src="@drawable/help"
+      android:visibility="gone" />
+
+    <com.mirfatif.noorulhuda.ui.base.MySearchView
+      android:id="@+id/search_v"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="gone" />
+
+    <ImageView
+      android:id="@+id/action_brightness"
+      style="@style/BottomBarButton"
+      android:contentDescription="@string/brightness_menu_item"
+      android:src="@drawable/brightness" />
+
+    <ImageView
+      android:id="@+id/action_bg_color"
+      style="@style/BottomBarButton"
+      android:contentDescription="@string/bg_color_menu_item"
+      android:src="@drawable/colorize" />
+
+    <ImageView
+      android:id="@+id/action_text_color"
+      style="@style/BottomBarButton"
+      android:contentDescription="@string/text_color_menu_item"
+      android:src="@drawable/contrast" />
+
+    <ImageView
+      android:id="@+id/action_font_size"
+      style="@style/BottomBarButton"
+      android:contentDescription="@string/font_size_menu_item"
+      android:src="@drawable/text_size" />
+
+    <ImageView
+      android:id="@+id/action_font"
+      style="@style/BottomBarButton"
+      android:contentDescription="@string/font_menu_item"
+      android:src="@drawable/font" />
+
+    <ImageView
+      android:id="@+id/action_page_view"
+      style="@style/BottomBarButton"
+      android:contentDescription="@string/page_view_menu_item"
+      android:src="@drawable/pages" />
+
+    <ImageView
+      android:id="@+id/action_info_header"
+      style="@style/BottomBarButton"
+      android:contentDescription="@string/info_header_menu_item"
+      android:src="@drawable/header" />
+
+    <ImageView
+      android:id="@+id/action_overflow"
+      style="@style/BottomBarButton"
+      android:contentDescription="@string/menu"
+      android:src="@drawable/overflow_menu" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+</com.mirfatif.noorulhuda.ui.base.MyFrameLayout>

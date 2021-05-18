@@ -1,0 +1,39 @@
+buildscript {
+    repositories {
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.2.2'
+
+        // From Time4A/build.gradle
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+    }
+}
+
+plugins {
+    id 'com.github.sherter.google-java-format' version '0.9'
+}
+
+allprojects {
+    repositories {
+        google()
+        // Required for google-java-format
+        mavenCentral()
+    }
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+
+    project.ext {
+        compileSdkVer = 30
+        buildToolsVer = "30.0.3"
+        minSdkVer = 24
+        targetSdkVer = 30
+        ndkVer = "22.1.7171670"
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

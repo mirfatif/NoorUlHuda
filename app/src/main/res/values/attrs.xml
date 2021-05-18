@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!--Theme unique attributes-->
+  <attr format="color" name="accent" />
+  <attr format="color" name="accentTrans1" />
+  <attr format="color" name="accentTrans2" />
+  <attr format="color" name="accentTrans3" />
+  <attr format="color" name="accentDark1" />
+  <attr format="color" name="accentDark2" />
+
+  <attr format="reference" name="app_icon" />
+</resources>

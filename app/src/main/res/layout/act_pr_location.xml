@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mirfatif.noorulhuda.ui.base.MyLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginTop="8dp"
+  android:layout_marginBottom="20dp"
+  android:layout_marginStart="8dp"
+  android:layout_marginEnd="8dp"
+  android:orientation="vertical">
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:textStyle="bold"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_gravity="center_vertical"
+      android:text="@string/location"
+      android:textColor="?attr/accent"
+      android:textSize="14sp" />
+
+    <ImageView
+      android:id="@+id/map_v"
+      android:layout_width="28dp"
+      android:layout_height="28dp"
+      android:layout_marginStart="4dp"
+      android:padding="4dp"
+      android:background="?android:attr/selectableItemBackgroundBorderless"
+      android:src="@drawable/map"
+      tools:ignore="ContentDescription" />
+
+    <ImageView
+      android:id="@+id/clear_v"
+      android:layout_width="28dp"
+      android:layout_height="28dp"
+      android:layout_marginStart="4dp"
+      android:padding="4dp"
+      android:background="?android:attr/selectableItemBackgroundBorderless"
+      android:src="@drawable/cross"
+      tools:ignore="ContentDescription" />
+
+    <ImageView
+      android:id="@+id/help_v"
+      android:layout_width="28dp"
+      android:layout_height="28dp"
+      android:layout_marginStart="4dp"
+      android:padding="4dp"
+      android:background="?android:attr/selectableItemBackgroundBorderless"
+      android:src="@drawable/help"
+      tools:ignore="ContentDescription" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:id="@+id/p_bar_cont"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="2dp"
+    android:visibility="invisible">
+
+    <ProgressBar
+      android:id="@+id/progress_bar"
+      style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+      android:layout_width="0dp"
+      android:layout_height="12dp"
+      android:layout_weight="1"
+      android:layout_marginTop="2dp"
+      android:layout_marginBottom="2dp"
+      android:layout_gravity="center_vertical"
+      android:indeterminate="true" />
+
+    <TextView
+      android:id="@+id/wait_v"
+      android:layout_width="wrap_content"
+      android:layout_height="16dp"
+      android:layout_marginStart="4dp"
+      android:layout_gravity="center_vertical"
+      android:textColor="@color/fgMedium"
+      android:textSize="14sp"
+      android:visibility="gone"
+      app:autoSizeTextType="uniform" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="-4dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+      android:id="@+id/country_code_v"
+      android:textStyle="bold"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="?attr/accent"
+      android:textSize="16sp"
+      android:visibility="gone" />
+
+    <androidx.appcompat.widget.SearchView
+      android:id="@+id/search_v"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1" />
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:orientation="vertical">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/longitude"
+        android:textAlignment="center"
+        android:textColor="@color/fgMedium"
+        android:textSize="14sp" />
+
+      <EditText
+        android:id="@+id/lng_v"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:background="@drawable/tag_desc_bg"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:inputType="numberDecimal|numberSigned"
+        android:maxLines="1"
+        android:text="@string/zero"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        tools:ignore="Autofill,LabelFor" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+    <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:orientation="vertical">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/latitude"
+        android:textAlignment="center"
+        android:textColor="@color/fgMedium"
+        android:textSize="14sp" />
+
+      <EditText
+        android:id="@+id/lat_v"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:background="@drawable/tag_desc_bg"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:inputType="numberDecimal|numberSigned"
+        android:maxLines="1"
+        android:text="@string/zero"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        tools:ignore="Autofill,LabelFor" />
+
+    </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
+
+</com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
