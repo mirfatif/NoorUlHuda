@@ -1,8 +1,8 @@
 # NoorUlHuda [![Download](https://img.shields.io/github/v/release/mirfatif/NoorUlHuda?label="Download")](https://github.com/mirfatif/NoorUlHuda/releases/latest)
 A simple, open source Quran reader app with extras, completely free forever
 
-<!-- a href="https://f-droid.org/packages/com.mirfatif.noorulhuda"><img alt="Get it on F-Droid" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="100"></a>
-<a href="https://play.google.com/store/apps/details?id=com.mirfatif.noorulhuda"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100"></a -->
+<!-- a href="https://f-droid.org/packages/com.mirfatif.noorulhuda"><img alt="Get it on F-Droid" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="100"></a -->
+<a href="https://play.google.com/store/apps/details?id=com.mirfatif.noorulhuda"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100"></a>
 
 ## Features
 Customize your reading experience the way you want:
@@ -76,9 +76,9 @@ Noor Ul Huda uses Arabic fonts created by:
 * <a href="https://fonts.qurancomplex.gov.sa">King Fahd Quran Complex</a>
 * <a href="https://pakdata.com/products/arabicfont">Pakistan Data Management Services</a>
 * <a href="https://software.sil.org/arabicfonts">SIL International</a>
-* <a href="https://www.noorehidayat.org">Noor-e-Hidayat</a></li>
-* <a href="https://github.com/icikiwir/me_quran">Meor Ridzuan</a></li>
-* <a href="https://github.com/quranacademy/kitab-font">Quran Academy</a></li>
+* <a href="https://www.noorehidayat.org">Noor-e-Hidayat</a>
+* <a href="https://github.com/icikiwir/me_quran">Meor Ridzuan</a>
+* <a href="https://github.com/quranacademy/kitab-font">Quran Academy</a>
 
 ## License [![License](https://img.shields.io/github/license/mirfatif/NoorUlHuda?label="License")](https://github.com/mirfatif/NoorUlHuda/blob/master/LICENSE)
 
