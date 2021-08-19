@@ -4,6 +4,7 @@ import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 import static com.mirfatif.noorulhuda.util.Utils.getArNum;
 import static com.mirfatif.noorulhuda.util.Utils.getString;
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -39,6 +40,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
   private final List<Aayah> mAayahList = new ArrayList<>();
 
+  @SuppressLint("NotifyDataSetChanged")
   void submitList(List<Aayah> list) {
     synchronized (mAayahList) {
       mAayahList.clear();

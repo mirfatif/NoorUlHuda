@@ -58,6 +58,7 @@ import com.mirfatif.noorulhuda.tags.TagsDialogFragment;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -337,7 +338,7 @@ public class QuranPageFragment extends Fragment {
     }
 
     List<AayahEntity> entities = SETTINGS.getQuranDb().getAayahEntities(idList);
-    entities.sort((a1, a2) -> Integer.compare(a1.id, a2.id));
+    entities.sort(Comparator.comparingInt(a -> a.id));
 
     List<Aayah> aayahs = new ArrayList<>();
     for (AayahEntity entity : entities) {

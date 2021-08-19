@@ -1,9 +1,9 @@
 package com.mirfatif.noorulhuda.ui.base;
 
-import android.annotation.NonNull;
-import android.annotation.Nullable;
 import android.content.Context;
 import android.util.AttributeSet;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 
 public class MySearchView extends SearchView {

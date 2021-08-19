@@ -2,6 +2,7 @@ package com.mirfatif.noorulhuda.tags;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.SoundEffectConstants;
@@ -28,6 +29,7 @@ public class TagAayahsAdapter extends Adapter<ItemViewHolder> {
 
   private final List<DialogListItem> mItems = new ArrayList<>();
 
+  @SuppressLint("NotifyDataSetChanged")
   void submitList(List<DialogListItem> entities) {
     synchronized (mItems) {
       mItems.clear();
@@ -62,6 +64,7 @@ public class TagAayahsAdapter extends Adapter<ItemViewHolder> {
       mB = binding;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void bind(int position) {
       DialogListItem item = mItems.get(position);
       if (item == null) {

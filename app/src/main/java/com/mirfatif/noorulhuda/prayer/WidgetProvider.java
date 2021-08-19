@@ -246,12 +246,17 @@ public class WidgetProvider extends AppWidgetProvider {
   private static final int REQUEST_CODE_OPEN_APP = 10001;
 
   private PendingIntent createIntent(boolean cancel) {
+    Intent intent = new Intent(App.getCxt(), WidgetProvider.class).setAction(ACTION_UPDATE);
+    return PendingIntent.getBroadcast(
+        App.getCxt(), REQUEST_CODE_UPDATE, intent, getPiFlags(cancel));
+  }
+
+  public static int getPiFlags(boolean cancel) {
     int flag = PendingIntent.FLAG_CANCEL_CURRENT;
     if (cancel) {
       flag = PendingIntent.FLAG_NO_CREATE;
     }
-    Intent intent = new Intent(App.getCxt(), WidgetProvider.class).setAction(ACTION_UPDATE);
-    return PendingIntent.getBroadcast(App.getCxt(), REQUEST_CODE_UPDATE, intent, flag);
+    return flag;
   }
 
   public static void reset() {

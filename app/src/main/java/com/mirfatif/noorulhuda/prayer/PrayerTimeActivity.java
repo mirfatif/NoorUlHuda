@@ -1,6 +1,5 @@
 package com.mirfatif.noorulhuda.prayer;
 
-import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static com.batoulapps.adhan.CalculationMethod.JAFARI;
 import static com.batoulapps.adhan.CalculationMethod.TEHRAN;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.ASR_CALC_NAMES;
@@ -15,6 +14,7 @@ import static com.mirfatif.noorulhuda.prayer.PrayerData.getCalcParams;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.getPrayerData;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 import static com.mirfatif.noorulhuda.svc.PrayerAdhanSvc.ADHAN_FILE;
+import static com.mirfatif.noorulhuda.util.Utils.getPiFlags;
 import static com.mirfatif.noorulhuda.util.Utils.setNightTheme;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -1305,6 +1305,6 @@ public class PrayerTimeActivity extends BaseActivity {
 
   public static PendingIntent getPendingIntent(int reqCode) {
     Intent intent = new Intent(App.getCxt(), PrayerTimeActivity.class).setAction(ACTION_NO_PARENT);
-    return PendingIntent.getActivity(App.getCxt(), reqCode, intent, FLAG_UPDATE_CURRENT);
+    return PendingIntent.getActivity(App.getCxt(), reqCode, intent, getPiFlags());
   }
 }

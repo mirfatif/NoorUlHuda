@@ -1,6 +1,5 @@
 package com.mirfatif.noorulhuda.svc;
 
-import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
 import static androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.getPrayerData;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
@@ -117,12 +116,7 @@ public class PrayerAdhanSvc extends Service
       nm.createNotificationChannel(ch);
     }
 
-    PendingIntent pi =
-        PendingIntent.getService(
-            App.getCxt(),
-            ADHAN_NOTIF_ID,
-            new Intent(App.getCxt(), this.getClass()).setAction(ACTION_STOP),
-            FLAG_CANCEL_CURRENT);
+    PendingIntent pi = createStopSvcIntent();
 
     mNotifBuilder =
         new Builder(App.getCxt(), ADHAN_CHANNEL_ID)
@@ -140,6 +134,18 @@ public class PrayerAdhanSvc extends Service
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentIntent(pi)
             .addAction(0, getString(R.string.stop), pi);
+  }
+
+  private PendingIntent createStopSvcIntent() {
+    return PendingIntent.getService(
+        App.getCxt(),
+        ADHAN_NOTIF_ID,
+        new Intent(App.getCxt(), this.getClass()).setAction(ACTION_STOP),
+        getCancelPiFlag());
+  }
+
+  private int getCancelPiFlag() {
+    return PendingIntent.FLAG_CANCEL_CURRENT;
   }
 
   private AudioFocusRequest mFocusRequest;

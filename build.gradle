@@ -1,9 +1,10 @@
 buildscript {
     repositories {
         google()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.android.tools.build:gradle:7.0.1'
 
         // From Time4A/build.gradle
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
@@ -18,9 +19,9 @@ plugins {
 allprojects {
     repositories {
         google()
-        // Required for google-java-format
         mavenCentral()
     }
+
     tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     }

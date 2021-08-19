@@ -5,11 +5,7 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static android.text.style.DynamicDrawableSpan.ALIGN_BASELINE;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 
-import android.annotation.AttrRes;
-import android.annotation.ColorInt;
-import android.annotation.StringRes;
 import android.app.Activity;
-import android.app.NotificationManager.Importance;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -40,6 +36,9 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.Toast;
+import androidx.annotation.AttrRes;
+import androidx.annotation.ColorInt;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.TooltipCompat;
@@ -233,7 +232,7 @@ public class Utils {
     return (uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
   }
 
-  public static void createNotifChannel(String id, String name, @Importance int importance) {
+  public static void createNotifChannel(String id, String name, int importance) {
     NotificationManagerCompat nm = NotificationManagerCompat.from(App.getCxt());
     NotificationChannelCompat ch = nm.getNotificationChannelCompat(id);
     if (ch == null) {
@@ -368,7 +367,7 @@ public class Utils {
     for (URLSpan span : string.getSpans(0, string.length(), URLSpan.class)) {
       int start = string.getSpanStart(span);
       int end = string.getSpanEnd(span);
-      if (!string.substring(start, end).equals("LINK")) {
+      if (!string.toString().substring(start, end).equals("LINK")) {
         continue;
       }
       string.setSpan(new ImageSpan(d, ALIGN_BASELINE), start, end, SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -592,9 +591,7 @@ public class Utils {
         .putExtra(NotifDismissSvc.EXTRA_INTENT_TYPE, NotifDismissSvc.INTENT_TYPE_ACTIVITY)
         .putExtra(NotifDismissSvc.EXTRA_NOTIF_ID, UNIQUE_ID);
 
-    PendingIntent pi =
-        PendingIntent.getService(
-            App.getCxt(), UNIQUE_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    PendingIntent pi = getNotifDismissSvcPi(UNIQUE_ID, intent);
     createNotifChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManagerCompat.IMPORTANCE_HIGH);
 
     NotificationCompat.Builder nb =
@@ -612,5 +609,13 @@ public class Utils {
             .setAutoCancel(true);
 
     NotificationManagerCompat.from(App.getCxt()).notify(UNIQUE_ID, nb.build());
+  }
+
+  private static PendingIntent getNotifDismissSvcPi(int uniqueId, Intent intent) {
+    return PendingIntent.getService(App.getCxt(), uniqueId, intent, getPiFlags());
+  }
+
+  public static int getPiFlags() {
+    return PendingIntent.FLAG_UPDATE_CURRENT;
   }
 }

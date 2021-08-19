@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion compileSdkVer
+    compileSdk compileSdkVer
     buildToolsVersion buildToolsVer
 
     defaultConfig {
         applicationId "com.mirfatif.noorulhuda"
-        minSdkVersion minSdkVer
-        targetSdkVersion targetSdkVer
+        minSdk minSdkVer
+        targetSdk targetSdkVer
         versionCode 100
         versionName "v1.00"
 
@@ -45,7 +45,7 @@ dependencies {
     implementation project(path: ':adhan')
     implementation project(path: ':time4j-android')
 
-    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation 'androidx.browser:browser:1.3.0'

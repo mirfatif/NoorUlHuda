@@ -88,6 +88,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -716,7 +717,7 @@ public class MainActivity extends BaseActivity {
   private void showBookmarks() {
     List<DialogListItem> items = new ArrayList<>();
     List<AayahEntity> aayahs = SETTINGS.getQuranDb().getAayahEntities(SETTINGS.getBookmarks());
-    aayahs.sort((a1, a2) -> Integer.compare(a1.id, a2.id));
+    aayahs.sort(Comparator.comparingInt(a -> a.id));
 
     for (AayahEntity aayah : aayahs) {
       SurahEntity surah;

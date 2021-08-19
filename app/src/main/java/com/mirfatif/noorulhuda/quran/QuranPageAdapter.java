@@ -1,5 +1,6 @@
 package com.mirfatif.noorulhuda.quran;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -31,6 +32,7 @@ public class QuranPageAdapter extends FragmentStateAdapter {
 
   private int mPageCount;
 
+  @SuppressLint("NotifyDataSetChanged")
   void setPageCount(int pageCount) {
     mIdDiff += mPageCount;
     mPageCount = pageCount;

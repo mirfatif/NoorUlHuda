@@ -1,6 +1,7 @@
 package com.mirfatif.noorulhuda.prefs;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.util.Utils.getPiFlags;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -113,7 +114,7 @@ public class AppUpdate {
             App.getCxt(),
             UNIQUE_ID,
             new Intent(Intent.ACTION_VIEW, Uri.parse(info.url)),
-            PendingIntent.FLAG_UPDATE_CURRENT);
+            getPiFlags());
 
     Builder nb =
         new Builder(App.getCxt(), CHANNEL_ID)
