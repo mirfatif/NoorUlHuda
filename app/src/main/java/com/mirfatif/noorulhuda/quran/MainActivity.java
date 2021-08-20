@@ -33,7 +33,6 @@ import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -44,6 +43,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.core.util.Pair;
 import androidx.core.view.MenuCompat;
@@ -540,15 +540,11 @@ public class MainActivity extends BaseActivity {
       refreshUi(true);
     } else if (itemId == R.id.action_overflow) {
       PopupMenu popupMenu = new PopupMenu(this, mB.bottomBar.actionOverflow);
+      popupMenu.inflate(R.menu.main_overflow);
       Menu menu = popupMenu.getMenu();
-      getMenuInflater().inflate(R.menu.main_overflow, menu);
       popupMenu.setOnMenuItemClickListener(this::handleMenuItemClick);
       MenuCompat.setGroupDividerEnabled(menu, true);
-      if (VERSION.SDK_INT >= VERSION_CODES.Q) {
-        popupMenu.setForceShowIcon(true);
-      } else {
-        setOptionalIconsVisible(menu);
-      }
+      setOptionalIconsVisible(menu);
       menu.findItem(R.id.action_dark_theme).setChecked(SETTINGS.getForceDarkMode());
 
       String themeColor = SETTINGS.getThemeColor();
