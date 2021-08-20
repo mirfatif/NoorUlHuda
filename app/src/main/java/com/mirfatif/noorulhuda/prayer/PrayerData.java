@@ -149,18 +149,18 @@ public class PrayerData {
     SolarTime solarTime = SolarTime.ofLocation(location.latitude, location.longitude);
     StartOfDay dayStart = StartOfDay.definedBy(solarTime.sunset());
     // HijriCalendar#nowInSystemTime()
-    HijriCalendar cal =
+    HijriCalendar hijriCal =
         SystemClock.inZonalView(tzId)
             .now(HijriCalendar.family(), HijriCalendar.VARIANT_UMALQURA, dayStart)
             .toDate();
-    cal = cal.plus(SETTINGS.getHijriOffset(), Unit.DAYS);
+    hijriCal = hijriCal.plus(SETTINGS.getHijriOffset(), Unit.DAYS);
 
     Locale arabicLocale = new Locale("AR");
-    data.hijDate = String.valueOf(cal.getDayOfMonth());
-    data.hijMonth = cal.getMonth().getDisplayName(arabicLocale);
-    data.hijYear = String.valueOf(cal.getYear());
+    data.hijDate = String.valueOf(hijriCal.getDayOfMonth());
+    data.hijMonth = hijriCal.getMonth().getDisplayName(arabicLocale);
+    data.hijYear = String.valueOf(hijriCal.getYear());
 
-    data.day = cal.getDayOfWeek().getDisplayName(Locale.getDefault());
+    data.day = gregCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
     data.time = setSpan(formatter.format(gregCal.getTime()), false, false);
     formatter.applyPattern("dd MMM yyyy");
     data.date = formatter.format(gregCal.getTime());
