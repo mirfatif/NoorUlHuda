@@ -1,0 +1,3 @@
+Zip downloadable files to reduce size
+Fix overflow menu
+Minor fixes in UI, prayer time, calendar
