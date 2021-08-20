@@ -51,6 +51,8 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle.State;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 import com.mirfatif.noorulhuda.App;
@@ -91,20 +93,37 @@ public class Utils {
 
   // ContextCompat.getMainExecutor()
   @SuppressWarnings("UnusedReturnValue")
-  public static MainFuture runUi(Runnable runnable) {
-    MainFuture futureTask = new MainFuture(runnable);
+  public static Waiter runUi(Runnable runnable) {
+    Waiter futureTask = new Waiter(runnable);
     UI_EXECUTOR.post(futureTask);
     return futureTask;
   }
 
-  public static class MainFuture extends FutureTask<Void> {
+  public static Waiter runUi(LifecycleOwner lifecycleOwner, Runnable runnable) {
+    if (lifecycleOwner.getLifecycle().getCurrentState().isAtLeast(State.INITIALIZED)) {
+      return runUi(runnable);
+    }
+    return new Waiter();
+  }
 
-    public MainFuture(Runnable runnable) {
+  public static class Waiter extends FutureTask<Void> {
+
+    public Waiter(Runnable runnable) {
       super(runnable, null);
+    }
+
+    private boolean mIsEmpty = false;
+
+    public Waiter() {
+      super(() -> {}, null);
+      mIsEmpty = true;
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public boolean waitForMe() {
+      if (mIsEmpty) {
+        return false;
+      }
       try {
         super.get();
         return true;

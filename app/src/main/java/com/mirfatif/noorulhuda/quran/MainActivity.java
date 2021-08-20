@@ -277,9 +277,9 @@ public class MainActivity extends BaseActivity {
     Utils.runBg(
         () -> {
           if (DbBuilder.buildDb(DbBuilder.MAIN_DB)) {
-            Utils.runUi(() -> refreshUi(false));
+            Utils.runUi(this, () -> refreshUi(false));
           }
-          Utils.runUi(dialog::dismissIt);
+          Utils.runUi(this, dialog::dismissIt);
         });
   }
 
@@ -301,7 +301,7 @@ public class MainActivity extends BaseActivity {
     if (SETTINGS.isPageMode()) {
       mQuranPageAdapter.setPageCount(TOTAL_PAGES);
       // Restore slide position.
-      Utils.runUi(() -> mB.pager.setCurrentItem(SETTINGS.getLastPage() - 1, false));
+      Utils.runUi(this, () -> mB.pager.setCurrentItem(SETTINGS.getLastPage() - 1, false));
     } else {
       mQuranPageAdapter.setPageCount(1);
     }
@@ -410,7 +410,7 @@ public class MainActivity extends BaseActivity {
     }
 
     if (setAutoFullScreen) {
-      Runnable task = () -> Utils.runUi(this::autoFullScreen);
+      Runnable task = () -> Utils.runUi(this, this::autoFullScreen);
       mAutoFullScreenFuture = mAutoFullScreenExecutor.schedule(task, 3, SECONDS);
     }
 
@@ -811,7 +811,7 @@ public class MainActivity extends BaseActivity {
 
   private void setSurahName(int surahNum, TextView surahNameView) {
     String name = getString(R.string.surah_name, SETTINGS.getMetaDb().getSurah(surahNum).name);
-    Utils.runUi(() -> surahNameView.setText(name));
+    Utils.runUi(this, () -> surahNameView.setText(name));
   }
 
   private void goTo(NumberPicker typePicker, NumberPicker valuePicker) {
@@ -842,6 +842,7 @@ public class MainActivity extends BaseActivity {
         mScrollPos.aayahId = aayah.id;
       }
       Utils.runUi(
+          this,
           () -> {
             int pos = page - 1;
             if (mB.pager.getCurrentItem() == pos) {
@@ -851,7 +852,7 @@ public class MainActivity extends BaseActivity {
             }
           });
     } else {
-      Utils.runUi(() -> scrollRvToPos(null, aayah.id, true));
+      Utils.runUi(this, () -> scrollRvToPos(null, aayah.id, true));
     }
   }
 
@@ -866,7 +867,7 @@ public class MainActivity extends BaseActivity {
 
   private void goTo(int surahNum, int aayahNum) {
     AayahEntity aayah = SETTINGS.getQuranDb().getAayahEntity(surahNum, aayahNum);
-    Utils.runUi(() -> goTo(aayah));
+    Utils.runUi(this, () -> goTo(aayah));
   }
 
   private static class ScrollPos {
@@ -907,7 +908,7 @@ public class MainActivity extends BaseActivity {
         if (pageFrag != null) {
           int id = mScrollPos.aayahId;
           mScrollPos.reset();
-          Utils.runUi(() -> pageFrag.scrollToAayahId(id));
+          Utils.runUi(this, () -> pageFrag.scrollToAayahId(id));
         }
         return true;
       }
@@ -1003,16 +1004,16 @@ public class MainActivity extends BaseActivity {
           } else if (!downloadFile(dbName, b.progressBar, b.progressBarDet)) {
             errResId = R.string.download_failed;
           }
-          Utils.runUi(dialog::dismissIt);
+          Utils.runUi(this, dialog::dismissIt);
           if (errResId != null) {
             Utils.showToast(errResId);
             return;
           }
 
           AtomicReference<AlertDialogFragment> frag = new AtomicReference<>();
-          Utils.runUi(() -> frag.set(showDbBuildDialog())).waitForMe();
+          Utils.runUi(this, () -> frag.set(showDbBuildDialog())).waitForMe();
           boolean result = DbBuilder.buildDb(dbName);
-          Utils.runUi(() -> frag.get().dismissIt());
+          Utils.runUi(this, () -> frag.get().dismissIt());
           if (result) {
             setDbNameAndRefreshUi(dbName);
             if (fontFile != null) {
@@ -1057,6 +1058,7 @@ public class MainActivity extends BaseActivity {
         final int finalSize = fileSize;
         if (!isFinishing() && !isDestroyed()) {
           Utils.runUi(
+              this,
               () -> {
                 pBar.setVisibility(View.GONE);
                 pBarDet.setVisibility(View.VISIBLE);
@@ -1078,7 +1080,7 @@ public class MainActivity extends BaseActivity {
         count += line.length();
         if (fileSize != -1) {
           int progress = (int) count;
-          Utils.runUi(() -> pBarDet.setProgress(progress));
+          Utils.runUi(this, () -> pBarDet.setProgress(progress));
         }
       }
 
@@ -1111,10 +1113,10 @@ public class MainActivity extends BaseActivity {
       SETTINGS.setTransDbName(dbName);
       refreshUi = true;
     } else if (dbName.equals(getString(R.string.db_search)) && !isFinishing() && !isDestroyed()) {
-      Utils.runUi(() -> setSearchViewVisibility(true));
+      Utils.runUi(this, () -> setSearchViewVisibility(true));
     }
     if (refreshUi && !isFinishing() && !isDestroyed()) {
-      Utils.runUi(() -> refreshUi(true));
+      Utils.runUi(this, () -> refreshUi(true));
     }
   }
 
@@ -1161,7 +1163,7 @@ public class MainActivity extends BaseActivity {
       }
 
       if (!isFinishing() && !isDestroyed()) {
-        Utils.runUi(() -> refreshUi(true));
+        Utils.runUi(this, () -> refreshUi(true));
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -1394,7 +1396,7 @@ public class MainActivity extends BaseActivity {
             AayahEntity entity = SETTINGS.getQuranDb().getAayahEntities(page).get(0);
             if (entity != null) {
               SurahEntity surah = SETTINGS.getMetaDb().getSurah(entity.surahNum);
-              Utils.runUi(() -> updateHeader(entity, surah));
+              Utils.runUi(MainActivity.this, () -> updateHeader(entity, surah));
             } else {
               Log.e(TAG, "onPageSelected: failed to get AayahEntity");
             }

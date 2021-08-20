@@ -43,6 +43,7 @@ public class FileDownload {
 
   public void askToDownload() {
     Utils.runUi(
+        mA,
         () -> {
           Builder builder =
               new Builder(mA)
@@ -56,6 +57,7 @@ public class FileDownload {
 
   public void downloadFile() {
     Utils.runUi(
+        mA,
         () -> {
           DialogProgressBinding b = DialogProgressBinding.inflate(mA.getLayoutInflater());
           Builder builder = new Builder(mA).setTitle(mTitleResId).setView(b.getRoot());
@@ -71,7 +73,7 @@ public class FileDownload {
                 } else if (!downloadFile(b.progressBar, b.progressBarDet)) {
                   errResId = R.string.download_failed;
                 }
-                Utils.runUi(dialog::dismissIt);
+                Utils.runUi(mA, dialog::dismissIt);
                 if (errResId != null) {
                   Utils.showToast(errResId);
                   File file = SETTINGS.getDownloadedFile(mFile);
@@ -79,7 +81,7 @@ public class FileDownload {
                     Log.e(TAG, "Deleting " + file.getAbsolutePath() + " failed");
                   }
                 } else if (mCallback != null) {
-                  Utils.runUi(mCallback);
+                  Utils.runUi(mA, mCallback);
                 }
               });
         });
@@ -119,6 +121,7 @@ public class FileDownload {
       if (fileSize != -1) {
         final int finalSize = fileSize;
         Utils.runUi(
+            mA,
             () -> {
               pBar.setVisibility(View.GONE);
               pBarDet.setVisibility(View.VISIBLE);
@@ -138,7 +141,7 @@ public class FileDownload {
         count += len;
         if (fileSize != -1) {
           int progress = (int) count;
-          Utils.runUi(() -> pBarDet.setProgress(progress));
+          Utils.runUi(mA, () -> pBarDet.setProgress(progress));
         }
       }
 

@@ -2,7 +2,6 @@ package com.mirfatif.noorulhuda.quran;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 import static com.mirfatif.noorulhuda.util.Utils.getString;
-import static com.mirfatif.noorulhuda.util.Utils.runUi;
 
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -100,7 +99,8 @@ public class BackupRestore {
       return;
     }
 
-    runUi(() -> showProgressDialog(isBackup ? R.string.backup : R.string.restore)).waitForMe();
+    Utils.runUi(mA, () -> showProgressDialog(isBackup ? R.string.backup : R.string.restore))
+        .waitForMe();
 
     if (isBackup) {
       try (OutputStream os = App.getCxt().getContentResolver().openOutputStream(uri, "w")) {

@@ -176,6 +176,7 @@ public class TagDialogFragment extends AppCompatDialogFragment {
     boolean isNew = args.getBoolean(CREATED_NEW, false);
 
     Utils.runUi(
+        this,
         () -> {
           mB.titleV.setText(mTag.title);
           mB.descV.setText(mTag.desc);
@@ -212,7 +213,7 @@ public class TagDialogFragment extends AppCompatDialogFragment {
         item.text = aayah.text;
         items.add(item);
       }
-      Utils.runUi(() -> mAdapter.submitList(items));
+      Utils.runUi(this, () -> mAdapter.submitList(items));
     }
   }
 

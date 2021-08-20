@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
@@ -32,9 +33,11 @@ import java.util.List;
 
 public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
+  private final Fragment mFrag;
   private final AayahLongClickListener mLongClickListener;
 
-  AayahAdapter(AayahLongClickListener listener) {
+  AayahAdapter(Fragment frag, AayahLongClickListener listener) {
+    mFrag = frag;
     mLongClickListener = listener;
   }
 
@@ -171,7 +174,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     void bind(Aayah aayah) {
       SurahEntity surah = SETTINGS.getMetaDb().getSurah(aayah.entities.get(0).surahNum);
       if (surah != null) {
-        Utils.runUi(() -> bindSurahHeader(surah));
+        Utils.runUi(mFrag, () -> bindSurahHeader(surah));
       }
     }
 
@@ -306,7 +309,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
         aayah.surahName = getString(R.string.surah_name, surah.name);
       }
 
-      Utils.runUi(() -> bindAayah(aayah));
+      Utils.runUi(mFrag, () -> bindAayah(aayah));
     }
 
     private void bindAayah(Aayah aayah) {

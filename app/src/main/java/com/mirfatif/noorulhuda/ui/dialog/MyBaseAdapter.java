@@ -4,11 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.BaseAdapter;
-import com.mirfatif.noorulhuda.util.Utils;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public abstract class MyBaseAdapter extends BaseAdapter {
 
@@ -36,32 +31,18 @@ public abstract class MyBaseAdapter extends BaseAdapter {
   public static class ButtonHider {
 
     private View mButton;
-    private final ScheduledExecutorService EXEC = Executors.newSingleThreadScheduledExecutor();
-    private Future<?> mButtonHider;
+    private Runnable mButtonHider;
 
-    public void show(View button) {
-      synchronized (EXEC) {
-        if (mButtonHider != null) {
-          mButtonHider.cancel(false);
-        }
-        if (mButton != null && mButton != button) {
-          mButton.setVisibility(View.GONE);
-        }
-        mButton = button;
-        mButton.setVisibility(View.VISIBLE);
-        mButtonHider =
-            EXEC.schedule(
-                () -> {
-                  synchronized (EXEC) {
-                    if (mButton != null) {
-                      Utils.runUi(() -> mButton.setVisibility(View.GONE)).waitForMe();
-                      mButton = null;
-                    }
-                  }
-                },
-                5,
-                TimeUnit.SECONDS);
+    public synchronized void show(View button) {
+      if (mButton != null && mButton != button) {
+        mButton.setVisibility(View.GONE);
       }
+      mButton = button;
+      mButton.setVisibility(View.VISIBLE);
+
+      mButton.removeCallbacks(mButtonHider);
+      mButtonHider = () -> mButton.setVisibility(View.GONE);
+      mButton.postDelayed(mButtonHider, 5000);
     }
   }
 }

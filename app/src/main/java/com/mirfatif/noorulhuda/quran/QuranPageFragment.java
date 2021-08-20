@@ -117,7 +117,7 @@ public class QuranPageFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    mAayahAdapter = new AayahAdapter(new LongClickListener());
+    mAayahAdapter = new AayahAdapter(this, new LongClickListener());
     mB.recyclerV.setAdapter(mAayahAdapter);
 
     mLayoutManager = new LinearLayoutManager(mA);
@@ -200,6 +200,7 @@ public class QuranPageFragment extends Fragment {
     }
     Integer aayahId = mA.getScrollPos(page);
     Utils.runUi(
+        this,
         () -> {
           mAayahAdapter.submitList(aayahs);
           if (aayahId != null) {
@@ -251,7 +252,7 @@ public class QuranPageFragment extends Fragment {
       Aayah aayah = mAayahs.get(pos);
       for (SpanMarks marks : aayah.aayahSpans) {
         if (marks.entity.id == aayahId) {
-          Utils.runUi(() -> highlightAayah(marks, pos));
+          Utils.runUi(this, () -> highlightAayah(marks, pos));
           break;
         }
       }
@@ -350,6 +351,7 @@ public class QuranPageFragment extends Fragment {
       aayahs.add(aayah);
     }
     Utils.runUi(
+        this,
         () -> {
           mAayahAdapter.submitList(aayahs);
           mA.setProgBarVisibility(false);
@@ -459,7 +461,7 @@ public class QuranPageFragment extends Fragment {
         SurahEntity surah = SETTINGS.getMetaDb().getSurah(entity.surahNum);
         mLastHeaderUpdate = System.currentTimeMillis();
         releaseUpdateHeaderLock();
-        Utils.runUi(() -> mA.updateHeader(entity, surah));
+        Utils.runUi(this, () -> mA.updateHeader(entity, surah));
       } else {
         Log.e(TAG, "updateHeader: failed to get AayahEntity");
       }
@@ -521,7 +523,8 @@ public class QuranPageFragment extends Fragment {
       setButtonListener(b.copyButton, () -> shareAayah(entity, trans, true));
       setButtonListener(b.shareButton, () -> shareAayah(entity, trans, false));
       setButtonListener(b.bookmarkButton, () -> saveBookmark(entity.id));
-      setButtonListener(b.addTagButton, () -> Utils.runUi(() -> openTags(entity.id)));
+      setButtonListener(
+          b.addTagButton, () -> Utils.runUi(QuranPageFragment.this, () -> openTags(entity.id)));
 
       AtomicBoolean hideBookmarkButton = new AtomicBoolean(false);
 
@@ -531,6 +534,7 @@ public class QuranPageFragment extends Fragment {
               hideBookmarkButton.set(true);
             }
             Utils.runUi(
+                QuranPageFragment.this,
                 () -> {
                   if (hideBookmarkButton.get()) {
                     b.bookmarkButton.setVisibility(View.GONE);
@@ -582,7 +586,7 @@ public class QuranPageFragment extends Fragment {
   }
 
   private void shareAayah(AayahEntity entity, String trans, boolean toClipboard) {
-    Utils.runUi(this::dismissPopup);
+    Utils.runUi(this, this::dismissPopup);
 
     StringBuilder string = new StringBuilder(entity.text).append("\n\n");
     if (SETTINGS.showTranslation() && trans != null) {
@@ -609,7 +613,7 @@ public class QuranPageFragment extends Fragment {
   }
 
   private void saveBookmark(int aayahId) {
-    Utils.runUi(this::dismissPopup);
+    Utils.runUi(this, this::dismissPopup);
     SETTINGS.addBookmark(aayahId);
     Utils.showToast(R.string.bookmarked);
   }
