@@ -35,7 +35,6 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -49,13 +48,13 @@ import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.core.util.Pair;
 import androidx.core.view.MenuCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle.State;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.ActivityMainBinding;
-import com.mirfatif.noorulhuda.databinding.DialogProgressBinding;
 import com.mirfatif.noorulhuda.databinding.GotoPickerBinding;
 import com.mirfatif.noorulhuda.databinding.SearchHelpBinding;
 import com.mirfatif.noorulhuda.databinding.SliderBinding;
@@ -80,12 +79,9 @@ import com.mirfatif.noorulhuda.util.Utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -95,9 +91,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class MainActivity extends BaseActivity {
 
@@ -277,7 +270,7 @@ public class MainActivity extends BaseActivity {
     Utils.runBg(
         () -> {
           if (DbBuilder.buildDb(DbBuilder.MAIN_DB)) {
-            Utils.runUi(this, () -> refreshUi(false));
+            refreshUi(false);
           }
           Utils.runUi(this, dialog::dismissIt);
         });
@@ -296,12 +289,16 @@ public class MainActivity extends BaseActivity {
     if (saveScrollPos) {
       SETTINGS.setScrollPosition(mCurrentPage, mCurrentAayah);
     }
+    Utils.runUi(this, this::refreshUi);
+  }
+
+  private void refreshUi() {
     updateHeaderCosmetics();
 
     if (SETTINGS.isPageMode()) {
       mQuranPageAdapter.setPageCount(TOTAL_PAGES);
       // Restore slide position.
-      Utils.runUi(this, () -> mB.pager.setCurrentItem(SETTINGS.getLastPage() - 1, false));
+      mB.pager.setCurrentItem(SETTINGS.getLastPage() - 1, false);
     } else {
       mQuranPageAdapter.setPageCount(1);
     }
@@ -867,7 +864,7 @@ public class MainActivity extends BaseActivity {
 
   private void goTo(int surahNum, int aayahNum) {
     AayahEntity aayah = SETTINGS.getQuranDb().getAayahEntity(surahNum, aayahNum);
-    Utils.runUi(this, () -> goTo(aayah));
+    goTo(aayah);
   }
 
   private static class ScrollPos {
@@ -908,7 +905,7 @@ public class MainActivity extends BaseActivity {
         if (pageFrag != null) {
           int id = mScrollPos.aayahId;
           mScrollPos.reset();
-          Utils.runUi(this, () -> pageFrag.scrollToAayahId(id));
+          pageFrag.scrollToAayahId(id);
         }
         return true;
       }
@@ -981,130 +978,52 @@ public class MainActivity extends BaseActivity {
   }
 
   private void askToDownloadDb(String dbName, String fontFile) {
-    Builder builder =
-        new Builder(this)
-            .setTitle(R.string.download)
-            .setMessage(R.string.download_file)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(android.R.string.ok, (d, which) -> downloadFile(dbName, fontFile));
-    new AlertDialogFragment(builder.create()).show(this, "DOWNLOAD_FILE", false);
+    Runnable callback = () -> onDbFileDownloaded(dbName, fontFile);
+    FileDownload fd =
+        new FileDownload(this, "/databases/", dbName + ".zip", callback, R.string.downloading_file);
+    fd.askToDownload();
   }
 
-  private void downloadFile(String dbName, String fontFile) {
-    DialogProgressBinding b = DialogProgressBinding.inflate(getLayoutInflater());
-    Builder builder = new Builder(this).setTitle(R.string.downloading_file).setView(b.getRoot());
-    AlertDialogFragment dialog = new AlertDialogFragment(builder.create());
-    dialog.setCancelable(false);
-    dialog.show(this, "DOWNLOAD_FILE", false);
-    Utils.runBg(
-        () -> {
-          Integer errResId = null;
-          if (!Utils.isInternetReachable()) {
-            errResId = R.string.no_internet;
-          } else if (!downloadFile(dbName, b.progressBar, b.progressBarDet)) {
-            errResId = R.string.download_failed;
-          }
-          Utils.runUi(this, dialog::dismissIt);
-          if (errResId != null) {
-            Utils.showToast(errResId);
-            return;
-          }
-
-          AtomicReference<AlertDialogFragment> frag = new AtomicReference<>();
-          Utils.runUi(this, () -> frag.set(showDbBuildDialog())).waitForMe();
-          boolean result = DbBuilder.buildDb(dbName);
-          Utils.runUi(this, () -> frag.get().dismissIt());
-          if (result) {
-            setDbNameAndRefreshUi(dbName);
-            if (fontFile != null) {
-              downloadFonts(fontFile + ".zip", null, false);
-            }
-          }
-        });
-  }
-
-  private static final String DOWNLOAD_URL =
-      "https://raw.githubusercontent.com/mirfatif/NoorUlHuda/master/databases/";
-
-  private boolean downloadFile(String dbName, ProgressBar pBar, ProgressBar pBarDet) {
-    HttpURLConnection conn = null;
-    BufferedReader reader = null;
-    PrintWriter writer = null;
-    try {
-      conn = (HttpURLConnection) new URL(DOWNLOAD_URL + dbName + ".xml").openConnection();
-      conn.setConnectTimeout(30000);
-      conn.setReadTimeout(30000);
-      conn.setUseCaches(false);
-
-      int status = conn.getResponseCode();
-      if (status != HttpURLConnection.HTTP_OK) {
-        String msg = "Response code:" + conn.getResponseCode();
-        msg += ", msg: " + conn.getResponseMessage();
-        Log.e(TAG, msg);
-        return false;
-      }
-
-      int fileSize = -1;
-      for (String method : new String[] {"HEAD", "GET"}) {
-        conn.setRequestMethod(method);
-        fileSize = conn.getContentLength();
-        if (fileSize != -1) {
-          break;
-        }
-      }
-      conn.setRequestMethod("GET");
-
-      if (fileSize != -1) {
-        final int finalSize = fileSize;
-        if (!isFinishing() && !isDestroyed()) {
-          Utils.runUi(
-              this,
-              () -> {
-                pBar.setVisibility(View.GONE);
-                pBarDet.setVisibility(View.VISIBLE);
-                pBarDet.setMax(finalSize);
-                pBarDet.setProgress(0);
-              });
-        }
-      }
-
-      reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-      writer = new PrintWriter(SETTINGS.getDownloadedFile(dbName + ".xml"));
-
+  private void onDbFileDownloaded(String dbName, String fontFile) {
+    File file = SETTINGS.getDownloadedFile(dbName + ".xml");
+    File tmpFile = new File(file.getAbsolutePath() + ".tmp");
+    try (BufferedReader rdr = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+        PrintWriter writer = new PrintWriter(tmpFile)) {
       String line;
-      long count = 0;
-      while ((line = reader.readLine()) != null) {
+      while ((line = rdr.readLine()) != null) {
         if (!line.contains("-------")) {
           writer.println(line);
         }
-        count += line.length();
-        if (fileSize != -1) {
-          int progress = (int) count;
-          Utils.runUi(this, () -> pBarDet.setProgress(progress));
-        }
       }
-
-      return fileSize == -1 || count == fileSize;
+      if (!tmpFile.renameTo(file)) {
+        Log.e(TAG, "onDbFileDownloaded: Renaming " + tmpFile.getAbsolutePath() + " failed");
+        return;
+      }
     } catch (IOException e) {
-      Log.e(TAG, e.toString());
-      return false;
-    } finally {
-      try {
-        if (reader != null) {
-          reader.close();
-        }
-        if (writer != null) {
-          writer.close();
-        }
-      } catch (IOException ignored) {
-      }
-      if (conn != null) {
-        conn.disconnect();
-      }
+      Log.e(TAG, "onDbFileDownloaded: " + e.toString());
+      return;
     }
+
+    Utils.runUi(
+        this,
+        () -> {
+          AlertDialogFragment frag = showDbBuildDialog();
+          Utils.runBg(
+              () -> {
+                boolean result = DbBuilder.buildDb(dbName);
+                Utils.runUi(this, frag::dismissIt);
+                if (result) {
+                  setDbNameAndRefreshUi(dbName);
+                  if (fontFile != null) {
+                    downloadFonts(fontFile + ".zip", null, false);
+                  }
+                }
+              });
+        });
   }
 
   private void setDbNameAndRefreshUi(String dbName) {
+    boolean isActive = getLifecycle().getCurrentState().isAtLeast(State.INITIALIZED);
     boolean refreshUi = false;
     if (MySettings.isQuranDb(dbName)) {
       SETTINGS.setQuranDbName(dbName);
@@ -1112,11 +1031,11 @@ public class MainActivity extends BaseActivity {
     } else if (MySettings.isTranslationDb(dbName)) {
       SETTINGS.setTransDbName(dbName);
       refreshUi = true;
-    } else if (dbName.equals(getString(R.string.db_search)) && !isFinishing() && !isDestroyed()) {
+    } else if (dbName.equals(getString(R.string.db_search)) && isActive) {
       Utils.runUi(this, () -> setSearchViewVisibility(true));
     }
-    if (refreshUi && !isFinishing() && !isDestroyed()) {
-      Utils.runUi(this, () -> refreshUi(true));
+    if (refreshUi && isActive) {
+      refreshUi(true);
     }
   }
 
@@ -1127,68 +1046,19 @@ public class MainActivity extends BaseActivity {
   private static final String QURAN_FONTS_ZIP = "arabic.zip";
 
   private void downloadFonts(String zip, String fontName, boolean askToDownload) {
-    Runnable callback = () -> Utils.runBg(() -> extractFonts(zip, fontName));
+    Runnable callback =
+        () -> {
+          SETTINGS.resetTypeface();
+          if (fontName != null) {
+            SETTINGS.setFont(fontName);
+          }
+          refreshUi(true);
+        };
     FileDownload fd = new FileDownload(this, "/fonts/", zip, callback, R.string.downloading_font);
     if (askToDownload) {
       fd.askToDownload();
     } else {
       fd.downloadFile();
-    }
-  }
-
-  private void extractFonts(String zipFileName, String fontName) {
-    File zipFile = SETTINGS.getDownloadedFile(zipFileName);
-    File fontFile = null;
-    ZipInputStream zis = null;
-    FileOutputStream os = null;
-    try {
-      zis = new ZipInputStream(new FileInputStream(zipFile));
-      ZipEntry entry;
-      while ((entry = zis.getNextEntry()) != null) {
-        fontFile = SETTINGS.getDownloadedFile(entry.getName());
-        os = new FileOutputStream(fontFile);
-        byte[] buf = new byte[(int) entry.getSize()];
-        int len;
-        while ((len = zis.read(buf)) > 0) {
-          os.write(buf, 0, len);
-        }
-        os.close();
-        zis.closeEntry();
-      }
-
-      SETTINGS.resetTypeface();
-
-      if (fontName != null) {
-        SETTINGS.setFont(fontName);
-      }
-
-      if (!isFinishing() && !isDestroyed()) {
-        Utils.runUi(this, () -> refreshUi(true));
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-      if (os != null) {
-        try {
-          os.close();
-        } catch (IOException ignored) {
-        }
-      }
-      if (fontFile != null && !fontFile.delete()) {
-        Log.e(TAG, "Deleting " + fontFile.getAbsolutePath() + " failed");
-      }
-    } finally {
-      try {
-        if (zis != null) {
-          zis.close();
-        }
-        if (os != null) {
-          os.close();
-        }
-      } catch (IOException ignored) {
-      }
-      if (!zipFile.delete()) {
-        Log.e(TAG, "Deleting " + zipFile.getAbsolutePath() + " failed");
-      }
     }
   }
 
