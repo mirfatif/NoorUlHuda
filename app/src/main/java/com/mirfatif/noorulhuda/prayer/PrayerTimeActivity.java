@@ -374,7 +374,17 @@ public class PrayerTimeActivity extends BaseActivity {
         };
 
     mB.widget.hijriDateCont.setOnClickListener(
-        v -> showOffsetDialog(-2, 2, SETTINGS.getHijriOffset(), SETTINGS::setHijriOffset));
+        v ->
+            showOffsetDialog(
+                -2,
+                2,
+                SETTINGS.getHijriOffset(),
+                val -> {
+                  SETTINGS.setHijriOffset(val);
+                  Utils.runBg(this::updateWidget);
+                  resetWidgets();
+                }));
+
     mB.widget.remTimeV.setCountDown(true);
 
     updateCityView();
