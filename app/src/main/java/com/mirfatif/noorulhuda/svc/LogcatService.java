@@ -2,6 +2,7 @@ package com.mirfatif.noorulhuda.svc;
 
 import static com.mirfatif.noorulhuda.BuildConfig.APPLICATION_ID;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.util.Utils.getPiFlags;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -71,10 +72,7 @@ public class LogcatService extends Service {
 
     PendingIntent pi =
         PendingIntent.getService(
-            App.getCxt(),
-            UNIQUE_ID,
-            new Intent(App.getCxt(), LogcatService.class),
-            PendingIntent.FLAG_UPDATE_CURRENT);
+            App.getCxt(), UNIQUE_ID, new Intent(App.getCxt(), LogcatService.class), getPiFlags());
 
     mNotifBuilder =
         new Builder(App.getCxt(), CHANNEL_ID)

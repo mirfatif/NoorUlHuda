@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle.State;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.DialogListViewBinding;
 import com.mirfatif.noorulhuda.ui.dialog.MyBaseAdapter.DialogListCallback;
@@ -72,8 +73,7 @@ public class AlertDialogFragment extends AppCompatDialogFragment {
        * We don't have showNowAllowingStateLoss()
        */
       try {
-        if (!activity.isFinishing()
-            && !activity.isDestroyed()
+        if (activity.getLifecycle().getCurrentState().isAtLeast(State.INITIALIZED)
             && !activity.isChangingConfigurations()) {
           super.showNow(manager, tag);
         }
@@ -150,7 +150,8 @@ public class AlertDialogFragment extends AppCompatDialogFragment {
       @NonNull List<DialogListItem> items,
       @NonNull DialogListCallback callback) {
     if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
-      Utils.runUi(() -> showListDialog(activity, titleResId, emptyResId, items, callback));
+      Utils.runUi(
+          activity, () -> showListDialog(activity, titleResId, emptyResId, items, callback));
       return;
     }
 

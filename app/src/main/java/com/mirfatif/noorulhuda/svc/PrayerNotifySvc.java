@@ -3,6 +3,7 @@ package com.mirfatif.noorulhuda.svc;
 import static androidx.core.app.NotificationManagerCompat.IMPORTANCE_LOW;
 import static com.mirfatif.noorulhuda.BuildConfig.APPLICATION_ID;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.getPrayerData;
+import static com.mirfatif.noorulhuda.prayer.WidgetProvider.getPiFlags;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 
 import android.app.AlarmManager;
@@ -288,7 +289,7 @@ public class PrayerNotifySvc extends Service {
 
       if (alarmPrayer != null) {
         // There's a prayer number set to notify on.
-        long triggerWithOffset = triggerAt + SETTINGS.getPrayerNotifyOffset(alarmPrayer) * 60000;
+        long triggerWithOffset = triggerAt + SETTINGS.getPrayerNotifyOffset(alarmPrayer) * 60000L;
         if (triggerWithOffset < triggerAt) {
           // We've to notify before the prayer time.
           if (triggerWithOffset < System.currentTimeMillis()) {
@@ -345,11 +346,6 @@ public class PrayerNotifySvc extends Service {
   }
 
   private PendingIntent createIntent(boolean cancel, Integer alarmPrayer, Long ppnTriggerAt) {
-    int flag = PendingIntent.FLAG_CANCEL_CURRENT;
-    if (cancel) {
-      flag = PendingIntent.FLAG_NO_CREATE;
-    }
-
     // For cancellation Intent#filterEquals() must be true, so using a unique action.
     Intent intent = new Intent(App.getCxt(), this.getClass()).setAction(ACTION_RESCHEDULE);
 
@@ -361,7 +357,7 @@ public class PrayerNotifySvc extends Service {
       long val = ppnTriggerAt;
       intent.putExtra(EXTRA_POST_PRAYER_TIME, val);
     }
-    return PendingIntent.getService(App.getCxt(), WIDGET_NOTIF_ID, intent, flag);
+    return PendingIntent.getService(App.getCxt(), WIDGET_NOTIF_ID, intent, getPiFlags(cancel));
   }
 
   private static class PostPrayerNotif {

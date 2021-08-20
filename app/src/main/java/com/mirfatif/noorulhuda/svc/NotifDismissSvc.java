@@ -1,9 +1,9 @@
 package com.mirfatif.noorulhuda.svc;
 
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import androidx.core.app.NotificationManagerCompat;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.BuildConfig;
 
@@ -25,7 +25,7 @@ public class NotifDismissSvc extends Service {
     int type = intent.getIntExtra(EXTRA_INTENT_TYPE, NONE);
     int id = intent.getIntExtra(EXTRA_NOTIF_ID, NONE);
     if (type != NONE && id != NONE) {
-      NotificationManager.from(App.getCxt()).cancel(id);
+      NotificationManagerCompat.from(App.getCxt()).cancel(id);
       intent.setComponent(null);
       intent.removeExtra(EXTRA_INTENT_TYPE);
       intent.removeExtra(EXTRA_NOTIF_ID);

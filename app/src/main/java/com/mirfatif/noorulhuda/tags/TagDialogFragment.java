@@ -39,6 +39,7 @@ import com.mirfatif.noorulhuda.ui.dialog.MyBaseAdapter.DialogListCallback;
 import com.mirfatif.noorulhuda.ui.dialog.MyBaseAdapter.DialogListItem;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -175,6 +176,7 @@ public class TagDialogFragment extends AppCompatDialogFragment {
     boolean isNew = args.getBoolean(CREATED_NEW, false);
 
     Utils.runUi(
+        this,
         () -> {
           mB.titleV.setText(mTag.title);
           mB.descV.setText(mTag.desc);
@@ -198,7 +200,7 @@ public class TagDialogFragment extends AppCompatDialogFragment {
       mTag.aayahIds.addAll(mTagAayahsDb.getAayahIds(mTag.id));
 
       mAayahs = SETTINGS.getQuranDb().getAayahEntities(mTag.aayahIds);
-      mAayahs.sort((a1, a2) -> Integer.compare(a1.id, a2.id));
+      mAayahs.sort(Comparator.comparingInt(a -> a.id));
 
       for (AayahEntity aayah : mAayahs) {
         SurahEntity surah;
@@ -211,7 +213,7 @@ public class TagDialogFragment extends AppCompatDialogFragment {
         item.text = aayah.text;
         items.add(item);
       }
-      Utils.runUi(() -> mAdapter.submitList(items));
+      Utils.runUi(this, () -> mAdapter.submitList(items));
     }
   }
 

@@ -1,6 +1,5 @@
 package com.mirfatif.noorulhuda.prayer;
 
-import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static com.batoulapps.adhan.CalculationMethod.JAFARI;
 import static com.batoulapps.adhan.CalculationMethod.TEHRAN;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.ASR_CALC_NAMES;
@@ -15,6 +14,7 @@ import static com.mirfatif.noorulhuda.prayer.PrayerData.getCalcParams;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.getPrayerData;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 import static com.mirfatif.noorulhuda.svc.PrayerAdhanSvc.ADHAN_FILE;
+import static com.mirfatif.noorulhuda.util.Utils.getPiFlags;
 import static com.mirfatif.noorulhuda.util.Utils.setNightTheme;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -374,7 +374,17 @@ public class PrayerTimeActivity extends BaseActivity {
         };
 
     mB.widget.hijriDateCont.setOnClickListener(
-        v -> showOffsetDialog(-2, 2, SETTINGS.getHijriOffset(), SETTINGS::setHijriOffset));
+        v ->
+            showOffsetDialog(
+                -2,
+                2,
+                SETTINGS.getHijriOffset(),
+                val -> {
+                  SETTINGS.setHijriOffset(val);
+                  Utils.runBg(this::updateWidget);
+                  resetWidgets();
+                }));
+
     mB.widget.remTimeV.setCountDown(true);
 
     updateCityView();
@@ -409,7 +419,7 @@ public class PrayerTimeActivity extends BaseActivity {
   private void updateWidget() {
     if (SETTINGS.getLngLat() != null) {
       PrayerData data = getPrayerData();
-      Utils.runUi(() -> updateWidget(data));
+      Utils.runUi(this, () -> updateWidget(data));
     }
   }
 
@@ -563,7 +573,7 @@ public class PrayerTimeActivity extends BaseActivity {
       setCountryCodeVis(true);
       mB.locCont.searchV.setQueryHint(getString(R.string.city_area));
     }
-    Utils.runUi(() -> setProgBarVis(false));
+    Utils.runUi(this, () -> setProgBarVis(false));
     mB.locCont.searchV.setQuery(null, false);
   }
 
@@ -584,6 +594,7 @@ public class PrayerTimeActivity extends BaseActivity {
     SETTINGS.setCityName(mCity);
 
     Utils.runUi(
+        this,
         () -> {
           updateCityView();
           updateLocDependents();
@@ -621,7 +632,7 @@ public class PrayerTimeActivity extends BaseActivity {
     MatrixCursor cursor = null;
     cancelHttpTask();
     if (!TextUtils.isEmpty(text) && text.length() >= GEO_NAMES_QUERY_MIN_LENGTH) {
-      Utils.runUi(() -> setProgBarVis(true));
+      Utils.runUi(this, () -> setProgBarVis(true));
 
       long delay = mCountryCode == null ? 0 : getDelay();
       mCursorFuture = HTTP_EXECUTOR.schedule(() -> updateCursor(text.toString()), delay, SECONDS);
@@ -633,7 +644,7 @@ public class PrayerTimeActivity extends BaseActivity {
         return null;
       }
     }
-    Utils.runUi(() -> setProgBarVis(false));
+    Utils.runUi(this, () -> setProgBarVis(false));
     return cursor;
   }
 
@@ -691,7 +702,7 @@ public class PrayerTimeActivity extends BaseActivity {
     if (mRevGeocodeFuture != null) {
       mRevGeocodeFuture.cancel(true);
     }
-    Utils.runUi(() -> setProgBarVis(false));
+    Utils.runUi(this, () -> setProgBarVis(false));
   }
 
   private static final String URL = "https://secure.geonames.org/";
@@ -753,7 +764,7 @@ public class PrayerTimeActivity extends BaseActivity {
 
   private void doRevGeocoding(double lng, double lat) {
     cancelHttpTask();
-    Utils.runUi(() -> setProgBarVis(true));
+    Utils.runUi(this, () -> setProgBarVis(true));
     mRevGeocodeFuture = HTTP_EXECUTOR.schedule(() -> setCityName(lng, lat), getDelay(), SECONDS);
   }
 
@@ -797,6 +808,7 @@ public class PrayerTimeActivity extends BaseActivity {
     } finally {
       if (!interrupted) {
         Utils.runUi(
+            this,
             () -> {
               setProgBarVis(false);
               mB.locCont.lngV.clearFocus();
@@ -839,7 +851,7 @@ public class PrayerTimeActivity extends BaseActivity {
       diff = 1;
     }
     long sec = Math.min(Math.max(30000 / diff, 3), 10);
-    Utils.runUi(() -> showRequestDelay(sec * 1000));
+    Utils.runUi(this, () -> showRequestDelay(sec * 1000));
     return sec;
   }
 
@@ -1000,11 +1012,7 @@ public class PrayerTimeActivity extends BaseActivity {
               } else {
                 v.setChecked(false);
                 Runnable callback =
-                    () -> {
-                      if (!isFinishing() && !isDestroyed()) {
-                        Utils.runUi(() -> mAdhanCheckBoxes[order].setChecked(true));
-                      }
-                    };
+                    () -> Utils.runUi(this, () -> mAdhanCheckBoxes[order].setChecked(true));
                 new FileDownload(this, "/adhan/", ADHAN_FILE, callback, R.string.downloading_file)
                     .askToDownload();
               }
@@ -1062,7 +1070,8 @@ public class PrayerTimeActivity extends BaseActivity {
             .setNegativeButton(R.string.no, (d, w) -> SETTINGS.doNotAskToExcBatteryOpt())
             .setNeutralButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.yes, (d, w) -> startActivity(intent));
-    Utils.runUi(() -> new AlertDialogFragment(builder.create()).show(this, "BATTERY_OPT", false));
+    Utils.runUi(
+        this, () -> new AlertDialogFragment(builder.create()).show(this, "BATTERY_OPT", false));
   }
 
   //////////////////////////////////////////////////////////////////
@@ -1169,12 +1178,12 @@ public class PrayerTimeActivity extends BaseActivity {
     if (order >= 0) {
       SETTINGS.setCalcMethod(order);
       int finalOrder = order;
-      Utils.runUi(() -> mB.calcCont.methodPicker.setSelection(finalOrder));
+      Utils.runUi(this, () -> mB.calcCont.methodPicker.setSelection(finalOrder));
     }
   }
 
   private void onParamsChanged() {
-    Utils.runUi(this::updateParamsViews);
+    Utils.runUi(this, this::updateParamsViews);
     Utils.runBg(this::updateWidget);
     resetWidgets();
   }
@@ -1305,6 +1314,6 @@ public class PrayerTimeActivity extends BaseActivity {
 
   public static PendingIntent getPendingIntent(int reqCode) {
     Intent intent = new Intent(App.getCxt(), PrayerTimeActivity.class).setAction(ACTION_NO_PARENT);
-    return PendingIntent.getActivity(App.getCxt(), reqCode, intent, FLAG_UPDATE_CURRENT);
+    return PendingIntent.getActivity(App.getCxt(), reqCode, intent, getPiFlags());
   }
 }

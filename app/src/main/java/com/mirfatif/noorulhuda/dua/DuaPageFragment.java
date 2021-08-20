@@ -120,7 +120,7 @@ public class DuaPageFragment extends Fragment {
       }
       duas.add(dua);
     }
-    Utils.runUi(() -> submitList(duas, lastDua));
+    Utils.runUi(this, () -> submitList(duas, lastDua));
   }
 
   private void submitList(List<Dua> duas, int lastDua) {

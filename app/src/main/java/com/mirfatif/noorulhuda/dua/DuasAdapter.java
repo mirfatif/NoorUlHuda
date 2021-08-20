@@ -2,6 +2,7 @@ package com.mirfatif.noorulhuda.dua;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -28,6 +29,7 @@ public class DuasAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
   private final List<Dua> mDuas = new ArrayList<>();
 
+  @SuppressLint("NotifyDataSetChanged")
   void submitList(List<Dua> duas) {
     synchronized (mDuas) {
       mDuas.clear();

@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts.CreateDocument;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.core.view.MenuCompat;
+import androidx.lifecycle.Lifecycle.State;
 import com.google.android.material.snackbar.Snackbar;
 import com.mirfatif.noorulhuda.BuildConfig;
 import com.mirfatif.noorulhuda.R;
@@ -116,13 +117,10 @@ public class AboutActivity extends BaseActivity {
       showDialog = true;
     }
 
-    boolean isActive = !isDestroyed() && !isFinishing();
-    if (isActive) {
-      Utils.runUi(() -> mB.checkUpdateSummary.setText(R.string.update_summary));
-    }
+    Utils.runUi(this, () -> mB.checkUpdateSummary.setText(R.string.update_summary));
     mCheckForUpdateInProgress = false;
 
-    if (!showDialog || !isActive) {
+    if (!showDialog || !getLifecycle().getCurrentState().isAtLeast(State.INITIALIZED)) {
       Utils.showToast(messageResId);
       return;
     }
@@ -132,9 +130,11 @@ public class AboutActivity extends BaseActivity {
             .setTitle(R.string.update)
             .setMessage(Utils.getString(messageResId) + ": " + info.version)
             .setPositiveButton(
-                R.string.download, (d, w) -> Utils.runUi(() -> Utils.openWebUrl(this, info.url)))
+                R.string.download,
+                (d, w) -> Utils.runUi(this, () -> Utils.openWebUrl(this, info.url)))
             .setNegativeButton(android.R.string.cancel, null);
-    Utils.runUi(() -> new AlertDialogFragment(builder.create()).show(this, "APP_UPDATE", false));
+    Utils.runUi(
+        this, () -> new AlertDialogFragment(builder.create()).show(this, "APP_UPDATE", false));
   }
 
   private void showLocaleDialog() {

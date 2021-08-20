@@ -96,6 +96,7 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
     SurahEntity surah;
     if (aayah != null && (surah = SETTINGS.getMetaDb().getSurah(aayah.surahNum)) != null) {
       Utils.runUi(
+          this,
           () -> {
             mB.surahNameV.setText(getString(R.string.surah_name, surah.name));
             mB.aayahTextV.setText(aayah.text);
@@ -117,6 +118,7 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
       tag.surahCount = new HashSet<>(SETTINGS.getQuranDb().getSurahs(tag.aayahIds)).size();
     }
     Utils.runUi(
+        this,
         () -> {
           handleSearchQuery();
           setEmptyViewText();
@@ -147,7 +149,7 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
         }
       }
     }
-    Utils.runUi(() -> mAdapter.submitList(tags));
+    Utils.runUi(this, () -> mAdapter.submitList(tags));
   }
 
   private void addNewTag() {
@@ -157,7 +159,7 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
             .format(System.currentTimeMillis());
     tag.id = (int) SETTINGS.getTagsDb().create(tag);
     submitList();
-    Utils.runUi(() -> openTag(tag, true));
+    Utils.runUi(this, () -> openTag(tag, true));
   }
 
   private void openTag(TagEntity tag, boolean isNew) {

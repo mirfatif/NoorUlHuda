@@ -95,6 +95,7 @@
   <string name="downloading_font" maxLength="15">Downloading Font</string>
   <string name="no_internet" maxLength="20">No internet connection</string>
   <string name="download_failed" maxLength="20">Download failed</string>
+  <string name="extraction_failed" maxLength="20">Extraction failed</string>
   <string name="results" maxLength="20">%d results</string>
   <string name="creating_database" maxLength="15">Creating Database</string>
   <string name="failed_to_build_database" maxLength="20">Failed to build database</string>

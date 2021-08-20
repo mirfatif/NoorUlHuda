@@ -1,8 +1,9 @@
 # NoorUlHuda [![Download](https://img.shields.io/github/v/release/mirfatif/NoorUlHuda?label="Download")](https://github.com/mirfatif/NoorUlHuda/releases/latest)
 A simple, open source Quran reader app with extras, completely free forever
 
-<!-- a href="https://f-droid.org/packages/com.mirfatif.noorulhuda"><img alt="Get it on F-Droid" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="100"></a -->
+<a href="https://f-droid.org/packages/com.mirfatif.noorulhuda"><img alt="Get it on F-Droid" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="100"></a>
 <a href="https://play.google.com/store/apps/details?id=com.mirfatif.noorulhuda"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100"></a>
+<a href="https://apt.izzysoft.de/fdroid/index/apk/com.mirfatif.noorulhuda"><img alt="Get it on F-Droid" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="100"></a>
 
 ## Features
 Customize your reading experience the way you want:
@@ -96,3 +97,8 @@ You **CANNOT** use and distribute the app icon in anyway, except for **Noor Ul H
 
     You should have received a copy of the Affero GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+## Contact Us
+
+**Telegram:** [https://t.me/NoorUlHudaApp](https://t.me/NoorUlHudaApp)  
+**Email:** [mirfatif@gmail.com](mailto:mirfatif@gmail.com)

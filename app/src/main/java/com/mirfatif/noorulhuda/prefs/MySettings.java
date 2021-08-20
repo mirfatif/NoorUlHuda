@@ -3,11 +3,11 @@ package com.mirfatif.noorulhuda.prefs;
 import static android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
 import static com.mirfatif.noorulhuda.util.Utils.getString;
 
-import android.annotation.ColorRes;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import androidx.annotation.ArrayRes;
+import androidx.annotation.ColorRes;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.room.Room;
 import com.batoulapps.adhan.Coordinates;
@@ -397,6 +397,7 @@ public class MySettings {
     savePref(R.string.pref_main_theme_color_key, color);
   }
 
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public boolean getShowHeader() {
     return getBoolPref(R.string.pref_main_show_page_header_key);
   }
