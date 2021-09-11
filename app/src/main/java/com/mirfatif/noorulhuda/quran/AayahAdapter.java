@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.MetricAffectingSpan;
 import android.view.LayoutInflater;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
+
+  private static final String TRANSLITERATION_EN = getString(R.string.en_transliteration);
 
   private final Fragment mFrag;
   private final AayahLongClickListener mLongClickListener;
@@ -300,7 +303,12 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
       if (SETTINGS.showTranslation() && aayah.translation == null) {
         QuranDao db = SETTINGS.getTransDb();
         if (db != null) {
-          aayah.translation = db.getTrans(aayah.entities.get(0).id);
+          String translation = db.getTrans(aayah.entities.get(0).id);
+          if (TRANSLITERATION_EN.equals(SETTINGS.getTransDbName())) {
+            aayah.translation = Utils.htmlToString(translation);
+          } else {
+            aayah.translation = new SpannableString(translation);
+          }
         }
       }
 
@@ -343,7 +351,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     @Override
     public boolean onLongClick(View v) {
       if (SETTINGS.showSingleAayah()) {
-        mLongClickListener.onLongClick(mAayah.entities.get(0), mAayah.translation, v);
+        mLongClickListener.onLongClick(mAayah.entities.get(0), mAayah.translation.toString(), v);
       } else {
         int offset = mB.textV.getTouchOffset();
         for (SpanMarks span : mAayah.aayahSpans) {
@@ -360,8 +368,9 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
   static class Aayah {
 
     SpannableString prettyText;
+    Spanned translation;
 
-    String translation, surahName;
+    String surahName;
 
     public final List<AayahEntity> entities = new ArrayList<>();
 
