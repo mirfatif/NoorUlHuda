@@ -205,12 +205,12 @@
   <string name="third_party_credits">
     <![CDATA[
       <b>Quranic Text and Translation</b><br/>
-      Noor Ul Huda uses Quranic texts and translations provided by Tanzil Project
+      Noor-ul-Huda uses Quranic texts and translations provided by Tanzil Project
       <a href="https://tanzil.net/download">LINK</a>. To know about the accuracy of the Quranic
       text and keep track of any changes, and for help on text types, pause marks and other topics,
       please visit <a href="https://tanzil.net/docs/">https://tanzil.net/docs</a>.<br/><br/>
       <b>Fonts</b><br/>
-      Noor Ul Huda uses Arabic fonts created by:
+      Noor-ul-Huda uses Arabic fonts created by:
       <ul>
         <li>King Fahd Quran Complex <a href="https://fonts.qurancomplex.gov.sa">LINK</a></li>
         <li>Pakistan Data Management Services <a href="https://pakdata.com/products/arabicfont">LINK</a></li>
@@ -297,5 +297,18 @@
   <string name="restore_success" maxLength="20">Restore successful</string>
   <string name="backup_failed" maxLength="20">Backup failed</string>
   <string name="restore_failed" maxLength="20">Restore failed</string>
+
+  <!-- Feedback -->
+  <string name="do_not_ask" maxLength="15">Don\'t ask again</string>
+  <string name="rate" maxLength="10">Rate now</string>
+  <string name="contact" maxLength="10">Write Now</string>
+  <string name="love_using_app" maxLength="20">Liking Noor-ul-Huda?</string>
+  <string name="rate_the_app">Good ratings and reviews help us improve the app and we are able to
+    better serve your needs.
+  </string>
+  <string name="ask_to_provide_feedback">Sorry to hear that. You can help improve the app by
+    contacting us via email or Telegram so that we are able to better serve your needs.
+  </string>
+  <string name="thank_you" maxLength="20">Thank you</string>
 
 </resources>

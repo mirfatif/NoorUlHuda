@@ -32,14 +32,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class MySettings {
+public enum MySettings {
+  SETTINGS;
 
   private static final String TAG = "MySettings";
-  public static final MySettings SETTINGS = new MySettings();
 
   private final SharedPreferences mPrefs, mNoBkpPrefs;
 
-  private MySettings() {
+  MySettings() {
     mPrefs = Utils.getDefPrefs();
     mNoBkpPrefs = Utils.getNoBkpPrefs();
   }
@@ -740,7 +740,7 @@ public class MySettings {
   public File getDownloadedFile(String file) {
     File downloadDir = new File(App.getCxt().getExternalFilesDir(null), "downloads");
     if (!downloadDir.exists() && !downloadDir.mkdirs()) {
-      return null;
+      throw new Error("Failed to create directory " + downloadDir);
     }
     return new File(downloadDir, file);
   }
@@ -951,5 +951,30 @@ public class MySettings {
 
   public void setLogging(boolean logging) {
     mLogging = logging;
+  }
+
+  public void plusAppLaunchCount() {
+    int appLaunchCountId = R.string.pref_main_app_launch_count_for_feedback_nb_key;
+    savePref(appLaunchCountId, getIntPref(appLaunchCountId) + 1);
+  }
+
+  public boolean shouldAskForFeedback() {
+    long lastTS = getLongPref(R.string.pref_main_ask_for_feedback_ts_nb_key);
+    if (lastTS == 0) {
+      setAskForFeedbackTs(System.currentTimeMillis());
+      return false;
+    }
+    int appLaunchCountId = R.string.pref_main_app_launch_count_for_feedback_nb_key;
+    boolean ask = getIntPref(appLaunchCountId) >= 10;
+    ask = ask && (System.currentTimeMillis() - lastTS) >= TimeUnit.DAYS.toMillis(10);
+    if (ask) {
+      savePref(appLaunchCountId, 0);
+      setAskForFeedbackTs(System.currentTimeMillis());
+    }
+    return ask;
+  }
+
+  public void setAskForFeedbackTs(long ts) {
+    savePref(R.string.pref_main_ask_for_feedback_ts_nb_key, ts);
   }
 }

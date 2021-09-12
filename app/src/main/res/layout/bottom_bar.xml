@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mirfatif.noorulhuda.ui.base.MyFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mirfatif.noorulhuda.ui.base.MyLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_gravity="bottom">
+  android:layout_gravity="bottom"
+  android:orientation="vertical">
 
   <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
     android:id="@+id/container"
@@ -94,4 +96,68 @@
 
   </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
 
-</com.mirfatif.noorulhuda.ui.base.MyFrameLayout>
+  <!--
+   The only layout inside CoordinatorLayout must be the moving container. Otherwise
+   the other layout may intercept the touch events and Behaviour may not work correctly.
+  -->
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:id="@+id/feedback_cont"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:visibility="gone">
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/accentTrans2" />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:background="?android:attr/colorBackground"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_margin="8dp"
+          android:gravity="center_vertical"
+          android:maxLines="1"
+          android:text="@string/love_using_app"
+          android:textColor="@color/fgSharp2"
+          android:textSize="16sp"
+          app:autoSizeTextType="uniform" />
+
+        <Button
+          android:id="@+id/liking_app_no_button"
+          style="@style/Widget.AppCompat.Button.Borderless"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:minWidth="72dp"
+          android:text="@string/no"
+          android:textColor="?attr/accent" />
+
+        <Button
+          android:id="@+id/liking_app_yes_button"
+          style="@style/Widget.AppCompat.Button.Borderless"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:minWidth="72dp"
+          android:text="@string/yes"
+          android:textColor="?attr/accent" />
+
+      </LinearLayout>
+    </LinearLayout>
+
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</com.mirfatif.noorulhuda.ui.base.MyLinearLayout>

@@ -63,6 +63,7 @@ import com.mirfatif.noorulhuda.db.DbBuilder;
 import com.mirfatif.noorulhuda.db.QuranDao;
 import com.mirfatif.noorulhuda.db.SurahEntity;
 import com.mirfatif.noorulhuda.dua.DuaActivity;
+import com.mirfatif.noorulhuda.feedback.Feedback;
 import com.mirfatif.noorulhuda.prayer.PrayerTimeActivity;
 import com.mirfatif.noorulhuda.prayer.WidgetProvider;
 import com.mirfatif.noorulhuda.prefs.AppUpdate;
@@ -90,6 +91,7 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends BaseActivity {
@@ -149,6 +151,12 @@ public class MainActivity extends BaseActivity {
     Utils.runBg(() -> new AppUpdate().check(true));
 
     goToAayah(getIntent());
+
+    if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
+      SETTINGS.plusAppLaunchCount();
+    }
+
+    mFeedbackTask = () -> new Feedback(this).askForFeedback();
   }
 
   @Override
@@ -203,6 +211,17 @@ public class MainActivity extends BaseActivity {
       finishAfterTransition();
     } else {
       super.onBackPressed();
+    }
+  }
+
+  private final ScheduledExecutorService FB_EXECUTOR = Executors.newSingleThreadScheduledExecutor();
+  private Runnable mFeedbackTask;
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    if (mFeedbackTask != null) {
+      FB_EXECUTOR.schedule(mFeedbackTask, 2, TimeUnit.SECONDS);
     }
   }
 
@@ -407,7 +426,15 @@ public class MainActivity extends BaseActivity {
     }
 
     if (setAutoFullScreen) {
-      Runnable task = () -> Utils.runUi(this, this::autoFullScreen);
+      Runnable task =
+          () ->
+              Utils.runUi(
+                  this,
+                  () -> {
+                    if (mB.bottomBar.feedbackCont.getVisibility() != View.VISIBLE) {
+                      autoFullScreen();
+                    }
+                  });
       mAutoFullScreenFuture = mAutoFullScreenExecutor.schedule(task, 3, SECONDS);
     }
 
@@ -1268,5 +1295,13 @@ public class MainActivity extends BaseActivity {
             }
           });
     }
+  }
+
+  //////////////////////////////////////////////////////////////////
+  ////////////////////////// FOR SUBCLASSES ////////////////////////
+  //////////////////////////////////////////////////////////////////
+
+  public ActivityMainBinding getRootView() {
+    return mB;
   }
 }
