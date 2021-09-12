@@ -313,6 +313,7 @@ public class QuranPageFragment extends Fragment {
   ///////////////////////////// SEARCH /////////////////////////////
   //////////////////////////////////////////////////////////////////
 
+  private boolean mShowingSearchResults = false;
   private final Object SEARCH_LOCK = new Object();
   private Future<?> mSearchFuture;
 
@@ -325,6 +326,7 @@ public class QuranPageFragment extends Fragment {
         stopToastTask();
         refreshUi();
         mA.setProgBarVisibility(false);
+        mShowingSearchResults = false;
         return;
       }
       mA.setProgBarVisibility(true);
@@ -361,6 +363,8 @@ public class QuranPageFragment extends Fragment {
           mAayahAdapter.submitList(aayahs);
           mA.setProgBarVisibility(false);
         });
+
+    mShowingSearchResults = true;
 
     stopToastTask();
     Runnable task = () -> Utils.showShortToast(R.string.results, aayahs.size());
@@ -524,6 +528,7 @@ public class QuranPageFragment extends Fragment {
       setTooltip(b.shareButton);
       setTooltip(b.bookmarkButton);
       setTooltip(b.addTagButton);
+      setTooltip(b.gotoButton);
 
       setButtonListener(b.copyButton, () -> shareAayah(entity, trans, true));
       setButtonListener(b.shareButton, () -> shareAayah(entity, trans, false));
@@ -548,6 +553,15 @@ public class QuranPageFragment extends Fragment {
                   callback.run();
                 });
           });
+
+      if (mShowingSearchResults) {
+        b.gotoButton.setVisibility(View.VISIBLE);
+        b.gotoButton.setOnClickListener(
+            v -> {
+              dismissPopup();
+              mA.goTo(entity);
+            });
+      }
     }
 
     private void showPopupMenu(View contentView, boolean reduceWidth) {

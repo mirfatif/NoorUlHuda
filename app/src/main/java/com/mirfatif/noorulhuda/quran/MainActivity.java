@@ -857,6 +857,9 @@ public class MainActivity extends BaseActivity {
   private final ScrollPos mScrollPos = new ScrollPos();
 
   public void goTo(AayahEntity aayah) {
+    // Make sure we are not in search.
+    collapseSearchView();
+
     int page = aayah.page;
     if (SETTINGS.isPageMode()) {
       synchronized (mScrollPos) {
@@ -1165,7 +1168,9 @@ public class MainActivity extends BaseActivity {
       mB.bottomBar.container.setBackgroundColor(Utils.getAttrColor(this, R.attr.accentTrans1));
     }
     SETTINGS.setSearchStarted(visible);
-    refreshUi(false); // Hide header and submit single page.
+    // If showing SearchView, hide the header, submit single page, and save
+    // scroll positions to restore after search.
+    refreshUi(visible);
     toggleArrowsVisibility(visible); // Hide arrows when in search.
   }
 
@@ -1239,6 +1244,12 @@ public class MainActivity extends BaseActivity {
 
   void updateHeader(AayahEntity entity, SurahEntity surah) {
     if (SETTINGS.isPageMode() && mB.pager.getCurrentItem() != entity.page - 1) {
+      return;
+    }
+
+    // Header is not visible in search mode.
+    // Also we don't want to save scroll positions for search results.
+    if (SETTINGS.isSearchStarted()) {
       return;
     }
 

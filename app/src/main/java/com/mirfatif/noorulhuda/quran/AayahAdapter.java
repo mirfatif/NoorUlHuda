@@ -351,7 +351,8 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     @Override
     public boolean onLongClick(View v) {
       if (SETTINGS.showSingleAayah()) {
-        mLongClickListener.onLongClick(mAayah.entities.get(0), mAayah.translation.toString(), v);
+        String translation = mAayah.translation == null ? null : mAayah.translation.toString();
+        mLongClickListener.onLongClick(mAayah.entities.get(0), translation, v);
       } else {
         int offset = mB.textV.getTouchOffset();
         for (SpanMarks span : mAayah.aayahSpans) {
