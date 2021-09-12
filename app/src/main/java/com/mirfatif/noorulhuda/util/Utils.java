@@ -87,6 +87,8 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 
 public class Utils {
 
+  private static final String TAG = "Utils";
+
   private Utils() {}
 
   private static final Handler UI_EXECUTOR = new Handler(Looper.getMainLooper());
@@ -122,6 +124,10 @@ public class Utils {
     @SuppressWarnings("UnusedReturnValue")
     public boolean waitForMe() {
       if (mIsEmpty) {
+        return false;
+      }
+      if (Thread.currentThread() == UI_EXECUTOR.getLooper().getThread()) {
+        Log.e(TAG, "Waiter: waitForMe() called on main thread");
         return false;
       }
       try {

@@ -3,7 +3,9 @@ package com.mirfatif.noorulhuda.prefs;
 import static android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
 import static com.mirfatif.noorulhuda.util.Utils.getString;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import androidx.annotation.ArrayRes;
@@ -162,19 +164,25 @@ public class MySettings {
     mPrefs.edit().putStringSet(getString(key), stringSet).apply();
   }
 
+  @SuppressLint("ApplySharedPref")
   public boolean shouldAskToSendCrashReport() {
     int crashCount = getIntPref(R.string.pref_main_crash_report_count_nb_key);
     long lastTS = getLongPref(R.string.pref_main_crash_report_ts_nb_key);
     long currTime = System.currentTimeMillis();
 
-    if (crashCount >= 5 || (currTime - lastTS) >= TimeUnit.DAYS.toMillis(1)) {
-      savePref(R.string.pref_main_crash_report_ts_nb_key, currTime);
-      savePref(R.string.pref_main_crash_report_count_nb_key, 1);
-      return true;
-    }
+    Editor prefEditor = mNoBkpPrefs.edit();
+    try {
+      if (crashCount >= 5 || (currTime - lastTS) >= TimeUnit.DAYS.toMillis(1)) {
+        prefEditor.putLong(getString(R.string.pref_main_crash_report_ts_nb_key), currTime);
+        prefEditor.putInt(getString(R.string.pref_main_crash_report_count_nb_key), 1);
+        return true;
+      }
 
-    savePref(R.string.pref_main_crash_report_count_nb_key, crashCount + 1);
-    return false;
+      prefEditor.putInt(getString(R.string.pref_main_crash_report_count_nb_key), crashCount + 1);
+      return false;
+    } finally {
+      prefEditor.commit();
+    }
   }
 
   public boolean isDbBuilt(String dbName) {
