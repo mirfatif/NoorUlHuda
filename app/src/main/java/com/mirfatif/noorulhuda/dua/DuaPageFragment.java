@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout.LayoutParams;
@@ -41,11 +43,13 @@ import java.util.List;
 public class DuaPageFragment extends Fragment {
 
   private DuaActivity mA;
+  private ScaleGestureDetector mRvScaleGestureDetector;
 
   @Override
   public void onAttach(@NonNull Context context) {
     super.onAttach(context);
     mA = (DuaActivity) getActivity();
+    mRvScaleGestureDetector = new ScaleGestureDetector(mA, new RvScaleGestureListener());
   }
 
   @Nullable
@@ -234,10 +238,48 @@ public class DuaPageFragment extends Fragment {
     }
   }
 
+  private class RvScaleGestureListener implements OnScaleGestureListener {
+
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+      mScaleFactor = 1;
+      mRvScaling = true;
+      return true;
+    }
+
+    private float mScaleFactor = 1;
+
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+      float scaleFactor = detector.getScaleFactor();
+      if (scaleFactor / mScaleFactor > 1.25) {
+        SETTINGS.increaseFontSize();
+      } else if (scaleFactor / mScaleFactor < 0.8) {
+        SETTINGS.decreaseFontSize();
+      } else {
+        return false;
+      }
+      mScaleFactor = scaleFactor;
+      return false;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+      mRvScaling = false;
+    }
+  }
+
+  private boolean mRvScaling = false;
+
   private class RvTouchListener implements OnItemTouchListener {
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+      mRvScaleGestureDetector.onTouchEvent(e);
+      if (mRvScaling) {
+        return true;
+      }
+
       if (e.getAction() == MotionEvent.ACTION_DOWN) {
         mScrolling = false;
       } else if (e.getAction() == MotionEvent.ACTION_UP
@@ -254,7 +296,9 @@ public class DuaPageFragment extends Fragment {
     }
 
     @Override
-    public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {}
+    public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+      mRvScaleGestureDetector.onTouchEvent(e);
+    }
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}

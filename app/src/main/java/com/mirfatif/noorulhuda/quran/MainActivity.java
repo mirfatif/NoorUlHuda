@@ -152,6 +152,8 @@ public class MainActivity extends BaseActivity {
 
     goToAayah(getIntent());
 
+    SETTINGS.getFontSizeChanged().observe(this, empty -> refreshUi(true));
+
     if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
       SETTINGS.plusAppLaunchCount();
     }
@@ -533,7 +535,6 @@ public class MainActivity extends BaseActivity {
       refreshUi(true);
     } else if (itemId == R.id.action_font_size) {
       SETTINGS.setNextFontSize();
-      refreshUi(true);
     } else if (itemId == R.id.action_font) {
       PopupMenu popupMenu = new PopupMenu(this, mB.bottomBar.actionFont);
       popupMenu.inflate(R.menu.main_font);

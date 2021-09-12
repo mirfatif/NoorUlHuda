@@ -76,6 +76,8 @@ public class DuaActivity extends BaseActivity {
       params.screenBrightness = SETTINGS.getBrightness();
       window.setAttributes(params);
     }
+
+    SETTINGS.getFontSizeChanged().observe(this, empty -> refreshUi());
   }
 
   private int mQuranicDuaPos = -1, mMasnoonDuaPos = -1, mOccDuaPos = -1;
@@ -92,7 +94,11 @@ public class DuaActivity extends BaseActivity {
 
   @Override
   protected void onStop() {
+    saveScrollPositions();
     super.onStop();
+  }
+
+  private void saveScrollPositions() {
     if (mQuranicDuaPos >= 0) {
       SETTINGS.setQuranicDuaScrollPosition(mQuranicDuaPos);
     }
@@ -179,5 +185,11 @@ public class DuaActivity extends BaseActivity {
       startActivity(intent);
     }
     finishAfterTransition();
+  }
+
+  private void refreshUi() {
+    saveScrollPositions();
+    mDuaPageAdapter.refreshUi(); // Recreate pages.
+    mB.pager.setCurrentItem(SETTINGS.getLastDuaPage()); // Restore page.
   }
 }

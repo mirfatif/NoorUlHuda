@@ -1,5 +1,6 @@
 package com.mirfatif.noorulhuda.dua;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -33,5 +34,25 @@ public class DuaPageAdapter extends FragmentStateAdapter {
   @Override
   public int getItemCount() {
     return TAB_LABELS.length;
+  }
+
+  @SuppressLint("NotifyDataSetChanged")
+  void refreshUi() {
+    mIdDiff += getItemCount();
+    notifyDataSetChanged();
+  }
+
+  // Force recreate fragments when notifyDataSetChanged() is called
+  // in order to update UI state.
+  private int mIdDiff;
+
+  @Override
+  public long getItemId(int position) {
+    return position + mIdDiff;
+  }
+
+  @Override
+  public boolean containsItem(long itemId) {
+    return itemId >= getItemId(0) && itemId < getItemId(getItemCount());
   }
 }

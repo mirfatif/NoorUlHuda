@@ -25,6 +25,8 @@ import android.text.style.MetricAffectingSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -77,11 +79,13 @@ public class QuranPageFragment extends Fragment {
   private static final String TAG = "QuranPageFragment";
 
   private MainActivity mA;
+  private ScaleGestureDetector mRvScaleGestureDetector;
 
   @Override
   public void onAttach(@NonNull Context context) {
     super.onAttach(context);
     mA = (MainActivity) getActivity();
+    mRvScaleGestureDetector = new ScaleGestureDetector(mA, new RvScaleGestureListener());
   }
 
   @Nullable
@@ -639,6 +643,39 @@ public class QuranPageFragment extends Fragment {
   //////////////////////// IMPLEMENTATIONS /////////////////////////
   //////////////////////////////////////////////////////////////////
 
+  private class RvScaleGestureListener implements OnScaleGestureListener {
+
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+      mOldScaleFactor = 1;
+      mRvScaling = true;
+      return true;
+    }
+
+    private float mOldScaleFactor = 1;
+
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+      float scaleFactor = detector.getScaleFactor();
+      if (scaleFactor / mOldScaleFactor > 1.25) {
+        SETTINGS.increaseFontSize();
+      } else if (scaleFactor / mOldScaleFactor < 0.8) {
+        SETTINGS.decreaseFontSize();
+      } else {
+        return false;
+      }
+      mOldScaleFactor = scaleFactor;
+      return false;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+      mRvScaling = false;
+    }
+  }
+
+  private boolean mRvScaling = false;
+
   private boolean mToggleFullScreen = false;
 
   /* We cannot rely on Popup.isShowing() (to decide whether to hide Popup or
@@ -657,6 +694,11 @@ public class QuranPageFragment extends Fragment {
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+      mRvScaleGestureDetector.onTouchEvent(e);
+      if (mRvScaling) {
+        return true;
+      }
+
       mTapPosX = (int) e.getX();
       mTapPosY = (int) e.getY();
 
@@ -676,7 +718,9 @@ public class QuranPageFragment extends Fragment {
     }
 
     @Override
-    public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {}
+    public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+      mRvScaleGestureDetector.onTouchEvent(e);
+    }
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}

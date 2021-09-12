@@ -11,6 +11,8 @@ import android.graphics.Typeface;
 import androidx.annotation.ArrayRes;
 import androidx.annotation.ColorRes;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 import com.batoulapps.adhan.Coordinates;
 import com.mirfatif.noorulhuda.App;
@@ -608,7 +610,7 @@ public enum MySettings {
     savePref(keyResId, color);
   }
 
-  private static final int SIZE_MAX = 24;
+  private static final int SIZE_MIN = 12, SIZE_MAX = 24;
 
   public int getFontSize() {
     return getIntPref(R.string.pref_main_font_size_key);
@@ -630,11 +632,42 @@ public enum MySettings {
   }
 
   public void setNextFontSize() {
-    int size = getIntPref(R.string.pref_main_font_size_key) + 2;
+    int size = getIntPref(R.string.pref_main_font_size_key);
     if (size >= SIZE_MAX) {
       size = 12;
+    } else {
+      size = Math.min(SIZE_MAX, size + 2);
     }
     savePref(R.string.pref_main_font_size_key, size);
+    onFontSizeChanged();
+  }
+
+  public void increaseFontSize() {
+    int size = getIntPref(R.string.pref_main_font_size_key);
+    if (size >= SIZE_MAX) {
+      return;
+    }
+    savePref(R.string.pref_main_font_size_key, Math.min(SIZE_MAX, size + 1));
+    onFontSizeChanged();
+  }
+
+  public void decreaseFontSize() {
+    int size = getIntPref(R.string.pref_main_font_size_key);
+    if (size <= SIZE_MIN) {
+      return;
+    }
+    savePref(R.string.pref_main_font_size_key, Math.max(SIZE_MIN, size - 1));
+    onFontSizeChanged();
+  }
+
+  private final MutableLiveData<Void> mFontSizeChangedNotifier = new MutableLiveData<>();
+
+  private void onFontSizeChanged() {
+    Utils.runBg(() -> mFontSizeChangedNotifier.postValue(null));
+  }
+
+  public LiveData<Void> getFontSizeChanged() {
+    return mFontSizeChangedNotifier;
   }
 
   public int getLastPage() {
