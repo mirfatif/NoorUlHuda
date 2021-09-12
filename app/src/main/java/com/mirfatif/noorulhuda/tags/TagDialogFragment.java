@@ -25,10 +25,12 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.google.common.collect.Iterables;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.TagDialogViewBinding;
 import com.mirfatif.noorulhuda.db.AayahEntity;
+import com.mirfatif.noorulhuda.db.QuranDao;
 import com.mirfatif.noorulhuda.db.SurahEntity;
 import com.mirfatif.noorulhuda.db.TagAayahsDao;
 import com.mirfatif.noorulhuda.db.TagEntity;
@@ -116,7 +118,9 @@ public class TagDialogFragment extends AppCompatDialogFragment {
         () -> {
           mTagsDb.updateTag(mTag);
           if (mRemovedAayahs.size() > 0) {
-            mTagAayahsDb.remove(mTag.id, mRemovedAayahs);
+            for (List<Integer> ids : Iterables.partition(mRemovedAayahs, 999)) {
+              mTagAayahsDb.remove(mTag.id, ids);
+            }
           }
           if (mTagsListFrag != null) {
             mTagsListFrag.submitList();
@@ -199,7 +203,7 @@ public class TagDialogFragment extends AppCompatDialogFragment {
       List<DialogListItem> items = new ArrayList<>();
       mTag.aayahIds.addAll(mTagAayahsDb.getAayahIds(mTag.id));
 
-      mAayahs = SETTINGS.getQuranDb().getAayahEntities(mTag.aayahIds);
+      mAayahs = QuranDao.getAayahEntities(SETTINGS.getQuranDb(), mTag.aayahIds);
       mAayahs.sort(Comparator.comparingInt(a -> a.id));
 
       for (AayahEntity aayah : mAayahs) {

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
+import com.google.common.collect.Iterables;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.DialogListViewBinding;
 import com.mirfatif.noorulhuda.db.AayahEntity;
@@ -115,7 +116,10 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
     }
     for (TagEntity tag : new ArrayList<>(mTags)) {
       tag.aayahIds.addAll(SETTINGS.getTagAayahsDb().getAayahIds(tag.id));
-      tag.surahCount = new HashSet<>(SETTINGS.getQuranDb().getSurahs(tag.aayahIds)).size();
+      tag.surahCount = 0;
+      for (List<Integer> aayahIds : Iterables.partition(tag.aayahIds, 999)) {
+        tag.surahCount += new HashSet<>(SETTINGS.getQuranDb().getSurahs(aayahIds)).size();
+      }
     }
     Utils.runUi(
         this,

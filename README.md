@@ -67,6 +67,7 @@ https://mirfatif.github.io/NoorUlHuda/privacy_policy.html
 * https://github.com/saket/Better-Link-Movement-Method
 * https://github.com/square/leakcanary
 * https://github.com/sherter/google-java-format-gradle-plugin
+* https://github.com/google/guava
 
 **Quranic Texts and Translations:**
 

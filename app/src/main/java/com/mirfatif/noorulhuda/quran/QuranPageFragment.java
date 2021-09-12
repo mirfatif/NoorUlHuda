@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -338,7 +339,7 @@ public class QuranPageFragment extends Fragment {
       return;
     }
 
-    List<AayahEntity> entities = SETTINGS.getQuranDb().getAayahEntities(idList);
+    List<AayahEntity> entities = QuranDao.getAayahEntities(SETTINGS.getQuranDb(), idList);
     entities.sort(Comparator.comparingInt(a -> a.id));
 
     List<Aayah> aayahs = new ArrayList<>();
@@ -407,9 +408,9 @@ public class QuranPageFragment extends Fragment {
       db = SETTINGS.getSearchDb();
     }
     if (contains) {
-      return new HashSet<>(db.matchQuery(queryText));
+      return new HashSet<>(Objects.requireNonNull(db).matchQuery(queryText));
     } else {
-      return new HashSet<>(db.misMatchQuery(queryText));
+      return new HashSet<>(Objects.requireNonNull(db).misMatchQuery(queryText));
     }
   }
 

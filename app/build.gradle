@@ -59,6 +59,9 @@ dependencies {
     // To handle hyperlink onClick in TextView
     implementation 'me.saket:better-link-movement-method:2.2.0'
 
+    // To use Iterables for splitting Collections
+    implementation("com.google.guava:guava:30.1.1-android")
+
     // Let's behave responsibly
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

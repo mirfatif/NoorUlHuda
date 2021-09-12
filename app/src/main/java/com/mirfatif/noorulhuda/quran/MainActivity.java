@@ -736,7 +736,8 @@ public class MainActivity extends BaseActivity {
   // Inspired from ListFragment
   private void showBookmarks() {
     List<DialogListItem> items = new ArrayList<>();
-    List<AayahEntity> aayahs = SETTINGS.getQuranDb().getAayahEntities(SETTINGS.getBookmarks());
+    List<AayahEntity> aayahs =
+        QuranDao.getAayahEntities(SETTINGS.getQuranDb(), SETTINGS.getBookmarks());
     aayahs.sort(Comparator.comparingInt(a -> a.id));
 
     for (AayahEntity aayah : aayahs) {

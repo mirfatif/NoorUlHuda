@@ -4,6 +4,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import com.google.common.collect.Iterables;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -47,7 +49,16 @@ public interface QuranDao {
   AayahEntity getAayahEntity(int surahNum, int aayahNum);
 
   @Query("SELECT * FROM AayahEntity WHERE id IN (:ids)")
-  List<AayahEntity> getAayahEntities(Set<Integer> ids);
+  List<AayahEntity> getAayahEntities(List<Integer> ids);
+
+  // Deal with SQLite host parameters limit.
+  static List<AayahEntity> getAayahEntities(QuranDao dao, Set<Integer> ids) {
+    List<AayahEntity> entities = new ArrayList<>();
+    for (List<Integer> idList : Iterables.partition(ids, 999)) {
+      entities.addAll(dao.getAayahEntities(idList));
+    }
+    return entities;
+  }
 
   @Query("SELECT * FROM AayahEntity WHERE page = :page")
   List<AayahEntity> getAayahEntities(int page);
@@ -74,5 +85,5 @@ public interface QuranDao {
   List<String> getTexts();
 
   @Query("SELECT surahNum FROM AayahEntity WHERE id IN (:aayahIds)")
-  List<Integer> getSurahs(Set<Integer> aayahIds);
+  List<Integer> getSurahs(List<Integer> aayahIds);
 }
