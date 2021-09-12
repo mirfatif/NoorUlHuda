@@ -10,46 +10,6 @@
     android:layout_height="1dp"
     android:background="?attr/accent" />
 
-  <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
-    android:orientation="vertical">
-
-    <ImageView
-      android:id="@+id/icon"
-      android:layout_width="match_parent"
-      android:layout_height="100dp"
-      android:src="?attr/app_icon"
-      tools:ignore="ContentDescription" />
-
-    <TextView
-      android:textStyle="bold"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="2dp"
-      android:layout_gravity="center_horizontal"
-      android:fontFamily="@font/uthmanic_hafs1_ver17"
-      android:text="@string/app_name"
-      android:textSize="18sp" />
-
-    <TextView
-      android:id="@+id/version"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="2dp"
-      android:layout_marginBottom="8dp"
-      android:layout_gravity="center_horizontal" />
-
-    <View
-      android:layout_width="match_parent"
-      android:layout_height="1dp"
-      android:background="?attr/accent" />
-
-  </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>
-
   <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -59,9 +19,40 @@
     <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginEnd="8dp"
       android:orientation="vertical">
+
+      <ImageView
+        android:id="@+id/icon"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="?attr/app_icon"
+        tools:ignore="ContentDescription" />
+
+      <TextView
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/uthmanic_hafs1_ver17"
+        android:text="@string/app_name"
+        android:textSize="18sp" />
+
+      <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_horizontal" />
+
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/accent" />
 
       <com.mirfatif.noorulhuda.ui.base.MyLinearLayout
         android:id="@+id/third_party_res"
