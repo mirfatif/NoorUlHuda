@@ -21,6 +21,9 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipData.Item;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -171,6 +174,14 @@ public class PrayerTimeActivity extends BaseActivity {
   public void onBackPressed() {
     if (!onButtonClick(null)) {
       super.onBackPressed();
+    }
+  }
+
+  @Override
+  public void onWindowFocusChanged(boolean hasFocus) {
+    super.onWindowFocusChanged(hasFocus);
+    if (hasFocus) {
+      getLocFromClipboard();
     }
   }
 
@@ -472,6 +483,13 @@ public class PrayerTimeActivity extends BaseActivity {
   private void initLocContainer() {
     setupHelpDialog(mB.locCont.helpV, R.string.location_help);
 
+    mB.locCont.pasteV.setOnClickListener(
+        v -> {
+          mB.locCont.latV.setText(String.valueOf(mClipboardLat));
+          mB.locCont.lngV.setText(String.valueOf(mClipboardLng));
+          Utils.runBg(() -> doRevGeocoding(mClipboardLng, mClipboardLat));
+        });
+
     mB.locCont.clearV.setOnClickListener(
         v -> {
           saveLocation(null, null);
@@ -617,6 +635,41 @@ public class PrayerTimeActivity extends BaseActivity {
     } else {
       mB.locCont.clearV.setEnabled(false);
       mB.locCont.mapV.setEnabled(false);
+    }
+  }
+
+  private double mClipboardLat, mClipboardLng;
+
+  private void getLocFromClipboard() {
+    mB.locCont.pasteV.setEnabled(false);
+
+    if (mB == null) {
+      return;
+    }
+
+    ClipboardManager clipboard =
+        (ClipboardManager) App.getCxt().getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipData data = clipboard.getPrimaryClip();
+    if (data != null && data.getItemCount() > 0) {
+      Item item = data.getItemAt(0);
+      if (item != null) {
+        CharSequence text = item.getText();
+        if (text != null) {
+          String[] coordinates = text.toString().split(",");
+          if (coordinates.length == 2) {
+            try {
+              mClipboardLat = Double.parseDouble(coordinates[0]);
+              mClipboardLng = Double.parseDouble(coordinates[1]);
+              mB.locCont.pasteV.setEnabled(
+                  mClipboardLat <= 90
+                      && mClipboardLat >= -90
+                      && mClipboardLng <= 180
+                      && mClipboardLng >= -180);
+            } catch (NumberFormatException ignored) {
+            }
+          }
+        }
+      }
     }
   }
 

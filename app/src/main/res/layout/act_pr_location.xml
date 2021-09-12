@@ -45,6 +45,16 @@
       tools:ignore="ContentDescription" />
 
     <ImageView
+      android:id="@+id/paste_v"
+      android:layout_width="28dp"
+      android:layout_height="28dp"
+      android:layout_marginStart="4dp"
+      android:padding="4dp"
+      android:background="?android:attr/selectableItemBackgroundBorderless"
+      android:src="@drawable/paste"
+      tools:ignore="ContentDescription" />
+
+    <ImageView
       android:id="@+id/help_v"
       android:layout_width="28dp"
       android:layout_height="28dp"
@@ -129,13 +139,13 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="@string/longitude"
+        android:text="@string/latitude"
         android:textAlignment="center"
         android:textColor="@color/fgMedium"
         android:textSize="14sp" />
 
       <EditText
-        android:id="@+id/lng_v"
+        android:id="@+id/lat_v"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="2dp"
@@ -162,13 +172,13 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="@string/latitude"
+        android:text="@string/longitude"
         android:textAlignment="center"
         android:textColor="@color/fgMedium"
         android:textSize="14sp" />
 
       <EditText
-        android:id="@+id/lat_v"
+        android:id="@+id/lng_v"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="2dp"
