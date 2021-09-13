@@ -126,7 +126,8 @@ public class Utils {
       if (mIsEmpty) {
         return false;
       }
-      if (Thread.currentThread() == UI_EXECUTOR.getLooper().getThread()) {
+      // Don't block the main thread infinitely.
+      if (isMainThread()) {
         Log.e(TAG, "Waiter: waitForMe() called on main thread");
         return false;
       }
@@ -138,6 +139,10 @@ public class Utils {
         return false;
       }
     }
+  }
+
+  public static boolean isMainThread() {
+    return Thread.currentThread() == Looper.getMainLooper().getThread();
   }
 
   private static final ExecutorService BG_EXECUTOR = Executors.newCachedThreadPool();

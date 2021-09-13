@@ -150,7 +150,7 @@ public class QuranPageFragment extends Fragment {
       mB.recyclerV.addItemDecoration(getDivider());
     }
 
-    if (SETTINGS.isPageMode()) {
+    if (SETTINGS.isPageModeAndNotInSearch()) {
       Utils.runBg(this::submitPageAayahs);
     } else {
       mAayahAdapter.submitList(Arrays.asList(new Aayah[DbBuilder.TOTAL_AAYAHS]));
@@ -448,7 +448,7 @@ public class QuranPageFragment extends Fragment {
   }
 
   private void updateHeader() {
-    if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+    if (Utils.isMainThread()) {
       Utils.runBg(this::updateHeader);
       return;
     }
@@ -753,8 +753,12 @@ public class QuranPageFragment extends Fragment {
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-      mRvScaleGestureDetector.onTouchEvent(e);
+      if (!mShowingSearchResults) {
+        mRvScaleGestureDetector.onTouchEvent(e);
+      }
+
       if (mRvScaling) {
+        // Now we'll receive events in onTouchEvent()
         return true;
       }
 

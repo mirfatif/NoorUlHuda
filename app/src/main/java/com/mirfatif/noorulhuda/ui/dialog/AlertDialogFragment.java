@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Window;
 import androidx.annotation.NonNull;
@@ -149,7 +148,7 @@ public class AlertDialogFragment extends AppCompatDialogFragment {
       @StringRes int emptyResId,
       @NonNull List<DialogListItem> items,
       @NonNull DialogListCallback callback) {
-    if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
+    if (!Utils.isMainThread()) {
       Utils.runUi(
           activity, () -> showListDialog(activity, titleResId, emptyResId, items, callback));
       return;

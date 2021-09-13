@@ -23,6 +23,7 @@ import android.graphics.Typeface;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -310,13 +311,17 @@ public class MainActivity extends BaseActivity {
     if (saveScrollPos) {
       SETTINGS.setScrollPosition(mCurrentPage, mCurrentAayah);
     }
-    Utils.runUi(this, this::refreshUi);
+    if (Utils.isMainThread()) {
+      refreshUi();
+    } else {
+      Utils.runUi(this, this::refreshUi).waitForMe();
+    }
   }
 
   private void refreshUi() {
     updateHeaderCosmetics();
 
-    if (SETTINGS.isPageMode()) {
+    if (SETTINGS.isPageModeAndNotInSearch()) {
       mQuranPageAdapter.setPageCount(TOTAL_PAGES);
       // Restore slide position.
       mB.pager.setCurrentItem(SETTINGS.getLastPage() - 1, false);
@@ -448,7 +453,7 @@ public class MainActivity extends BaseActivity {
 
   private void toggleArrowsVisibility(boolean hide) {
     boolean showLeft, showRight;
-    showLeft = showRight = !mIsFullScreen && SETTINGS.isPageMode() && !hide;
+    showLeft = showRight = !mIsFullScreen && SETTINGS.isPageModeAndNotInSearch() && !hide;
     showLeft = showLeft && mB.pager.getCurrentItem() < TOTAL_PAGES - 1;
     showRight = showRight && mB.pager.getCurrentItem() > 0;
     mB.leftArrow.setVisibility(showLeft ? View.VISIBLE : View.GONE);
@@ -788,7 +793,7 @@ public class MainActivity extends BaseActivity {
     b.surahNameV.setTypeface(SETTINGS.getTypeface());
 
     b.typePicker.setMinValue(1);
-    b.typePicker.setMaxValue(4);
+    b.typePicker.setMaxValue(PICKER_TYPES.length);
     b.typePicker.setDisplayedValues(PICKER_TYPES);
     b.typePicker.setValue(SETTINGS.getNavigatorType());
     b.typePicker.setOnValueChangedListener(
@@ -801,7 +806,7 @@ public class MainActivity extends BaseActivity {
     Utils.runBg(() -> setSurahName(b.valuePicker.getValue(), b.surahNameV));
     b.valuePicker.setOnValueChangedListener(
         (picker, oldVal, newVal) -> {
-          if (b.typePicker.getValue() == 1) {
+          if (b.typePicker.getValue() == PICKER_TYPE_SURAH) {
             Utils.runBg(() -> setSurahName(newVal, b.surahNameV));
           }
         });
@@ -817,6 +822,11 @@ public class MainActivity extends BaseActivity {
     new AlertDialogFragment(builder.create()).show(this, "NAVIGATOR", false);
   }
 
+  private static final int PICKER_TYPE_SURAH = 1;
+  private static final int PICKER_TYPE_JUZ = 2;
+  private static final int PICKER_TYPE_MANZIL = 3;
+  private static final int PICKER_TYPE_PAGE = 4;
+
   private final String[] PICKER_TYPES =
       new String[] {
         Utils.getString(R.string.surah),
@@ -831,7 +841,7 @@ public class MainActivity extends BaseActivity {
   private void typePickerChanged(
       NumberPicker typePicker, NumberPicker valuePicker, TextView surahNameView) {
     valuePicker.setMaxValue(PICKER_MAX_VALUES[typePicker.getValue() - 1]);
-    if (typePicker.getValue() == 1) {
+    if (typePicker.getValue() == PICKER_TYPE_SURAH) {
       Utils.runBg(() -> setSurahName(valuePicker.getValue(), surahNameView));
       surahNameView.setVisibility(View.VISIBLE);
     } else {
@@ -851,13 +861,13 @@ public class MainActivity extends BaseActivity {
     QuranDao db = SETTINGS.getQuranDb();
 
     int type = typePicker.getValue();
-    if (type == 1) {
+    if (type == PICKER_TYPE_SURAH) {
       goTo(db.getSurahStartEntity(value));
-    } else if (type == 2) {
+    } else if (type == PICKER_TYPE_JUZ) {
       goTo(db.getJuzStartEntity(value));
-    } else if (type == 3) {
+    } else if (type == PICKER_TYPE_MANZIL) {
       goTo(db.getManzilStartEntity(value));
-    } else {
+    } else if (type == PICKER_TYPE_PAGE) {
       goTo(db.getAayahEntities(value).get(0));
     }
   }
@@ -865,19 +875,33 @@ public class MainActivity extends BaseActivity {
   private final ScrollPos mScrollPos = new ScrollPos();
 
   public void goTo(AayahEntity aayah) {
+    if (Utils.isMainThread()) {
+      Utils.runBg(() -> goTo(aayah));
+      return;
+    }
+
     // Make sure we are not in search.
-    collapseSearchView();
+    if (!mB.bottomBar.searchV.isIconified()) {
+      // On returning from search mode, new List is submitted to Adapter.
+      // Let's save the required positions to move to.
+      SETTINGS.setScrollPosition(aayah.page, aayah.id);
+
+      Utils.runUi(this, this::collapseSearchView).waitForMe();
+
+      // notifyDataSetChanged() is asynchronous. Let's give it a second to complete.
+      SystemClock.sleep(1000);
+    }
 
     int page = aayah.page;
-    if (SETTINGS.isPageMode()) {
+    if (SETTINGS.isPageModeAndNotInSearch()) {
       synchronized (mScrollPos) {
         mScrollPos.page = page;
         mScrollPos.aayahId = aayah.id;
       }
+      int pos = page - 1;
       Utils.runUi(
           this,
           () -> {
-            int pos = page - 1;
             if (mB.pager.getCurrentItem() == pos) {
               scrollRvToAayahId(page);
             } else {
@@ -1251,7 +1275,7 @@ public class MainActivity extends BaseActivity {
   private int mCurrentPage = -1, mCurrentAayah = -1;
 
   void updateHeader(AayahEntity entity, SurahEntity surah) {
-    if (SETTINGS.isPageMode() && mB.pager.getCurrentItem() != entity.page - 1) {
+    if (SETTINGS.isPageModeAndNotInSearch() && mB.pager.getCurrentItem() != entity.page - 1) {
       return;
     }
 
@@ -1294,7 +1318,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onPageSelected(int position) {
-      if (!SETTINGS.isPageMode()) {
+      if (!SETTINGS.isPageModeAndNotInSearch()) {
         return;
       }
 

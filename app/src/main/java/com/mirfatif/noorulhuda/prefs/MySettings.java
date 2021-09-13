@@ -425,7 +425,11 @@ public enum MySettings {
   }
 
   public boolean isPageMode() {
-    return getBoolPref(R.string.pref_main_page_view_key) && !mIsSearchStarted;
+    return getBoolPref(R.string.pref_main_page_view_key);
+  }
+
+  public boolean isPageModeAndNotInSearch() {
+    return isPageMode() && !mIsSearchStarted;
   }
 
   public void togglePageMode() {
@@ -434,7 +438,7 @@ public enum MySettings {
   }
 
   public boolean showSingleAayah() {
-    return !isPageMode() || (transEnabled() && showTransWithText());
+    return !isPageModeAndNotInSearch() || (transEnabled() && showTransWithText());
   }
 
   private boolean mIsSearchStarted = false, mIsSearching = false;

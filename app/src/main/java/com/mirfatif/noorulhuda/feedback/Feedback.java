@@ -2,7 +2,6 @@ package com.mirfatif.noorulhuda.feedback;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 
-import android.os.Looper;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -25,7 +24,7 @@ public class Feedback {
   }
 
   public void askForFeedback() {
-    if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
+    if (!Utils.isMainThread()) {
       Utils.runUi(mA, this::askForFeedback);
       return;
     }
