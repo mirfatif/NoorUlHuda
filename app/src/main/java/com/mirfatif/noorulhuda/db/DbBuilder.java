@@ -60,8 +60,16 @@ public class DbBuilder {
   private static final String SAJDAS_TAG = "sajdas";
   private static final String SAJDA_TAG = "sajda";
 
+  // Handle concurrent calls e.g. from MainActivity#onCreate()
+  private static final Object DB_BUILD_LOCK = new Object();
+
   public static boolean buildDb(String dbName) {
-    return new DbBuilder().build(dbName);
+    synchronized (DB_BUILD_LOCK) {
+      if (SETTINGS.isDbBuilt(dbName)) {
+        return true;
+      }
+      return new DbBuilder().build(dbName);
+    }
   }
 
   private boolean build(String dbName) {

@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.core.view.MenuCompat;
 import androidx.lifecycle.Lifecycle.State;
@@ -24,6 +25,7 @@ import com.mirfatif.noorulhuda.databinding.ActivityAboutBinding;
 import com.mirfatif.noorulhuda.databinding.TranslationDialogBinding;
 import com.mirfatif.noorulhuda.prefs.AppUpdate;
 import com.mirfatif.noorulhuda.prefs.AppUpdate.UpdateInfo;
+import com.mirfatif.noorulhuda.quran.MainActivity;
 import com.mirfatif.noorulhuda.svc.LogcatService;
 import com.mirfatif.noorulhuda.ui.base.BaseActivity;
 import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
@@ -62,7 +64,7 @@ public class AboutActivity extends BaseActivity {
     mB.logging.setOnClickListener(v -> handleLogging());
     openWebUrl(mB.privacyPolicy, R.string.privacy_policy_link);
     mB.checkUpdate.setOnClickListener(v -> checkForUpdates());
-    mB.translate.setOnClickListener(v -> showLocaleDialog());
+    mB.translate.setOnClickListener(v -> AlertDialogFragment.show(this, null, TAG_LOCALE));
     mB.shareApp.setOnClickListener(v -> sendShareIntent());
 
     // registerForActivityResult() must be called before onStart() is called
@@ -133,11 +135,10 @@ public class AboutActivity extends BaseActivity {
                 R.string.download,
                 (d, w) -> Utils.runUi(this, () -> Utils.openWebUrl(this, info.url)))
             .setNegativeButton(android.R.string.cancel, null);
-    Utils.runUi(
-        this, () -> new AlertDialogFragment(builder.create()).show(this, "APP_UPDATE", false));
+    Utils.runUi(this, () -> AlertDialogFragment.show(this, builder.create(), "APP_UPDATE"));
   }
 
-  private void showLocaleDialog() {
+  private AlertDialog getLocaleDialog() {
     String url = getString(R.string.translation_link);
     OnLinkClickListener listener = (tv, u) -> Utils.openWebUrl(this, url);
     MovementMethod method = BetterLinkMovementMethod.newInstance().setOnLinkClickListener(listener);
@@ -146,7 +147,7 @@ public class AboutActivity extends BaseActivity {
     b.langCreditsV.setText(Utils.htmlToString(R.string.language_credits));
     b.langCreditsV.setMovementMethod(method);
     Builder builder = new Builder(this).setTitle(R.string.translations).setView(b.getRoot());
-    new AlertDialogFragment(builder.create()).show(this, "LOCALE", false);
+    return builder.create();
   }
 
   private void sendShareIntent() {
@@ -172,5 +173,16 @@ public class AboutActivity extends BaseActivity {
       return true;
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  private static final String CLASS = MainActivity.class.getName();
+  private static final String TAG_LOCALE = CLASS + ".LOCALE";
+
+  @Override
+  public AlertDialog createDialog(String tag, AlertDialogFragment dialogFragment) {
+    if (TAG_LOCALE.equals(tag)) {
+      return getLocaleDialog();
+    }
+    return super.createDialog(tag, dialogFragment);
   }
 }

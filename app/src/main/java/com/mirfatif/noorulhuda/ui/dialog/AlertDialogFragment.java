@@ -1,6 +1,7 @@
 package com.mirfatif.noorulhuda.ui.dialog;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
@@ -18,117 +19,46 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle.State;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.DialogListViewBinding;
+import com.mirfatif.noorulhuda.ui.base.BaseActivity;
 import com.mirfatif.noorulhuda.ui.dialog.MyBaseAdapter.DialogListCallback;
 import com.mirfatif.noorulhuda.ui.dialog.MyBaseAdapter.DialogListItem;
 import com.mirfatif.noorulhuda.util.Utils;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class AlertDialogFragment extends AppCompatDialogFragment {
 
   private static final String TAG = "AlertDialogFragment";
 
-  public AlertDialogFragment() {}
+  public static final String DIALOG_TAG = AlertDialogFragment.class.getName() + ".DIALOG_TAG";
+
+  private BaseActivity mA;
+
+  @Override
+  public void onAttach(@NonNull Context context) {
+    super.onAttach(context);
+    mA = (BaseActivity) getActivity();
+  }
 
   private AlertDialog mAlertDialog;
-
-  public AlertDialogFragment(AlertDialog alertDialog) {
-    setAlertDialog(alertDialog);
-  }
-
-  public AlertDialogFragment setAlertDialog(AlertDialog alertDialog) {
-    mAlertDialog = onCreateDialog(alertDialog);
-    return this;
-  }
 
   @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
+    if (mAlertDialog == null) {
+      mAlertDialog = mA.createDialog(requireArguments().getString(DIALOG_TAG), this);
+      if (mAlertDialog == null) {
+        dismissAllowingStateLoss();
+        return new Builder(mA).create();
+      }
+    }
+    onCreateDialog(mAlertDialog);
     return mAlertDialog;
-  }
-
-  private static final Set<String> ALL_TAGS = new HashSet<>();
-
-  public void show(FragmentActivity activity, String tag, boolean removeAll) {
-    synchronized (AlertDialogFragment.class) {
-      FragmentManager manager = activity.getSupportFragmentManager();
-      ALL_TAGS.add(tag);
-
-      Set<Fragment> oldDialogs = new HashSet<>();
-      if (removeAll) {
-        oldDialogs = buildListToRemove(manager);
-      } else {
-        Fragment fragment = manager.findFragmentByTag(tag);
-        if (fragment != null) {
-          oldDialogs.add(fragment);
-        }
-      }
-
-      Log.d(TAG, "Showing " + tag);
-
-      /* If Activity is in background, commitNow throws:
-       * "Can not perform this action after onSaveInstanceState"
-       * We don't have showNowAllowingStateLoss()
-       */
-      try {
-        if (activity.getLifecycle().getCurrentState().isAtLeast(State.INITIALIZED)
-            && !activity.isChangingConfigurations()) {
-          super.showNow(manager, tag);
-        }
-      } catch (IllegalStateException e) {
-        Log.w(TAG, "show: " + e.toString());
-      }
-
-      removeFragments(manager, oldDialogs);
-    }
-  }
-
-  public void dismissIt() {
-    if (!isDetached() && !isRemoving() && !isHidden() && isResumed() && isAdded()) {
-      dismissAllowingStateLoss();
-    }
-  }
-
-  public static void removeAll(FragmentActivity activity) {
-    FragmentManager manager = activity.getSupportFragmentManager();
-    removeFragments(manager, buildListToRemove(manager));
-  }
-
-  @Override
-  public void onSaveInstanceState(@NonNull Bundle outState) {
-    /* Do not call super because:
-     * 1. We cannot recreate DialogFragment after configuration change.
-     * 2. We don't have showNowAllowingStateLoss()
-     */
-  }
-
-  private static Set<Fragment> buildListToRemove(FragmentManager manager) {
-    Set<Fragment> oldDialogs = new HashSet<>();
-    Fragment fragment;
-    for (String tag : ALL_TAGS) {
-      fragment = manager.findFragmentByTag(tag);
-      if (fragment != null) {
-        Log.d(TAG, "Old dialog: " + tag);
-        oldDialogs.add(fragment);
-      }
-    }
-    return oldDialogs;
-  }
-
-  private static void removeFragments(FragmentManager manager, Set<Fragment> fragments) {
-    FragmentTransaction transaction = manager.beginTransaction();
-    Log.d(TAG, "Removing old dialogs");
-    for (Fragment fragment : fragments) {
-      transaction.remove(fragment);
-    }
-    transaction.commitNowAllowingStateLoss();
   }
 
   // We cannot use Dialog's OnDismiss and OnCancel Listeners, DialogFragment owns them.
   private OnDismissListener mDismissListener;
 
-  @SuppressWarnings("UnusedDeclaration")
+  @SuppressWarnings("UnusedDeclaration,UnusedReturnValue")
   public AlertDialogFragment setOnDismissListener(OnDismissListener dismissListener) {
     mDismissListener = dismissListener;
     return this;
@@ -139,6 +69,49 @@ public class AlertDialogFragment extends AppCompatDialogFragment {
     super.onDismiss(dialog);
     if (mDismissListener != null) {
       mDismissListener.onDismiss(dialog);
+    }
+  }
+
+  public void dismissIt() {
+    if (!isDetached() && !isRemoving() && !isHidden() && isResumed() && isAdded()) {
+      dismissAllowingStateLoss();
+    }
+  }
+
+  public static AlertDialogFragment show(
+      FragmentActivity activity, AlertDialog alertDialog, String tag) {
+    return show(activity, new AlertDialogFragment(), alertDialog, tag);
+  }
+
+  public static AlertDialogFragment show(
+      FragmentActivity activity, AlertDialogFragment frag, AlertDialog alertDialog, String tag) {
+    synchronized (AlertDialogFragment.class) {
+      FragmentManager manager = activity.getSupportFragmentManager();
+      FragmentTransaction transaction = manager.beginTransaction();
+      Fragment fragment = manager.findFragmentByTag(tag);
+      if (fragment != null) {
+        transaction.remove(fragment);
+      }
+
+      frag.mAlertDialog = alertDialog;
+      Bundle args = new Bundle();
+      args.putString(DIALOG_TAG, tag);
+      frag.setArguments(args);
+
+      /*
+       If Activity is in background, commitNow throws:
+         "Can not perform this action after onSaveInstanceState"
+       We don't have showNowAllowingStateLoss()
+      */
+      try {
+        if (activity.getLifecycle().getCurrentState().isAtLeast(State.INITIALIZED)
+            && !activity.isChangingConfigurations()) {
+          frag.showNow(manager, tag);
+        }
+      } catch (IllegalStateException e) {
+        Log.w(TAG, "show: " + e.toString());
+      }
+      return frag;
     }
   }
 
@@ -154,15 +127,16 @@ public class AlertDialogFragment extends AppCompatDialogFragment {
       return;
     }
 
+    AlertDialogFragment dialogFragment = new AlertDialogFragment();
     DialogListViewBinding b = DialogListViewBinding.inflate(activity.getLayoutInflater());
-    Builder builder = new Builder(activity).setTitle(titleResId).setView(b.getRoot());
-    AlertDialogFragment dialog = new AlertDialogFragment(builder.create());
-    b.listV.setAdapter(new DialogListAdapter(activity, items, callback, dialog));
+    b.listV.setAdapter(new DialogListAdapter(items, callback, dialogFragment));
     if (emptyResId != 0) {
       b.emptyV.setText(emptyResId);
     }
     b.listV.setEmptyView(b.emptyV);
-    dialog.show(activity, "LIST_SELECTOR", false);
+
+    Builder builder = new Builder(activity).setTitle(titleResId).setView(b.getRoot());
+    show(activity, dialogFragment, builder.create(), "LIST_SELECTOR");
   }
 
   public static AlertDialog onCreateDialog(AlertDialog dialog) {

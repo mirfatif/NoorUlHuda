@@ -4,8 +4,8 @@ import android.animation.LayoutTransition;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
@@ -29,16 +29,12 @@ public class BaseActivity extends AppCompatActivity {
     return super.onOptionsItemSelected(item);
   }
 
-  @Override
-  protected void onSaveInstanceState(@NonNull Bundle outState) {
-
-    /* We can't save state of AlertDialogFragment since AlertDialog is
-     * passed as a constructor argument. Otherwise separate AlertDialogFragment
-     * class needs to be created for every dialog.
-     */
-    AlertDialogFragment.removeAll(this);
-
-    super.onSaveInstanceState(outState);
+  /*
+   We use the same AlertDialogFragment to show all AlertDialogs. This method
+   is called to recreate the AlertDialog after configuration change.
+  */
+  public AlertDialog createDialog(String tag, AlertDialogFragment dialogFragment) {
+    return null;
   }
 
   private void onCreateStart() {

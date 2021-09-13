@@ -2,7 +2,7 @@ package com.mirfatif.noorulhuda.ui.dialog;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 
-import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +16,8 @@ public class DialogListAdapter extends MyBaseAdapter {
   private final AlertDialogFragment mDialogFragment;
 
   public DialogListAdapter(
-      Context context,
-      List<DialogListItem> items,
-      DialogListCallback callback,
-      AlertDialogFragment fragment) {
-    super(context, callback);
+      List<DialogListItem> items, DialogListCallback callback, AlertDialogFragment fragment) {
+    super(callback);
     mItems = items;
     mDialogFragment = fragment;
   }
@@ -49,7 +46,7 @@ public class DialogListAdapter extends MyBaseAdapter {
 
     BmarkTagListItemBinding b;
     if (convertView == null) {
-      b = BmarkTagListItemBinding.inflate(mInflater);
+      b = BmarkTagListItemBinding.inflate(LayoutInflater.from(parent.getContext()));
     } else {
       b = BmarkTagListItemBinding.bind(convertView);
     }

@@ -56,7 +56,7 @@ public class FileDownload {
                   .setMessage(R.string.download_file)
                   .setNegativeButton(android.R.string.cancel, null)
                   .setPositiveButton(android.R.string.ok, (d, which) -> downloadFile());
-          new AlertDialogFragment(builder.create()).show(mA, "DOWNLOAD_FILE", false);
+          AlertDialogFragment.show(mA, builder.create(), "DOWNLOAD_FILE");
         });
   }
 
@@ -66,9 +66,9 @@ public class FileDownload {
         () -> {
           DialogProgressBinding b = DialogProgressBinding.inflate(mA.getLayoutInflater());
           Builder builder = new Builder(mA).setTitle(mTitleResId).setView(b.getRoot());
-          AlertDialogFragment dialog = new AlertDialogFragment(builder.create());
+          AlertDialogFragment dialog =
+              AlertDialogFragment.show(mA, builder.create(), "DOWNLOAD_FILE");
           dialog.setCancelable(false);
-          dialog.show(mA, "DOWNLOAD_FILE", false);
 
           Utils.runBg(
               () -> {

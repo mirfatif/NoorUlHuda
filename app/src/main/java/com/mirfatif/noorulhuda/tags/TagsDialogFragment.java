@@ -69,7 +69,7 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
     setEmptyViewText();
     mB.listV.setEmptyView(mB.emptyV);
 
-    mAdapter = new TagsAdapter(mA, new DialogListCbImpl());
+    mAdapter = new TagsAdapter(new DialogListCbImpl());
     Utils.runBg(this::submitList);
     mB.listV.setAdapter(mAdapter);
 

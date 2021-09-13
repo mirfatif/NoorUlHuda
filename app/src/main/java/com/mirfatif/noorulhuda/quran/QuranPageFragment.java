@@ -589,7 +589,7 @@ public class QuranPageFragment extends Fragment {
               scrollView.setPadding(toPx(8), toPx(8), toPx(8), toPx(8));
               scrollView.addView(binding.getRoot());
               AlertDialog dialog = new AlertDialog.Builder(mA).setView(scrollView).create();
-              new AlertDialogFragment(dialog).show(mA, "TEXT_TRANS", false);
+              AlertDialogFragment.show(mA, dialog, "TEXT_TRANS");
             });
       }
 

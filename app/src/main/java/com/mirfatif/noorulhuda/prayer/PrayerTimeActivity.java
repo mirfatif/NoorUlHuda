@@ -54,6 +54,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.SearchView.OnSuggestionListener;
@@ -67,6 +68,7 @@ import com.mirfatif.noorulhuda.BuildConfig;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.ActivityPrayerTimeBinding;
 import com.mirfatif.noorulhuda.databinding.OffsetPickerBinding;
+import com.mirfatif.noorulhuda.quran.MainActivity;
 import com.mirfatif.noorulhuda.svc.PrayerNotifySvc;
 import com.mirfatif.noorulhuda.ui.base.BaseActivity;
 import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
@@ -208,6 +210,24 @@ public class PrayerTimeActivity extends BaseActivity {
     return super.onOptionsItemSelected(item);
   }
 
+  private static final String CLASS = MainActivity.class.getName();
+  private static final String TAG_BATTERY_OPT = CLASS + ".BATTERY_OPT";
+
+  @Override
+  public AlertDialog createDialog(String tag, AlertDialogFragment dialogFragment) {
+    if (TAG_BATTERY_OPT.equals(tag)) {
+      Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+      return new Builder(this)
+          .setTitle(R.string.battery_optimization)
+          .setMessage(R.string.battery_optimization_detail)
+          .setNegativeButton(R.string.no, (d, w) -> SETTINGS.doNotAskToExcBatteryOpt())
+          .setNeutralButton(android.R.string.cancel, null)
+          .setPositiveButton(R.string.yes, (d, w) -> startActivity(intent))
+          .create();
+    }
+    return super.createDialog(tag, dialogFragment);
+  }
+
   //////////////////////////////////////////////////////////////////
   ///////////////////////////// GENERAL ////////////////////////////
   //////////////////////////////////////////////////////////////////
@@ -274,7 +294,7 @@ public class PrayerTimeActivity extends BaseActivity {
             .setPositiveButton(R.string.save, (d, w) -> callback.onSave(b.picker.getValue() + fx))
             .setNegativeButton(android.R.string.cancel, null)
             .setView(b.getRoot());
-    new AlertDialogFragment(builder.create()).show(this, "OFFSET_PICK", false);
+    AlertDialogFragment.show(this, builder.create(), "OFFSET_PICK");
   }
 
   private interface OffsetDialogCallback {
@@ -1111,20 +1131,9 @@ public class PrayerTimeActivity extends BaseActivity {
     }
 
     PowerManager pm = (PowerManager) App.getCxt().getSystemService(Context.POWER_SERVICE);
-    if (pm.isIgnoringBatteryOptimizations(getPackageName())) {
-      return;
+    if (!pm.isIgnoringBatteryOptimizations(getPackageName())) {
+      Utils.runUi(this, () -> AlertDialogFragment.show(this, null, TAG_BATTERY_OPT));
     }
-
-    Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-    Builder builder =
-        new Builder(this)
-            .setTitle(R.string.battery_optimization)
-            .setMessage(R.string.battery_optimization_detail)
-            .setNegativeButton(R.string.no, (d, w) -> SETTINGS.doNotAskToExcBatteryOpt())
-            .setNeutralButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.yes, (d, w) -> startActivity(intent));
-    Utils.runUi(
-        this, () -> new AlertDialogFragment(builder.create()).show(this, "BATTERY_OPT", false));
   }
 
   //////////////////////////////////////////////////////////////////

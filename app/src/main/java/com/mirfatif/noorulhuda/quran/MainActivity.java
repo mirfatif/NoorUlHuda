@@ -42,6 +42,7 @@ import androidx.annotation.ArrayRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.PopupMenu;
@@ -49,7 +50,6 @@ import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.core.util.Pair;
 import androidx.core.view.MenuCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle.State;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
@@ -145,8 +145,6 @@ public class MainActivity extends BaseActivity {
       window.setAttributes(params);
     }
 
-    mBackupRestore = new BackupRestore(this);
-
     PrayerNotifySvc.reset(false);
     WidgetProvider.reset();
     Utils.runBg(() -> new AppUpdate().check(true));
@@ -159,6 +157,7 @@ public class MainActivity extends BaseActivity {
       SETTINGS.plusAppLaunchCount();
     }
 
+    mBackupRestore = new BackupRestore(this);
     mFeedbackTask = () -> new Feedback(this).askForFeedback();
   }
 
@@ -226,6 +225,21 @@ public class MainActivity extends BaseActivity {
     if (mFeedbackTask != null) {
       FB_EXECUTOR.schedule(mFeedbackTask, 2, TimeUnit.SECONDS);
     }
+  }
+
+  private static final String CLASS = MainActivity.class.getName();
+  private static final String TAG_NAVIGATOR = CLASS + ".NAVIGATOR";
+  private static final String TAG_BACKUP_RESTORE = CLASS + ".TAG_BACKUP_RESTORE";
+
+  @Override
+  public AlertDialog createDialog(String tag, AlertDialogFragment dialogFragment) {
+    if (TAG_NAVIGATOR.equals(tag)) {
+      return getGotoDialog();
+    }
+    if (TAG_BACKUP_RESTORE.equals(tag)) {
+      return mBackupRestore.createDialog();
+    }
+    return super.createDialog(tag, dialogFragment);
   }
 
   //////////////////////////////////////////////////////////////////
@@ -301,9 +315,8 @@ public class MainActivity extends BaseActivity {
   private AlertDialogFragment showDbBuildDialog() {
     Builder builder =
         new Builder(this).setTitle(R.string.creating_database).setView(R.layout.dialog_progress);
-    AlertDialogFragment dialog = new AlertDialogFragment(builder.create());
+    AlertDialogFragment dialog = AlertDialogFragment.show(this, builder.create(), "BUILD_DATABASE");
     dialog.setCancelable(false);
-    dialog.show(this, "BUILD_DATABASE", false);
     return dialog;
   }
 
@@ -357,7 +370,7 @@ public class MainActivity extends BaseActivity {
     b.recyclerV.setLayoutManager(new LinearLayoutManager(this));
     Builder builder =
         new Builder(this).setTitle(R.string.search_help_menu_item).setView(b.getRoot());
-    new AlertDialogFragment(builder.create()).show(this, "SEARCH_HELP", false);
+    AlertDialogFragment.show(this, builder.create(), "SEARCH_HELP");
   }
 
   //////////////////////////////////////////////////////////////////
@@ -687,7 +700,7 @@ public class MainActivity extends BaseActivity {
     }
 
     if (itemId == R.id.action_goto) {
-      showGotoDialog();
+      AlertDialogFragment.show(this, null, TAG_NAVIGATOR);
       return true;
     }
 
@@ -731,7 +744,7 @@ public class MainActivity extends BaseActivity {
     }
 
     if (itemId == R.id.action_backup_restore) {
-      mBackupRestore.doBackupRestore();
+      AlertDialogFragment.show(this, null, TAG_BACKUP_RESTORE);
       return true;
     }
 
@@ -788,7 +801,7 @@ public class MainActivity extends BaseActivity {
   ////////////////////////////// GOTO //////////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private void showGotoDialog() {
+  private AlertDialog getGotoDialog() {
     GotoPickerBinding b = GotoPickerBinding.inflate(getLayoutInflater());
     b.surahNameV.setTypeface(SETTINGS.getTypeface());
 
@@ -819,7 +832,7 @@ public class MainActivity extends BaseActivity {
                 (dialog, which) -> Utils.runBg(() -> goTo(b.typePicker, b.valuePicker)))
             .setNegativeButton(android.R.string.cancel, null)
             .setView(b.getRoot());
-    new AlertDialogFragment(builder.create()).show(this, "NAVIGATOR", false);
+    return builder.create();
   }
 
   private static final int PICKER_TYPE_SURAH = 1;
@@ -1008,7 +1021,7 @@ public class MainActivity extends BaseActivity {
     String[] dbNames = getResources().getStringArray(files);
     int selected = Arrays.asList(dbNames).indexOf(current);
 
-    AlertDialogFragment dialog = new AlertDialogFragment();
+    AlertDialogFragment dialogFragment = new AlertDialogFragment();
     Builder builder =
         new Builder(this)
             .setTitle(title)
@@ -1016,7 +1029,7 @@ public class MainActivity extends BaseActivity {
                 getResources().getStringArray(names),
                 selected,
                 (d, which) -> {
-                  dialog.dismissIt();
+                  dialogFragment.dismissIt();
                   if (which == selected) {
                     return;
                   }
@@ -1034,7 +1047,7 @@ public class MainActivity extends BaseActivity {
                     askToDownloadDb(dbName, fontFile);
                   }
                 });
-    dialog.setAlertDialog(builder.create()).show(this, "TEXT_TRANS_SELECTOR", false);
+    AlertDialogFragment.show(this, dialogFragment, builder.create(), "TEXT_TRANS_SELECTOR");
   }
 
   private void askToDownloadDb(String dbName, String fontFile) {
@@ -1083,7 +1096,6 @@ public class MainActivity extends BaseActivity {
   }
 
   private void setDbNameAndRefreshUi(String dbName) {
-    boolean isActive = getLifecycle().getCurrentState().isAtLeast(State.INITIALIZED);
     boolean refreshUi = false;
     if (MySettings.isQuranDb(dbName)) {
       SETTINGS.setQuranDbName(dbName);
@@ -1091,10 +1103,10 @@ public class MainActivity extends BaseActivity {
     } else if (MySettings.isTranslationDb(dbName)) {
       SETTINGS.setTransDbName(dbName);
       refreshUi = true;
-    } else if (dbName.equals(getString(R.string.db_search)) && isActive) {
+    } else if (dbName.equals(getString(R.string.db_search))) {
       Utils.runUi(this, () -> setSearchViewVisibility(true));
     }
-    if (refreshUi && isActive) {
+    if (refreshUi) {
       refreshUi(true);
     }
   }

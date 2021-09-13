@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.FragmentActivity;
 import com.batoulapps.adhan.Qibla;
@@ -51,15 +52,15 @@ public class Compass implements SensorEventListener {
     }
     String text = String.format(Locale.getDefault(), "%.1f%sN", angle, (char) 176);
     mCompassView.angleV.setText(text);
-    new AlertDialogFragment(
-            new Builder(mA).setTitle(R.string.qibla).setView(mCompassView.getRoot()).create())
+    AlertDialog dialog =
+        new Builder(mA).setTitle(R.string.qibla).setView(mCompassView.getRoot()).create();
+    AlertDialogFragment.show(mA, dialog, "COMPASS")
         .setOnDismissListener(
             d -> {
               mSensorManager.unregisterListener(this);
               mCompassView = null;
               mLastAngle = null;
-            })
-        .show(mA, "COMPASS", false);
+            });
   }
 
   public Sensor getAccelerometer() {

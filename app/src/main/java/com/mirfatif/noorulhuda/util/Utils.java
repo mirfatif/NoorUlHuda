@@ -542,9 +542,7 @@ public class Utils {
     if (!cancelable) {
       builder.setPositiveButton(android.R.string.ok, null);
     }
-    AlertDialogFragment dialog = new AlertDialogFragment(builder.create());
-    dialog.setCancelable(cancelable);
-    dialog.show(activity, tag, false);
+    AlertDialogFragment.show(activity, builder.create(), tag).setCancelable(cancelable);
   }
 
   // https://stackoverflow.com/a/63455547/9165920
