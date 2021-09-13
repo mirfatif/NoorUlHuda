@@ -84,6 +84,7 @@
   <string name="share" maxLength="15">Share</string>
   <string name="bookmark" maxLength="15">Bookmark</string>
   <string name="tag" maxLength="15">Tag</string>
+  <string name="translation" maxLength="15">Translation</string>
   <string name="copied" maxLength="20">Copied</string>
   <string name="bookmarked" maxLength="20">Bookmarked</string>
   <string name="remove_filter" maxLength="15">Remove Filter</string>
@@ -138,6 +139,8 @@
   <string name="tags_menu_item" maxLength="15">Tags</string>
   <string name="texts_menu_item" maxLength="15">Texts</string>
   <string name="translations_menu_item" maxLength="15">Translations</string>
+  <string name="select_trans_menu_item" maxLength="15">Select Language</string>
+  <string name="trans_with_text_menu_item" maxLength="15">Below Text</string>
   <string name="prayer_time_menu_item" maxLength="15">Prayer Time</string>
   <string name="supplications_menu_item" maxLength="15">Dua</string>
   <string name="trans_search_menu_item" maxLength="15">Trans Search</string>

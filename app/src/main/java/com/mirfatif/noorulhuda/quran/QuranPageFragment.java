@@ -5,6 +5,7 @@ import static com.mirfatif.noorulhuda.tags.TagsDialogFragment.AAYAH_ID;
 import static com.mirfatif.noorulhuda.util.Utils.getArNum;
 import static com.mirfatif.noorulhuda.util.Utils.getAttrColor;
 import static com.mirfatif.noorulhuda.util.Utils.setTooltip;
+import static com.mirfatif.noorulhuda.util.Utils.toPx;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -12,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -35,6 +37,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,6 +51,7 @@ import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.AayahContextMenuBinding;
 import com.mirfatif.noorulhuda.databinding.RecyclerViewBinding;
+import com.mirfatif.noorulhuda.databinding.RvItemAayahBinding;
 import com.mirfatif.noorulhuda.db.AayahEntity;
 import com.mirfatif.noorulhuda.db.DbBuilder;
 import com.mirfatif.noorulhuda.db.QuranDao;
@@ -57,6 +62,7 @@ import com.mirfatif.noorulhuda.quran.AayahAdapter.AayahViewHolder;
 import com.mirfatif.noorulhuda.quran.AayahAdapter.ItemViewHolder;
 import com.mirfatif.noorulhuda.quran.AayahAdapter.SpanMarks;
 import com.mirfatif.noorulhuda.tags.TagsDialogFragment;
+import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +77,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class QuranPageFragment extends Fragment {
@@ -140,7 +146,7 @@ public class QuranPageFragment extends Fragment {
 
   private void refreshUi() {
     mB.recyclerV.removeItemDecoration(getDivider());
-    if (SETTINGS.showTranslation() || SETTINGS.isSearchStarted()) {
+    if ((SETTINGS.transEnabled() && SETTINGS.showTransWithText()) || SETTINGS.isSearchStarted()) {
       mB.recyclerV.addItemDecoration(getDivider());
     }
 
@@ -410,7 +416,7 @@ public class QuranPageFragment extends Fragment {
       contains = false;
     }
     QuranDao db;
-    if (SETTINGS.getSearchInTranslation() && SETTINGS.showTranslation()) {
+    if (SETTINGS.getSearchInTranslation() && SETTINGS.transEnabled()) {
       db = SETTINGS.getTransDb();
     } else {
       db = SETTINGS.getSearchDb();
@@ -485,7 +491,7 @@ public class QuranPageFragment extends Fragment {
   /////////////////////////// LONG CLICK ///////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private static final int POPUP_WIDTH = 200, POPUP_HEIGHT = 100;
+  private static final int POPUP_WIDTH = 150, POPUP_HEIGHT = 100;
   private PopupWindow mPopup;
   private int mTapPosX, mTapPosY;
 
@@ -496,7 +502,7 @@ public class QuranPageFragment extends Fragment {
   private class LongClickListener implements AayahLongClickListener {
 
     @Override
-    public void onLongClick(AayahEntity entity, String trans, View view) {
+    public void onLongClick(AayahEntity entity, Spanned trans, View view) {
       showPopupMenu(
           entity,
           trans,
@@ -507,10 +513,11 @@ public class QuranPageFragment extends Fragment {
     }
 
     @Override
-    public void onTextSelected(AayahEntity entity, TextView textView, int start, int end) {
+    public void onTextSelected(
+        AayahEntity entity, Spanned trans, TextView textView, int start, int end) {
       showPopupMenu(
           entity,
-          null,
+          trans,
           () -> {
             Spanned oldString = (Spanned) textView.getText();
             SpannableString newString = new SpannableString(oldString);
@@ -522,39 +529,24 @@ public class QuranPageFragment extends Fragment {
           });
     }
 
-    private void showPopupMenu(AayahEntity entity, String trans, Runnable callback) {
+    private void showPopupMenu(AayahEntity entity, Spanned trans, Runnable callback) {
       AayahContextMenuBinding b = AayahContextMenuBinding.inflate(getLayoutInflater());
       setTooltip(b.copyButton);
       setTooltip(b.shareButton);
       setTooltip(b.bookmarkButton);
       setTooltip(b.addTagButton);
       setTooltip(b.gotoButton);
+      setTooltip(b.transButton);
 
       setButtonListener(b.copyButton, () -> shareAayah(entity, trans, true));
       setButtonListener(b.shareButton, () -> shareAayah(entity, trans, false));
-      setButtonListener(b.bookmarkButton, () -> saveBookmark(entity.id));
       setButtonListener(
           b.addTagButton, () -> Utils.runUi(QuranPageFragment.this, () -> openTags(entity.id)));
 
-      AtomicBoolean hideBookmarkButton = new AtomicBoolean(false);
-
-      Utils.runBg(
-          () -> {
-            if (SETTINGS.getBookmarks().contains(entity.id)) {
-              hideBookmarkButton.set(true);
-            }
-            Utils.runUi(
-                QuranPageFragment.this,
-                () -> {
-                  if (hideBookmarkButton.get()) {
-                    b.bookmarkButton.setVisibility(View.GONE);
-                  }
-                  showPopupMenu(b.getRoot(), hideBookmarkButton.get());
-                  callback.run();
-                });
-          });
+      AtomicInteger popupWidth = new AtomicInteger(POPUP_WIDTH);
 
       if (mShowingSearchResults) {
+        popupWidth.addAndGet(50);
         b.gotoButton.setVisibility(View.VISIBLE);
         b.gotoButton.setOnClickListener(
             v -> {
@@ -562,19 +554,72 @@ public class QuranPageFragment extends Fragment {
               mA.goTo(entity);
             });
       }
+
+      if (trans != null && !SETTINGS.showTransWithText()) {
+        popupWidth.addAndGet(50);
+        b.transButton.setVisibility(View.VISIBLE);
+        b.transButton.setOnClickListener(
+            v -> {
+              dismissPopup();
+
+              RvItemAayahBinding binding = RvItemAayahBinding.inflate(getLayoutInflater());
+              binding.refV.setVisibility(View.GONE);
+
+              int color = mA.getColor(R.color.fgSharp2);
+              binding.textV.setTextColor(color);
+              binding.transV.setTextColor(color);
+
+              int sizeAr = SETTINGS.getArabicFontSize();
+              binding.textV.setTextSize(sizeAr * 1.5f);
+              binding.transV.setTextSize(SETTINGS.getFontSize());
+
+              Typeface typeface = SETTINGS.getTypeface();
+              Typeface transTypeface = SETTINGS.getTransTypeface();
+              binding.textV.setTypeface(typeface);
+              if (transTypeface != null) {
+                binding.transV.setTypeface(transTypeface);
+              }
+
+              binding.textV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+              binding.transV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+              binding.textV.setText(entity.text);
+              binding.transV.setText(trans);
+
+              NestedScrollView scrollView = new NestedScrollView(mA);
+              scrollView.setPadding(toPx(8), toPx(8), toPx(8), toPx(8));
+              scrollView.addView(binding.getRoot());
+              AlertDialog dialog = new AlertDialog.Builder(mA).setView(scrollView).create();
+              new AlertDialogFragment(dialog).show(mA, "TEXT_TRANS", false);
+            });
+      }
+
+      Utils.runBg(
+          () -> {
+            if (!SETTINGS.getBookmarks().contains(entity.id)) {
+              popupWidth.addAndGet(50);
+              Utils.runUi(
+                  QuranPageFragment.this,
+                  () -> {
+                    b.bookmarkButton.setVisibility(View.VISIBLE);
+                    setButtonListener(b.bookmarkButton, () -> saveBookmark(entity.id));
+                  });
+            }
+
+            Utils.runUi(
+                QuranPageFragment.this,
+                () -> {
+                  showPopupMenu(b.getRoot(), popupWidth.get());
+                  callback.run();
+                });
+          });
     }
 
-    private void showPopupMenu(View contentView, boolean reduceWidth) {
+    private void showPopupMenu(View contentView, int popupWidth) {
       dismissPopup();
       mPopup = new PopupWindow(contentView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
       mPopup.setElevation(500);
       mPopup.setOverlapAnchor(true);
       mPopup.setOutsideTouchable(true); // Dismiss on outside touch.
-
-      int popupWidth = POPUP_WIDTH;
-      if (reduceWidth) {
-        popupWidth -= popupWidth / 4;
-      }
 
       int xOff = mTapPosX - Utils.toPx(popupWidth);
       int yOff = mTapPosY - Utils.toPx(POPUP_HEIGHT);
@@ -604,11 +649,11 @@ public class QuranPageFragment extends Fragment {
     }
   }
 
-  private void shareAayah(AayahEntity entity, String trans, boolean toClipboard) {
+  private void shareAayah(AayahEntity entity, Spanned trans, boolean toClipboard) {
     Utils.runUi(this, this::dismissPopup);
 
     StringBuilder string = new StringBuilder(entity.text).append("\n\n");
-    if (SETTINGS.showTranslation() && trans != null) {
+    if (SETTINGS.transEnabled() && trans != null) {
       string.append(trans).append("\n\n");
     }
     SurahEntity surah = SETTINGS.getMetaDb().getSurah(entity.surahNum);

@@ -108,10 +108,10 @@ public class DuasAdapter extends RecyclerView.Adapter<ItemViewHolder> {
         mB.titleV.setText(dua.title);
       }
       mB.textV.setText(applySpan(dua.text));
-      if (dua.trans == null) {
-        mB.transV.setVisibility(View.GONE);
-      } else {
+      if (dua.trans != null && SETTINGS.showTransWithText()) {
         mB.transV.setText(dua.trans);
+      } else {
+        mB.transV.setVisibility(View.GONE);
       }
       mB.refV.setText(dua.ref);
     }

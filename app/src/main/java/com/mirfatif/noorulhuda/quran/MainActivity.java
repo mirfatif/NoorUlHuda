@@ -574,6 +574,7 @@ public class MainActivity extends BaseActivity {
       MenuCompat.setGroupDividerEnabled(menu, true);
       setOptionalIconsVisible(menu);
       menu.findItem(R.id.action_dark_theme).setChecked(SETTINGS.getForceDarkMode());
+      menu.findItem(R.id.action_trans_with_text).setChecked(SETTINGS.showTransWithText());
 
       String themeColor = SETTINGS.getThemeColor();
       if (themeColor.equals(getString(R.string.theme_color_green))) {
@@ -695,13 +696,20 @@ public class MainActivity extends BaseActivity {
       return true;
     }
 
-    if (itemId == R.id.action_translations) {
+    if (itemId == R.id.action_select_trans) {
       showDbDialog(
           R.array.db_trans_names,
           R.array.db_trans_files,
           R.string.translations,
           SETTINGS.getTransDbName(),
           true);
+      return true;
+    }
+
+    if (itemId == R.id.action_trans_with_text) {
+      item.setChecked(!item.isChecked());
+      SETTINGS.setShowTransWithText(item.isChecked());
+      refreshUi(true);
       return true;
     }
 
@@ -1151,7 +1159,7 @@ public class MainActivity extends BaseActivity {
       mB.bottomBar.searchV.setVisibility(View.VISIBLE);
       mB.bottomBar.actionSearchHelp.setVisibility(View.VISIBLE);
       mB.bottomBar.actionTransSearch.setVisibility(View.VISIBLE);
-      if (SETTINGS.showTranslation()) {
+      if (SETTINGS.transEnabled()) {
         mB.bottomBar.actionTransSearch.setEnabled(true);
         mB.bottomBar.actionTransSearch.setSelected(SETTINGS.getSearchInTranslation());
       } else {

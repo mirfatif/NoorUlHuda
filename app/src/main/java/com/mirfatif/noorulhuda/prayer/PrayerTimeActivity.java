@@ -656,9 +656,9 @@ public class PrayerTimeActivity extends BaseActivity {
         CharSequence text = item.getText();
         if (text != null) {
           String[] coordinates = text.toString().split(",");
-          if (coordinates.length == 2) {
+          if (coordinates.length >= 2) {
             try {
-              mClipboardLat = Double.parseDouble(coordinates[0]);
+              mClipboardLat = Double.parseDouble(coordinates[0].replaceFirst("^geo:", ""));
               mClipboardLng = Double.parseDouble(coordinates[1]);
               mB.locCont.pasteV.setEnabled(
                   mClipboardLat <= 90

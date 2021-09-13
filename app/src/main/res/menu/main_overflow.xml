@@ -59,9 +59,22 @@
       android:title="@string/texts_menu_item" />
 
     <item
-      android:id="@+id/action_translations"
       android:icon="@drawable/language"
-      android:title="@string/translations_menu_item" />
+      android:title="@string/translations_menu_item">
+
+      <menu>
+        <item
+          android:id="@+id/action_select_trans"
+          android:title="@string/select_trans_menu_item" />
+
+        <item
+          android:id="@+id/action_trans_with_text"
+          android:checkable="true"
+          android:title="@string/trans_with_text_menu_item" />
+      </menu>
+
+    </item>
+
   </group>
 
   <group android:id="@+id/group4">

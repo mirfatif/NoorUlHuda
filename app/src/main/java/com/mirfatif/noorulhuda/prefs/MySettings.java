@@ -339,8 +339,16 @@ public enum MySettings {
 
   private static final String TRANS_NONE = getString(R.string.db_trans_none);
 
-  public boolean showTranslation() {
+  public boolean transEnabled() {
     return !getTransDbName().equals(TRANS_NONE);
+  }
+
+  public boolean showTransWithText() {
+    return getBoolPref(R.string.pref_main_trans_with_text_key);
+  }
+
+  public void setShowTransWithText(boolean transWithText) {
+    savePref(R.string.pref_main_trans_with_text_key, transWithText);
   }
 
   public String getTransDbName() {
@@ -426,7 +434,7 @@ public enum MySettings {
   }
 
   public boolean showSingleAayah() {
-    return !isPageMode() || showTranslation();
+    return !isPageMode() || (transEnabled() && showTransWithText());
   }
 
   private boolean mIsSearchStarted = false, mIsSearching = false;

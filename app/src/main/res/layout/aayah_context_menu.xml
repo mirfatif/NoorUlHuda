@@ -33,7 +33,8 @@
     android:padding="2dp"
     android:background="?android:attr/selectableItemBackgroundBorderless"
     android:contentDescription="@string/bookmark"
-    android:src="@drawable/bookmark" />
+    android:src="@drawable/bookmark"
+    android:visibility="gone" />
 
   <ImageView
     android:id="@+id/add_tag_button"
@@ -54,6 +55,17 @@
     android:background="?android:attr/selectableItemBackgroundBorderless"
     android:contentDescription="@string/goto_menu_item"
     android:src="@drawable/go_to"
+    android:visibility="gone" />
+
+  <ImageView
+    android:id="@+id/trans_button"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
+    android:layout_marginStart="4dp"
+    android:padding="2dp"
+    android:background="?android:attr/selectableItemBackgroundBorderless"
+    android:contentDescription="@string/translation"
+    android:src="@drawable/translation"
     android:visibility="gone" />
 
 </com.mirfatif.noorulhuda.ui.base.MyLinearLayout>

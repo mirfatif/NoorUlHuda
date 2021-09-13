@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.mirfatif.noorulhuda.App;
@@ -237,7 +238,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
       mB.refV.setTextSize(sizeAr * 0.8f);
       mB.refV.setTypeface(typeface);
 
-      if (SETTINGS.showTranslation()) {
+      if (SETTINGS.transEnabled() && SETTINGS.showTransWithText()) {
         mB.transV.setVisibility(View.VISIBLE);
       } else {
         mB.transV.setVisibility(View.GONE);
@@ -260,16 +261,27 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     void bind(Aayah aayah) {
       mAayah = aayah;
       if (aayah.prettyText == null) {
+        QuranDao db = SETTINGS.getTransDb();
         StringBuilder text = new StringBuilder();
-        List<SpanMarks> aayahEndSpans = new ArrayList<>();
-        List<Integer> rukuEndSpans = new ArrayList<>();
+        List<Pair<Integer, Integer>> aayahStartEndMarks = new ArrayList<>();
+        List<Integer> rukuEndMarks = new ArrayList<>();
         for (AayahEntity entity : aayah.entities) {
           if (text.length() != 0) {
             text.append(" ");
           }
 
+          Spanned trans = null;
+          if (SETTINGS.transEnabled() && db != null) {
+            String translation = db.getTrans(entity.id);
+            if (TRANSLITERATION_EN.equals(SETTINGS.getTransDbName())) {
+              trans = Utils.htmlToString(translation);
+            } else {
+              trans = new SpannableString(translation);
+            }
+          }
+
           SpanMarks span =
-              new SpanMarks(entity, text.length(), text.length() + entity.text.length());
+              new SpanMarks(entity, trans, text.length(), text.length() + entity.text.length());
           aayah.aayahSpans.add(span);
 
           text.append(entity.text).append(" ");
@@ -290,26 +302,14 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
           // Superscript Ain (2262) char doesn't work with all fonts.
           if (entity.rukuEnds) {
-            rukuEndSpans.add(text.length());
+            rukuEndMarks.add(text.length());
             text.append((char) 1593);
             end++;
           }
 
-          aayahEndSpans.add(new SpanMarks(entity, start, end));
+          aayahStartEndMarks.add(new Pair<>(start, end));
         }
-        applySpan(text.toString(), aayahEndSpans, rukuEndSpans);
-      }
-
-      if (SETTINGS.showTranslation() && aayah.translation == null) {
-        QuranDao db = SETTINGS.getTransDb();
-        if (db != null) {
-          String translation = db.getTrans(aayah.entities.get(0).id);
-          if (TRANSLITERATION_EN.equals(SETTINGS.getTransDbName())) {
-            aayah.translation = Utils.htmlToString(translation);
-          } else {
-            aayah.translation = new SpannableString(translation);
-          }
-        }
+        applySpan(text.toString(), aayahStartEndMarks, rukuEndMarks);
       }
 
       if (SETTINGS.isSearching()) {
@@ -322,10 +322,11 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
     private void bindAayah(Aayah aayah) {
       mB.textV.setText(aayah.prettyText);
-      mB.transV.setText(aayah.translation);
+      if (SETTINGS.transEnabled() && SETTINGS.showTransWithText()) {
+        mB.transV.setText(aayah.aayahSpans.get(0).trans);
+      }
 
       if (SETTINGS.isSearching()) {
-        mB.refV.setText(getArNum(aayah.entities.get(0).aayahNum));
         mB.refV.setText(aayah.surahName);
         mB.refV.setVisibility(View.VISIBLE);
       } else {
@@ -333,14 +334,15 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
       }
     }
 
-    private void applySpan(String text, List<SpanMarks> aayahEndSpans, List<Integer> rukuEndSpans) {
+    private void applySpan(
+        String text, List<Pair<Integer, Integer>> aayahStartEndMarks, List<Integer> rukuEndSpans) {
       if (text == null) {
         return;
       }
       SpannableString spannable = new SpannableString(text);
-      for (SpanMarks pos : aayahEndSpans) {
+      for (Pair<Integer, Integer> pos : aayahStartEndMarks) {
         spannable.setSpan(
-            new HafsFontSpan(), pos.start, pos.end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            new HafsFontSpan(), pos.first, pos.second, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       }
       for (Integer pos : rukuEndSpans) {
         spannable.setSpan(new RukuSignSpan(), pos, pos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -351,13 +353,13 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     @Override
     public boolean onLongClick(View v) {
       if (SETTINGS.showSingleAayah()) {
-        String translation = mAayah.translation == null ? null : mAayah.translation.toString();
-        mLongClickListener.onLongClick(mAayah.entities.get(0), translation, v);
+        mLongClickListener.onLongClick(mAayah.entities.get(0), mAayah.aayahSpans.get(0).trans, v);
       } else {
         int offset = mB.textV.getTouchOffset();
         for (SpanMarks span : mAayah.aayahSpans) {
           if (offset >= span.start && offset <= span.end) {
-            mLongClickListener.onTextSelected(span.entity, mB.textV, span.start, span.end);
+            mLongClickListener.onTextSelected(
+                span.entity, span.trans, mB.textV, span.start, span.end);
             break;
           }
         }
@@ -368,13 +370,17 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
   static class Aayah {
 
+    // Quranic text with Aayah signs and Ruku signs added.
     SpannableString prettyText;
-    Spanned translation;
 
+    // To show in reference in search mode.
     String surahName;
 
+    // Single Aayah (in single Aayah mode or with translation below Quranic text) or
+    // a list of Aayahs (to show Quranic text as a block).
     public final List<AayahEntity> entities = new ArrayList<>();
 
+    // Aayah start end positions (when showing Quranic text as a block).
     public final List<SpanMarks> aayahSpans = new ArrayList<>();
   }
 
@@ -382,9 +388,11 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
     final int start, end;
     final AayahEntity entity;
+    final Spanned trans;
 
-    private SpanMarks(AayahEntity entity, int start, int end) {
+    private SpanMarks(AayahEntity entity, Spanned trans, int start, int end) {
       this.entity = entity;
+      this.trans = trans;
       this.start = start;
       this.end = end;
     }
@@ -392,9 +400,9 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
   interface AayahLongClickListener {
 
-    void onLongClick(AayahEntity entity, String trans, View view);
+    void onLongClick(AayahEntity entity, Spanned trans, View view);
 
-    void onTextSelected(AayahEntity entity, TextView textView, int start, int end);
+    void onTextSelected(AayahEntity entity, Spanned trans, TextView textView, int start, int end);
   }
 
   // Combination of TextAppearanceSpan and TypefaceSpan.

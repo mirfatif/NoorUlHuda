@@ -6,12 +6,14 @@ import static com.mirfatif.noorulhuda.dua.DuaPageAdapter.DUA_TYPE_OCCASIONS;
 import static com.mirfatif.noorulhuda.dua.DuaPageAdapter.DUA_TYPE_QURANIC;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 import static com.mirfatif.noorulhuda.util.Utils.setTooltip;
+import static com.mirfatif.noorulhuda.util.Utils.toPx;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
@@ -24,6 +26,8 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,8 +38,10 @@ import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.AayahContextMenuBinding;
 import com.mirfatif.noorulhuda.databinding.RecyclerViewBinding;
+import com.mirfatif.noorulhuda.databinding.RvItemAayahBinding;
 import com.mirfatif.noorulhuda.dua.DuasAdapter.Dua;
 import com.mirfatif.noorulhuda.dua.DuasAdapter.DuaLongClickListener;
+import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.ArrayList;
 import java.util.List;
@@ -151,7 +157,7 @@ public class DuaPageFragment extends Fragment {
   /////////////////////////// LONG CLICK ///////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private static final int POPUP_WIDTH = 150, POPUP_HEIGHT = 100;
+  private static final int POPUP_WIDTH = 100, POPUP_HEIGHT = 100;
   private PopupWindow mPopup;
   private int mTapPosX, mTapPosY;
 
@@ -163,8 +169,8 @@ public class DuaPageFragment extends Fragment {
       setTooltip(b.copyButton);
       setTooltip(b.shareButton);
       setTooltip(b.gotoButton);
+      setTooltip(b.transButton);
 
-      b.bookmarkButton.setVisibility(View.GONE);
       b.addTagButton.setVisibility(View.GONE);
 
       b.copyButton.setOnClickListener(v -> shareDua(dua, true));
@@ -173,14 +179,61 @@ public class DuaPageFragment extends Fragment {
       int popupWidth = POPUP_WIDTH;
 
       if (mDuaType == DUA_TYPE_QURANIC) {
+        popupWidth += 50;
         b.gotoButton.setVisibility(View.VISIBLE);
         b.gotoButton.setOnClickListener(
             v -> {
               mPopup.dismiss();
               mA.goTo(dua);
             });
-      } else {
-        popupWidth -= popupWidth / 3;
+      }
+
+      if (dua.trans != null && !SETTINGS.showTransWithText()) {
+        popupWidth += 50;
+        b.transButton.setVisibility(View.VISIBLE);
+        b.transButton.setOnClickListener(
+            v -> {
+              mPopup.dismiss();
+
+              RvItemAayahBinding binding = RvItemAayahBinding.inflate(getLayoutInflater());
+              int color = mA.getColor(R.color.fgSharp2);
+              binding.titleV.setTextColor(color);
+              binding.textV.setTextColor(color);
+              binding.transV.setTextColor(color);
+              binding.refV.setTextColor(color);
+
+              int sizeAr = SETTINGS.getArabicFontSize();
+              binding.titleV.setTextSize(sizeAr);
+              binding.textV.setTextSize(sizeAr * 1.5f);
+              binding.transV.setTextSize(SETTINGS.getFontSize());
+              binding.refV.setTextSize(sizeAr * 0.8f);
+
+              Typeface typeface = SETTINGS.getTypeface();
+              Typeface transTypeface = SETTINGS.getTransTypeface();
+              binding.textV.setTypeface(typeface);
+              if (transTypeface != null) {
+                binding.titleV.setTypeface(transTypeface);
+                binding.transV.setTypeface(transTypeface);
+              }
+              binding.refV.setTypeface(typeface);
+
+              binding.textV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+              binding.transV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+              if (dua.title != null) {
+                binding.titleV.setText(dua.title);
+                binding.titleV.setVisibility(View.VISIBLE);
+              }
+              binding.textV.setText(dua.text);
+              binding.transV.setText(dua.trans);
+              binding.refV.setText(dua.ref);
+
+              NestedScrollView scrollView = new NestedScrollView(mA);
+              scrollView.setPadding(toPx(8), toPx(8), toPx(8), toPx(8));
+              scrollView.addView(binding.getRoot());
+              AlertDialog dialog = new AlertDialog.Builder(mA).setView(scrollView).create();
+              new AlertDialogFragment(dialog).show(mA, "TEXT_TRANS", false);
+            });
       }
 
       if (mPopup != null) {
