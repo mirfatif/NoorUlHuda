@@ -46,6 +46,8 @@
   <string name="pref_main_trans_db_nb_default" translatable="false">@string/db_trans_none</string>
   <string name="pref_main_trans_search_key" translatable="false">pref_main_trans_search</string>
   <bool name="pref_main_trans_search_default">false</bool>
+  <string name="pref_main_vowels_search_key" translatable="false">pref_main_vowels_search</string>
+  <bool name="pref_main_vowels_search_default">false</bool>
   <string name="pref_main_trans_with_text_key" translatable="false">pref_main_trans_with_text</string>
   <bool name="pref_main_trans_with_text_default">true</bool>
   <string name="pref_main_last_quranic_dua_key" translatable="false">pref_main_last_quranic_dua</string>

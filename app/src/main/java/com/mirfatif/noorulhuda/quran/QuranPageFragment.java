@@ -416,8 +416,12 @@ public class QuranPageFragment extends Fragment {
       contains = false;
     }
     QuranDao db;
-    if (SETTINGS.getSearchInTranslation() && SETTINGS.transEnabled()) {
+    if (SETTINGS.doSearchInTranslation()
+        && SETTINGS.transEnabled()
+        && SETTINGS.showTransWithText()) {
       db = SETTINGS.getTransDb();
+    } else if (SETTINGS.doSearchWithVowels()) {
+      db = SETTINGS.getQuranDb();
     } else {
       db = SETTINGS.getSearchDb();
     }

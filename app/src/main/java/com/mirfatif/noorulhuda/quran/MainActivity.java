@@ -333,6 +333,7 @@ public class MainActivity extends BaseActivity {
 
   private void refreshUi() {
     updateHeaderCosmetics();
+    updateSearchSettingViews();
 
     if (SETTINGS.isPageModeAndNotInSearch()) {
       mQuranPageAdapter.setPageCount(TOTAL_PAGES);
@@ -482,7 +483,7 @@ public class MainActivity extends BaseActivity {
   private void setUpBottomBar() {
     ImageView[] bottomBarItems =
         new ImageView[] {
-          mB.bottomBar.actionTransSearch,
+          mB.bottomBar.actionSearchSettings,
           mB.bottomBar.actionSearchHelp,
           mB.bottomBar.actionBrightness,
           mB.bottomBar.actionBgColor,
@@ -498,6 +499,28 @@ public class MainActivity extends BaseActivity {
       view.setOnClickListener(v -> handleMenuItemClick(v.getId()));
       setTooltip(view);
     }
+
+    mB.bottomBar.searchSettingsTrans.setOnClickListener(
+        v -> {
+          SETTINGS.toggleSearchInTranslation();
+          updateSearchSettingViews();
+          if (mB != null && !mB.bottomBar.searchV.isIconified()) {
+            mB.bottomBar.searchV.setQuery(null, true);
+          }
+        });
+
+    mB.bottomBar.searchSettingsVowels.setOnClickListener(
+        v -> {
+          SETTINGS.toggleSearchWithVowels();
+          updateSearchSettingViews();
+          if (mB != null && !mB.bottomBar.searchV.isIconified()) {
+            mB.bottomBar.searchV.setQuery(null, true);
+          }
+        });
+
+    mB.bottomBar.searchSettingsTrans.setSelected(true);
+    mB.bottomBar.searchSettingsVowels.setSelected(true);
+    updateSearchSettingViews();
 
     /* Display#getSize() and Display#getRealSize() give total diff (status bar + nav bar).
     So using WindowInsetsListener instead.
@@ -532,14 +555,36 @@ public class MainActivity extends BaseActivity {
             });
   }
 
+  private void updateSearchSettingViews() {
+    boolean searchingTrans = false;
+    if (SETTINGS.transEnabled() && SETTINGS.showTransWithText()) {
+      mB.bottomBar.searchSettingsTrans.setEnabled(true);
+      if (SETTINGS.doSearchInTranslation()) {
+        mB.bottomBar.searchSettingsTrans.setChecked(true);
+        searchingTrans = true;
+      }
+    } else {
+      mB.bottomBar.searchSettingsTrans.setEnabled(false);
+      mB.bottomBar.searchSettingsTrans.setChecked(false);
+    }
+
+    if (searchingTrans) {
+      mB.bottomBar.searchSettingsVowels.setChecked(false);
+      mB.bottomBar.searchSettingsVowels.setEnabled(false);
+    } else {
+      mB.bottomBar.searchSettingsVowels.setChecked(SETTINGS.doSearchWithVowels());
+      mB.bottomBar.searchSettingsVowels.setEnabled(true);
+    }
+  }
+
   private void handleMenuItemClick(int itemId) {
     cancelAutoFullScreen();
 
-    if (itemId == R.id.action_trans_search) {
-      SETTINGS.toggleSearchInTranslation();
-      mB.bottomBar.actionTransSearch.setSelected(SETTINGS.getSearchInTranslation());
-      if (mB != null && !mB.bottomBar.searchV.isIconified()) {
-        mB.bottomBar.searchV.setQuery(null, true);
+    if (itemId == R.id.action_search_settings) {
+      if (mB.bottomBar.searchSettingsCont.getVisibility() == View.VISIBLE) {
+        mB.bottomBar.searchSettingsCont.setVisibility(View.GONE);
+      } else {
+        mB.bottomBar.searchSettingsCont.setVisibility(View.VISIBLE);
       }
     } else if (itemId == R.id.action_search_help) {
       showHelpDialog();
@@ -1138,13 +1183,25 @@ public class MainActivity extends BaseActivity {
   ///////////////////////////// SEARCH /////////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private static final List<Integer> ARABIC_CHARS = new ArrayList<>();
+  private static final List<Integer> PLAIN_ARABIC_CHARS = new ArrayList<>();
+  private static final List<Integer> VOWEL_ARABIC_CHARS = new ArrayList<>();
 
   static {
-    for (int i : App.getRes().getIntArray(R.array.search_chars)) {
-      ARABIC_CHARS.add(i);
+    boolean vowels = false;
+    int[] searchChars = App.getRes().getIntArray(R.array.search_chars);
+    for (int i = 1; i < searchChars.length; i++) {
+      int c = searchChars[i];
+      if (c < 0) {
+        vowels = true;
+        continue;
+      }
+      if (vowels) {
+        VOWEL_ARABIC_CHARS.add(c);
+      } else {
+        PLAIN_ARABIC_CHARS.add(c);
+      }
     }
-    ARABIC_CHARS.add((int) ' ');
+    PLAIN_ARABIC_CHARS.add((int) ' ');
   }
 
   private void setUpSearchView() {
@@ -1162,15 +1219,17 @@ public class MainActivity extends BaseActivity {
 
           @Override
           public boolean onQueryTextChange(String newText) {
-            if (!SETTINGS.getSearchInTranslation()
-                && !TextUtils.isEmpty(newText)
-                && !ARABIC_CHARS.contains((int) newText.charAt(newText.length() - 1))) {
-              Runnable select = () -> mB.bottomBar.actionSearchHelp.setSelected(true);
-              Runnable unselect = () -> mB.bottomBar.actionSearchHelp.setSelected(false);
-              select.run();
-              mB.bottomBar.actionSearchHelp.postDelayed(unselect, 200);
-              mB.bottomBar.actionSearchHelp.postDelayed(select, 400);
-              mB.bottomBar.actionSearchHelp.postDelayed(unselect, 600);
+            if (!SETTINGS.doSearchInTranslation() && !TextUtils.isEmpty(newText)) {
+              int c = newText.charAt(newText.length() - 1);
+              if (!PLAIN_ARABIC_CHARS.contains(c)
+                  && (!SETTINGS.doSearchWithVowels() || !VOWEL_ARABIC_CHARS.contains(c))) {
+                Runnable select = () -> mB.bottomBar.actionSearchHelp.setSelected(true);
+                Runnable unselect = () -> mB.bottomBar.actionSearchHelp.setSelected(false);
+                select.run();
+                mB.bottomBar.actionSearchHelp.postDelayed(unselect, 200);
+                mB.bottomBar.actionSearchHelp.postDelayed(select, 400);
+                mB.bottomBar.actionSearchHelp.postDelayed(unselect, 600);
+              }
             }
             return handleSearchQuery();
           }
@@ -1194,21 +1253,14 @@ public class MainActivity extends BaseActivity {
     if (visible) {
       mB.bottomBar.searchV.setVisibility(View.VISIBLE);
       mB.bottomBar.actionSearchHelp.setVisibility(View.VISIBLE);
-      mB.bottomBar.actionTransSearch.setVisibility(View.VISIBLE);
-      if (SETTINGS.transEnabled()) {
-        mB.bottomBar.actionTransSearch.setEnabled(true);
-        mB.bottomBar.actionTransSearch.setSelected(SETTINGS.getSearchInTranslation());
-      } else {
-        mB.bottomBar.actionTransSearch.setEnabled(false);
-        mB.bottomBar.actionTransSearch.setSelected(false);
-      }
+      mB.bottomBar.actionSearchSettings.setVisibility(View.VISIBLE);
       mB.bottomBar.searchV.setIconified(false);
       mB.bottomBar.searchV.requestFocus();
       mB.bottomBar.container.setBackgroundResource(R.drawable.app_bar_bg);
     } else {
       mB.bottomBar.searchV.setVisibility(View.GONE);
       mB.bottomBar.actionSearchHelp.setVisibility(View.GONE);
-      mB.bottomBar.actionTransSearch.setVisibility(View.GONE);
+      mB.bottomBar.actionSearchSettings.setVisibility(View.GONE);
       mB.bottomBar.container.setBackgroundColor(Utils.getAttrColor(this, R.attr.accentTrans1));
     }
     SETTINGS.setSearchStarted(visible);
@@ -1224,11 +1276,14 @@ public class MainActivity extends BaseActivity {
     mB.bottomBar.searchV.setQuery(null, false);
     mLastSearchQuery = null; // SearchView.setQuery(null, true) doesn't work
     setProgBarVisibility(false);
+    mB.bottomBar.searchSettingsCont.setVisibility(View.GONE);
   }
 
   private String mLastSearchQuery;
 
   private boolean handleSearchQuery() {
+    mB.bottomBar.searchSettingsCont.setVisibility(View.GONE);
+
     String query =
         mB.bottomBar.searchV.getQuery() != null ? mB.bottomBar.searchV.getQuery().toString() : null;
     if (query != null && query.length() < 2) {

@@ -798,12 +798,20 @@ public enum MySettings {
     return Arrays.asList(App.getRes().getStringArray(R.array.db_trans_files)).contains(dbName);
   }
 
-  public boolean getSearchInTranslation() {
+  public boolean doSearchInTranslation() {
     return getBoolPref(R.string.pref_main_trans_search_key);
   }
 
   public void toggleSearchInTranslation() {
-    savePref(R.string.pref_main_trans_search_key, !getSearchInTranslation());
+    savePref(R.string.pref_main_trans_search_key, !doSearchInTranslation());
+  }
+
+  public boolean doSearchWithVowels() {
+    return getBoolPref(R.string.pref_main_vowels_search_key);
+  }
+
+  public void toggleSearchWithVowels() {
+    savePref(R.string.pref_main_vowels_search_key, !doSearchWithVowels());
   }
 
   private float mBrightness = BRIGHTNESS_OVERRIDE_NONE;

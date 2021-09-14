@@ -40,6 +40,7 @@
   </string-array>
 
   <integer-array name="search_chars">
+    <item>-1</item>
     <item order="1" u="621">1569</item>
     <item order="2" u="622">1570</item>
     <item order="3" u="623">1571</item>
@@ -76,9 +77,29 @@
     <item order="34" u="648">1608</item>
     <item order="35" u="649">1609</item>
     <item order="36" u="64a">1610</item>
+    <item>-1</item>
+    <item order="37" u="640">1600</item>
+    <item order="38" u="64b">1611</item>
+    <item order="39" u="64c">1612</item>
+    <item order="40" u="64d">1613</item>
+    <item order="41" u="64e">1614</item>
+    <item order="42" u="64f">1615</item>
+    <item order="43" u="650">1616</item>
+    <item order="44" u="651">1617</item>
+    <item order="45" u="652">1618</item>
+    <item order="46" u="654">1620</item>
+    <item order="47" u="670">1648</item>
+    <item order="48" u="6d6">1750</item>
+    <item order="49" u="6d7">1751</item>
+    <item order="50" u="6d8">1752</item>
+    <item order="51" u="6d9">1753</item>
+    <item order="52" u="6da">1754</item>
+    <item order="53" u="6db">1755</item>
+    <item order="54" u="6dc">1756</item>
   </integer-array>
 
   <string-array name="search_chars_desc">
+    <item>Plain Search</item>
     <item order="1" u="621">Hamza</item>
     <item order="2" u="622">Alef With Madda Above</item>
     <item order="3" u="623">Alef With Hamza Above</item>
@@ -115,6 +136,25 @@
     <item order="34" u="648">Waw</item>
     <item order="35" u="649">Alef Maksura</item>
     <item order="36" u="64a">Yeh</item>
+    <item>Search with Vowels</item>
+    <item order="37" u="640">Tatweel</item>
+    <item order="38" u="64b">Fathatan (Superscript)</item>
+    <item order="39" u="64c">Dammatan (Superscript)</item>
+    <item order="40" u="64d">Kasratan (Subscript)</item>
+    <item order="41" u="64e">Fatha (Superscript)</item>
+    <item order="42" u="64f">Damma (Superscript)</item>
+    <item order="43" u="650">Kasra (Subscript)</item>
+    <item order="44" u="651">Shadda (Superscript)</item>
+    <item order="45" u="652">Sukun (Superscript)</item>
+    <item order="46" u="654">Hamza Above</item>
+    <item order="47" u="670">Superscript Alef</item>
+    <item order="48" u="6d6">Small High Soad Lam Alef Maksura</item>
+    <item order="49" u="6d7">Small High Qaf Lam Alef Maksura</item>
+    <item order="50" u="6d8">Small High Meem Initial Form</item>
+    <item order="51" u="6d9">Small High Lam Alef</item>
+    <item order="52" u="6da">Small High Jeem</item>
+    <item order="53" u="6db">Small High Three Dots</item>
+    <item order="54" u="6dc">Small High Seen</item>
   </string-array>
 
   <string-array name="county_names">

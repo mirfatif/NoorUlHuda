@@ -1,10 +1,12 @@
 package com.mirfatif.noorulhuda.quran;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.util.Utils.toPx;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,19 +29,6 @@ public class SearchHelpAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     mChars = chars;
   }
 
-  @NonNull
-  @Override
-  public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-    ArCharItemBinding b = ArCharItemBinding.inflate(inflater, parent, false);
-    return new ItemViewHolder(b);
-  }
-
-  @Override
-  public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-    holder.bind(position);
-  }
-
   @Override
   public long getItemId(int position) {
     return position;
@@ -50,21 +39,57 @@ public class SearchHelpAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     return mChars.size();
   }
 
+  private static final int VIEW_TYPE_CHAR = 0;
+  private static final int VIEW_TYPE_HEADER = 1;
+
+  @Override
+  public int getItemViewType(int position) {
+    if (mChars.get(position).first < 0) {
+      return VIEW_TYPE_HEADER;
+    }
+    return VIEW_TYPE_CHAR;
+  }
+
+  @NonNull
+  @Override
+  public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+    ArCharItemBinding b = ArCharItemBinding.inflate(inflater, parent, false);
+    return new ItemViewHolder(b, viewType == VIEW_TYPE_HEADER);
+  }
+
+  @Override
+  public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+    holder.bind(position);
+  }
+
   class ItemViewHolder extends ViewHolder implements OnClickListener {
 
     private final ArCharItemBinding mB;
+    private final boolean mIsHeader;
 
-    public ItemViewHolder(ArCharItemBinding binding) {
+    public ItemViewHolder(ArCharItemBinding binding, boolean isHeader) {
       super(binding.getRoot());
       mB = binding;
-      mB.charV.setTypeface(SETTINGS.getTypeface());
-      mB.getRoot().setOnClickListener(this);
+      mIsHeader = isHeader;
+      if (isHeader) {
+        mB.charV.setVisibility(View.GONE);
+        mB.descV.setTypeface(Typeface.create(mB.descV.getTypeface(), Typeface.BOLD));
+        mB.getRoot()
+            .setPadding(
+                mB.getRoot().getPaddingLeft(), toPx(32), mB.getRoot().getPaddingRight(), toPx(8));
+      } else {
+        mB.charV.setTypeface(SETTINGS.getTypeface());
+        mB.getRoot().setOnClickListener(this);
+      }
     }
 
     void bind(int pos) {
       Pair<Integer, String> item = mChars.get(pos);
       if (item != null) {
-        mB.charV.setText(String.valueOf((char) item.first.intValue()));
+        if (!mIsHeader) {
+          mB.charV.setText(String.valueOf((char) item.first.intValue()));
+        }
         mB.descV.setText(item.second);
       }
     }
@@ -78,7 +103,7 @@ public class SearchHelpAdapter extends RecyclerView.Adapter<ItemViewHolder> {
         String text = String.valueOf((char) mChars.get(pos).first.intValue());
         ClipData data = ClipData.newPlainText("search_char", text);
         clipboard.setPrimaryClip(data);
-        Utils.showShortToast(text);
+        Utils.showShortToast(mChars.get(pos).second);
       }
     }
   }

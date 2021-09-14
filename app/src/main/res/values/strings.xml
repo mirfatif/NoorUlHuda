@@ -109,14 +109,9 @@
   <string name="title">Title</string>
   <string name="description">Description</string>
   <string name="double_click_to_edit">Double tap to edit</string>
-  <string name="search_help">
-    <![CDATA[
-      <ul>
-        <li>Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) characters to join search queries.</li>
-        <li>Tap on language icon to toggle between search in Arabic text and translation.</li>
-        <li>Following characters can be used in Arabic search. Tap to copy.</li>
-      </ul>
-    ]]>
+  <string name="search_help">Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) operators
+    for complex search.\n\nFollowing characters can be used in plain Arabic search or with vowels
+    (diacritics). Tap to copy.
   </string>
 
   <!-- MainActivity Navigation Drawer / Menu items -->
@@ -140,10 +135,12 @@
   <string name="texts_menu_item" maxLength="15">Texts</string>
   <string name="translations_menu_item" maxLength="15">Translations</string>
   <string name="select_trans_menu_item" maxLength="15">Select Language</string>
-  <string name="trans_with_text_menu_item" maxLength="15">Below Text</string>
+  <string name="trans_with_text_menu_item" maxLength="15">Show Under Text</string>
   <string name="prayer_time_menu_item" maxLength="15">Prayer Time</string>
   <string name="supplications_menu_item" maxLength="15">Dua</string>
-  <string name="trans_search_menu_item" maxLength="15">Trans Search</string>
+  <string name="search_settings_menu_item" maxLength="15">Search Settings</string>
+  <string name="search_settings_in_trans" maxLength="15">Search in translation</string>
+  <string name="search_settings_with_vowels" maxLength="15">Search with vowels</string>
   <string name="search_help_menu_item" maxLength="15">Help</string>
   <string name="search_menu_item" maxLength="15">Search</string>
   <string name="goto_menu_item" maxLength="15">Go To</string>
