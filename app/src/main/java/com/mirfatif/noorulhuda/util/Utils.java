@@ -13,8 +13,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -24,11 +26,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcel;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BulletSpan;
 import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.TextAppearanceSpan;
 import android.text.style.URLSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -55,6 +60,7 @@ import androidx.lifecycle.Lifecycle.State;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+import com.google.android.material.color.MaterialColors;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.BuildConfig;
 import com.mirfatif.noorulhuda.R;
@@ -363,11 +369,11 @@ public class Utils {
     toast.show();
   }
 
-  public static Spanned htmlToString(int resId) {
+  public static SpannableString htmlToString(int resId) {
     return htmlToString(getString(resId));
   }
 
-  public static Spanned htmlToString(String str) {
+  public static SpannableString htmlToString(String str) {
     Spanned spanned = Html.fromHtml(str, Html.FROM_HTML_MODE_COMPACT);
 
     // Let's customize BulletSpans
@@ -405,7 +411,7 @@ public class Utils {
 
     breakParas(string);
     parcel.recycle();
-    return string;
+    return new SpannableString(string);
   }
 
   @SuppressWarnings("UnusedReturnValue")
@@ -439,6 +445,56 @@ public class Utils {
     }
 
     return string;
+  }
+
+  public static void getHighlightString(
+      SpannableString spannable, TextAppearanceSpan highlightSpan, String... prominent) {
+    if (spannable == null || highlightSpan == null || prominent == null) {
+      return;
+    }
+
+    // Same Span object cannot be applied multiple times, we need to create new instances.
+    Parcel parcel = Parcel.obtain();
+    highlightSpan.writeToParcel(parcel, 0);
+
+    for (String prom : prominent) {
+      if (prom == null || prom.length() == 0) {
+        continue;
+      }
+      String text = spannable.toString();
+      int startPos = text.toUpperCase().indexOf(prom.toUpperCase());
+      if (startPos < 0) {
+        continue;
+      }
+      int endPos = startPos + prom.length();
+
+      // Highlight whole words to avoid words splitting at span marks.
+      while (startPos > 0 && text.charAt(startPos) != ' ') {
+        startPos--;
+      }
+      while (endPos < text.length() && text.charAt(endPos - 1) != ' ') {
+        endPos++;
+      }
+
+      parcel.setDataPosition(0); // For read
+      spannable.setSpan(
+          new TextAppearanceSpan(parcel), startPos, endPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+    parcel.recycle();
+  }
+
+  public static TextAppearanceSpan getHighlight(@ColorInt int colorInt) {
+    return new TextAppearanceSpan(
+        null,
+        Typeface.NORMAL,
+        -1,
+        new ColorStateList(new int[][] {new int[] {}}, new int[] {colorInt}),
+        null);
+  }
+
+  // Doesn't work with Application or Service context
+  public static @ColorInt int getColor(Activity activity, @AttrRes int colorAttrResId) {
+    return MaterialColors.getColor(activity, colorAttrResId, Color.TRANSPARENT);
   }
 
   public static boolean openWebUrl(Activity activity, String url) {

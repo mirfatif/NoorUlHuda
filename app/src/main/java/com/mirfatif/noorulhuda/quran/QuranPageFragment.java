@@ -128,7 +128,7 @@ public class QuranPageFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    mAayahAdapter = new AayahAdapter(this, new LongClickListener());
+    mAayahAdapter = new AayahAdapter(mA, new LongClickListener());
     mB.recyclerV.setAdapter(mAayahAdapter);
 
     mLayoutManager = new LinearLayoutManager(mA);

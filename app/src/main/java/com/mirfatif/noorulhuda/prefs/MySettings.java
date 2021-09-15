@@ -441,14 +441,16 @@ public enum MySettings {
     return !isPageModeAndNotInSearch() || (transEnabled() && showTransWithText());
   }
 
-  private boolean mIsSearchStarted = false, mIsSearching = false;
+  private boolean mIsSearchStarted = false;
 
   public void setSearchStarted(boolean searchStarted) {
     mIsSearchStarted = searchStarted;
   }
 
-  public void setSearching(boolean searching) {
-    mIsSearching = searching;
+  private String mSearchQuery;
+
+  public void setSearchQuery(String query) {
+    mSearchQuery = query;
   }
 
   public boolean isSearchStarted() {
@@ -456,7 +458,11 @@ public enum MySettings {
   }
 
   public boolean isSearching() {
-    return mIsSearching;
+    return mSearchQuery != null;
+  }
+
+  public String getSearchQuery() {
+    return mSearchQuery;
   }
 
   private int mLastFontFile = -1;

@@ -360,7 +360,7 @@ public class MainActivity extends BaseActivity {
 
   private void showHelpDialog() {
     SearchHelpBinding b = SearchHelpBinding.inflate(getLayoutInflater());
-    b.searchHelpV.setText(Utils.htmlToString(R.string.search_help));
+    b.searchHelpV.setText(R.string.search_help);
     int[] charArray = getResources().getIntArray(R.array.search_chars);
     String[] descArray = getResources().getStringArray(R.array.search_chars_desc);
     List<Pair<Integer, String>> chars = new ArrayList<>();
@@ -1289,7 +1289,7 @@ public class MainActivity extends BaseActivity {
     if (query != null && query.length() < 2) {
       query = null;
     }
-    SETTINGS.setSearching(query != null);
+    SETTINGS.setSearchQuery(query);
     QuranPageFragment page = getPageFrag(null);
     if (!Objects.equals(mLastSearchQuery, query) && page != null) {
       mLastSearchQuery = query;

@@ -11,6 +11,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.MetricAffectingSpan;
+import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -19,7 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.util.Pair;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
@@ -37,11 +38,11 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
   private static final String TRANSLITERATION_EN = getString(R.string.en_transliteration);
 
-  private final Fragment mFrag;
+  private final FragmentActivity mA;
   private final AayahLongClickListener mLongClickListener;
 
-  AayahAdapter(Fragment frag, AayahLongClickListener listener) {
-    mFrag = frag;
+  AayahAdapter(FragmentActivity activity, AayahLongClickListener listener) {
+    mA = activity;
     mLongClickListener = listener;
   }
 
@@ -178,7 +179,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     void bind(Aayah aayah) {
       SurahEntity surah = SETTINGS.getMetaDb().getSurah(aayah.entities.get(0).surahNum);
       if (surah != null) {
-        Utils.runUi(mFrag, () -> bindSurahHeader(surah));
+        Utils.runUi(mA, () -> bindSurahHeader(surah));
       }
     }
 
@@ -265,12 +266,13 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
         StringBuilder text = new StringBuilder();
         List<Pair<Integer, Integer>> aayahStartEndMarks = new ArrayList<>();
         List<Integer> rukuEndMarks = new ArrayList<>();
+
         for (AayahEntity entity : aayah.entities) {
           if (text.length() != 0) {
             text.append(" ");
           }
 
-          Spanned trans = null;
+          SpannableString trans = null;
           if (SETTINGS.transEnabled() && db != null) {
             String translation = db.getTrans(entity.id);
             if (TRANSLITERATION_EN.equals(SETTINGS.getTransDbName())) {
@@ -309,15 +311,25 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
           aayahStartEndMarks.add(new Pair<>(start, end));
         }
+
         applySpan(text.toString(), aayahStartEndMarks, rukuEndMarks);
+
+        if (SETTINGS.isSearching()) {
+          if (SETTINGS.doSearchInTranslation()) {
+            if (SETTINGS.transEnabled() && SETTINGS.showTransWithText()) {
+              Utils.getHighlightString(
+                  aayah.aayahSpans.get(0).trans, getHighlight(), SETTINGS.getSearchQuery());
+            }
+          } else if (SETTINGS.doSearchWithVowels()) {
+            Utils.getHighlightString(aayah.prettyText, getHighlight(), SETTINGS.getSearchQuery());
+          }
+
+          SurahEntity surah = SETTINGS.getMetaDb().getSurah(aayah.entities.get(0).surahNum);
+          aayah.surahName = getString(R.string.surah_name, surah.name);
+        }
       }
 
-      if (SETTINGS.isSearching()) {
-        SurahEntity surah = SETTINGS.getMetaDb().getSurah(aayah.entities.get(0).surahNum);
-        aayah.surahName = getString(R.string.surah_name, surah.name);
-      }
-
-      Utils.runUi(mFrag, () -> bindAayah(aayah));
+      Utils.runUi(mA, () -> bindAayah(aayah));
     }
 
     private void bindAayah(Aayah aayah) {
@@ -348,6 +360,15 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
         spannable.setSpan(new RukuSignSpan(), pos, pos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       }
       mAayah.prettyText = spannable;
+    }
+
+    private TextAppearanceSpan HIGHLIGHT;
+
+    private TextAppearanceSpan getHighlight() {
+      if (HIGHLIGHT == null) {
+        HIGHLIGHT = Utils.getHighlight(Utils.getColor(mA, R.attr.accent));
+      }
+      return HIGHLIGHT;
     }
 
     @Override
@@ -388,9 +409,9 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
     final int start, end;
     final AayahEntity entity;
-    final Spanned trans;
+    final SpannableString trans;
 
-    private SpanMarks(AayahEntity entity, Spanned trans, int start, int end) {
+    private SpanMarks(AayahEntity entity, SpannableString trans, int start, int end) {
       this.entity = entity;
       this.trans = trans;
       this.start = start;
