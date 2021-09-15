@@ -27,6 +27,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.HapticFeedbackConstants;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -496,7 +497,16 @@ public class MainActivity extends BaseActivity {
         };
 
     for (ImageView view : bottomBarItems) {
-      view.setOnClickListener(v -> handleMenuItemClick(v.getId()));
+      view.setOnClickListener(
+          v -> {
+            if (v == mB.bottomBar.actionBgColor
+                || v == mB.bottomBar.actionTextColor
+                || v == mB.bottomBar.actionFontSize
+                || v == mB.bottomBar.actionInfoHeader) {
+              v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            }
+            handleMenuItemClick(v.getId());
+          });
       setTooltip(view);
     }
 
