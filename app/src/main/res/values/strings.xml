@@ -116,8 +116,8 @@
 
   <!-- MainActivity Navigation Drawer / Menu items -->
   <string name="menu" maxLength="15">Menu</string>
-  <string name="theme_color_menu_item" maxLength="15">Theme Color</string>
-  <string name="dark_theme_menu_item" maxLength="15">Dark Theme</string>
+  <string name="theme_menu_item" maxLength="15">Theme</string>
+  <string name="dark_theme_menu_item" maxLength="15">Dark Mode</string>
   <string name="page_view_menu_item" maxLength="15">Page Mode</string>
   <string name="info_header_menu_item" maxLength="15">Page Header</string>
   <string name="theme_color_green" maxLength="15">Green</string>
