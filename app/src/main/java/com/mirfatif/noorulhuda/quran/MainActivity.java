@@ -18,7 +18,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
@@ -87,7 +86,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -106,7 +104,7 @@ public class MainActivity extends BaseActivity {
   private QuranPageAdapter mQuranPageAdapter;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected synchronized void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     // Activity is recreated on switching to Dark Theme, so return here
     if (setNightTheme(this)) {
@@ -133,12 +131,6 @@ public class MainActivity extends BaseActivity {
     mB.leftArrow.setOnClickListener(v -> arrowClicked(true));
     mB.rightArrow.setOnClickListener(v -> arrowClicked(false));
 
-    if (SETTINGS.isDbBuilt(DbBuilder.MAIN_DB)) {
-      refreshUi(false);
-    } else {
-      buildDbAndRefreshUi();
-    }
-
     Window window = getWindow();
     if (window != null) {
       LayoutParams params = window.getAttributes();
@@ -150,9 +142,7 @@ public class MainActivity extends BaseActivity {
     WidgetProvider.reset();
     Utils.runBg(() -> new AppUpdate().check(true));
 
-    goToAayah(getIntent());
-
-    SETTINGS.getFontSizeChanged().observe(this, empty -> refreshUi(true));
+    SETTINGS.getFontSizeChanged().observe(this, empty -> refreshUi());
 
     if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
       SETTINGS.plusAppLaunchCount();
@@ -160,6 +150,16 @@ public class MainActivity extends BaseActivity {
 
     mBackupRestore = new BackupRestore(this);
     mFeedbackTask = () -> new Feedback(this).askForFeedback();
+
+    if (SETTINGS.isDbBuilt(DbBuilder.MAIN_DB)) {
+      if (goToAayah(getIntent())) {
+        refreshUi(RestorePosType.NONE);
+      } else {
+        refreshUi(RestorePosType.SAVED);
+      }
+    } else {
+      buildDbAndRefreshUi();
+    }
   }
 
   @Override
@@ -204,7 +204,7 @@ public class MainActivity extends BaseActivity {
         mB.bottomBar.searchV.clearFocus();
         return;
       }
-      if (!mB.bottomBar.searchV.isIconified()) {
+      if (SETTINGS.isSearchStarted()) {
         collapseSearchView();
         return;
       }
@@ -307,7 +307,7 @@ public class MainActivity extends BaseActivity {
     Utils.runBg(
         () -> {
           if (DbBuilder.buildDb(DbBuilder.MAIN_DB)) {
-            refreshUi(false);
+            refreshUi(RestorePosType.NONE);
           }
           Utils.runUi(this, dialog::dismissIt);
         });
@@ -321,27 +321,41 @@ public class MainActivity extends BaseActivity {
     return dialog;
   }
 
-  private void refreshUi(boolean saveScrollPos) {
-    if (saveScrollPos) {
-      SETTINGS.setScrollPosition(mCurrentPage, mCurrentAayah);
-    }
-    if (Utils.isMainThread()) {
-      refreshUi();
-    } else {
-      Utils.runUi(this, this::refreshUi).waitForMe();
-    }
+  private enum RestorePosType {
+    SAVED,
+    CURRENT,
+    NONE
   }
 
   private void refreshUi() {
+    refreshUi(RestorePosType.CURRENT);
+  }
+
+  private void refreshUi(RestorePosType restorePosType) {
+    if (!Utils.isMainThread()) {
+      Utils.runUi(this, () -> refreshUi(restorePosType)).waitForMe();
+      return;
+    }
+
     updateHeaderCosmetics();
     updateSearchSettingViews();
 
-    if (SETTINGS.isPageModeAndNotInSearch()) {
-      mQuranPageAdapter.setPageCount(TOTAL_PAGES);
-      // Restore slide position.
-      mB.pager.setCurrentItem(SETTINGS.getLastPage() - 1, false);
-    } else {
-      mQuranPageAdapter.setPageCount(1);
+    int page = -1;
+    if (restorePosType == RestorePosType.SAVED) {
+      saveScrollPos(SETTINGS.getLastPage(), SETTINGS.getLastAayah(), false);
+    } else if (restorePosType == RestorePosType.CURRENT) {
+      page = mCurrentPage;
+      saveScrollPos(mCurrentPage, mCurrentAayah, false);
+    }
+
+    mQuranPageAdapter.refresh();
+
+    if (SETTINGS.isSlideModeAndNotInSearch()) {
+      if (restorePosType == RestorePosType.SAVED) {
+        mB.pager.setCurrentItem(SETTINGS.getLastPage() - 1, false);
+      } else if (restorePosType == RestorePosType.CURRENT && page >= 1) {
+        mB.pager.setCurrentItem(page - 1, false);
+      }
     }
   }
 
@@ -388,12 +402,6 @@ public class MainActivity extends BaseActivity {
   private void cancelAutoFullScreen() {
     if (mAutoFullScreenFuture != null) {
       mAutoFullScreenFuture.cancel(false);
-    }
-  }
-
-  private void autoFullScreen() {
-    if (mB == null || mB.bottomBar.searchV.isIconified()) {
-      toggleFullScreen(true);
     }
   }
 
@@ -453,8 +461,9 @@ public class MainActivity extends BaseActivity {
               Utils.runUi(
                   this,
                   () -> {
-                    if (mB.bottomBar.feedbackCont.getVisibility() != View.VISIBLE) {
-                      autoFullScreen();
+                    if (mB.bottomBar.feedbackCont.getVisibility() != View.VISIBLE
+                        && !SETTINGS.isSearchStarted()) {
+                      toggleFullScreen(true);
                     }
                   });
       mAutoFullScreenFuture = mAutoFullScreenExecutor.schedule(task, 3, SECONDS);
@@ -468,7 +477,7 @@ public class MainActivity extends BaseActivity {
 
   private void toggleArrowsVisibility(boolean hide) {
     boolean showLeft, showRight;
-    showLeft = showRight = !mIsFullScreen && SETTINGS.isPageModeAndNotInSearch() && !hide;
+    showLeft = showRight = !mIsFullScreen && SETTINGS.isSlideModeAndNotInSearch() && !hide;
     showLeft = showLeft && mB.pager.getCurrentItem() < TOTAL_PAGES - 1;
     showRight = showRight && mB.pager.getCurrentItem() > 0;
     mB.leftArrow.setVisibility(showLeft ? View.VISIBLE : View.GONE);
@@ -514,7 +523,7 @@ public class MainActivity extends BaseActivity {
         v -> {
           SETTINGS.toggleSearchInTranslation();
           updateSearchSettingViews();
-          if (mB != null && !mB.bottomBar.searchV.isIconified()) {
+          if (SETTINGS.isSearchStarted()) {
             mB.bottomBar.searchV.setQuery(null, true);
           }
         });
@@ -523,25 +532,28 @@ public class MainActivity extends BaseActivity {
         v -> {
           SETTINGS.toggleSearchWithVowels();
           updateSearchSettingViews();
-          if (mB != null && !mB.bottomBar.searchV.isIconified()) {
+          if (SETTINGS.isSearchStarted()) {
             mB.bottomBar.searchV.setQuery(null, true);
           }
         });
 
+    // For text marquee to work.
     mB.bottomBar.searchSettingsTrans.setSelected(true);
     mB.bottomBar.searchSettingsVowels.setSelected(true);
+
     updateSearchSettingViews();
 
-    /* Display#getSize() and Display#getRealSize() give total diff (status bar + nav bar).
-    So using WindowInsetsListener instead.
+    /*
+     Display#getSize() and Display#getRealSize() give total diff (status bar + nav bar).
+     So using WindowInsetsListener instead.
 
-    It also covers functionality of
-    getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener()
-    which is required to move bottom app bar above soft keyboard since
-    windowSoftInputMode="adjustResize" does not work with FLAG_FULLSCREEN.
-    A diff of display height with visible Activity area is calculated on each onGlobalLayout()
-    call to figure out if soft kb is visible or not. Then setTranslationY() is called on
-    bottom bar to move it up the keyboard.
+     It also covers functionality of
+     getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener()
+     which is required to move bottom app bar above soft keyboard since
+     windowSoftInputMode="adjustResize" does not work with FLAG_FULLSCREEN.
+     A diff of display height with visible Activity area is calculated on each onGlobalLayout()
+     call to figure out if soft kb is visible or not. Then setTranslationY() is called on
+     bottom bar to move it up the keyboard.
     */
     mB.bottomBar
         .getRoot()
@@ -554,9 +566,6 @@ public class MainActivity extends BaseActivity {
 
               View windowView = getWindow().getDecorView();
 
-              // Coordinates of visible Activity area.
-              Rect activitySize = new Rect();
-              windowView.getWindowVisibleDisplayFrame(activitySize);
               // Display height
               int height = windowView.getContext().getResources().getDisplayMetrics().heightPixels;
               mSoftKbVisible = bottomOff >= height / 4;
@@ -605,7 +614,7 @@ public class MainActivity extends BaseActivity {
       setBgColor();
     } else if (itemId == R.id.action_text_color) {
       SETTINGS.setNextFontColor();
-      refreshUi(true);
+      refreshUi();
     } else if (itemId == R.id.action_font_size) {
       SETTINGS.setNextFontSize();
     } else if (itemId == R.id.action_font) {
@@ -631,14 +640,22 @@ public class MainActivity extends BaseActivity {
       }
       popupMenu.show();
     } else if (itemId == R.id.action_page_view) {
-      SETTINGS.togglePageMode();
-      refreshUi(true);
-      if (!mIsFullScreen) {
-        toggleArrowsVisibility(false);
+      PopupMenu popupMenu = new PopupMenu(this, mB.bottomBar.actionPageView);
+      popupMenu.inflate(R.menu.main_page_view);
+      popupMenu.setOnMenuItemClickListener(item -> handlePageViewItemClick(item.getItemId()));
+      Menu menu = popupMenu.getMenu();
+      menu.findItem(R.id.action_page_view).setChecked(SETTINGS.isSlideMode());
+      MenuItem aayahBreakItem = menu.findItem(R.id.action_aayah_breaks);
+      if (SETTINGS.transEnabled() && SETTINGS.showTransWithText()) {
+        aayahBreakItem.setChecked(true);
+        aayahBreakItem.setEnabled(false);
+      } else {
+        aayahBreakItem.setChecked(SETTINGS.breakAayahs());
       }
+      popupMenu.show();
     } else if (itemId == R.id.action_info_header) {
       SETTINGS.toggleShowHeader();
-      refreshUi(true);
+      refreshUi();
     } else if (itemId == R.id.action_overflow) {
       PopupMenu popupMenu = new PopupMenu(this, mB.bottomBar.actionOverflow);
       popupMenu.inflate(R.menu.main_overflow);
@@ -693,11 +710,28 @@ public class MainActivity extends BaseActivity {
       if (fontFile == null || SETTINGS.getFontFile(getString(fontFile)).exists()) {
         if (!getString(fontName).equals(SETTINGS.getFontName())) {
           SETTINGS.setFont(getString(fontName));
-          refreshUi(true);
+          refreshUi();
         }
       } else {
         downloadFonts(QURAN_FONTS_ZIP, getString(fontName), true);
       }
+      return true;
+    }
+    return false;
+  }
+
+  private boolean handlePageViewItemClick(int itemId) {
+    if (itemId == R.id.action_page_view) {
+      SETTINGS.toggleSlideMode();
+      refreshUi();
+      if (!mIsFullScreen) {
+        toggleArrowsVisibility(false);
+      }
+      return true;
+    }
+    if (itemId == R.id.action_aayah_breaks) {
+      SETTINGS.toggleAayahBreaks();
+      refreshUi();
       return true;
     }
     return false;
@@ -782,7 +816,7 @@ public class MainActivity extends BaseActivity {
     if (itemId == R.id.action_trans_with_text) {
       item.setChecked(!item.isChecked());
       SETTINGS.setShowTransWithText(item.isChecked());
-      refreshUi(true);
+      refreshUi();
       return true;
     }
 
@@ -820,7 +854,6 @@ public class MainActivity extends BaseActivity {
     List<DialogListItem> items = new ArrayList<>();
     List<AayahEntity> aayahs =
         QuranDao.getAayahEntities(SETTINGS.getQuranDb(), SETTINGS.getBookmarks());
-    aayahs.sort(Comparator.comparingInt(a -> a.id));
 
     for (AayahEntity aayah : aayahs) {
       SurahEntity surah;
@@ -940,71 +973,66 @@ public class MainActivity extends BaseActivity {
     }
   }
 
-  private final ScrollPos mScrollPos = new ScrollPos();
-
   public void goTo(AayahEntity aayah) {
-    if (Utils.isMainThread()) {
-      Utils.runBg(() -> goTo(aayah));
+    if (!Utils.isMainThread()) {
+      Utils.runUi(this, () -> goTo(aayah));
       return;
     }
 
-    // Make sure we are not in search.
-    if (!mB.bottomBar.searchV.isIconified()) {
-      // On returning from search mode, new List is submitted to Adapter.
-      // Let's save the required positions to move to.
-      SETTINGS.setScrollPosition(aayah.page, aayah.id);
-
-      Utils.runUi(this, this::collapseSearchView).waitForMe();
-
-      // notifyDataSetChanged() is asynchronous. Let's give it a second to complete.
-      SystemClock.sleep(1000);
+    /*
+     If we are returning from search, restoring position is handled in
+     setSearchViewVisibility(). Let's save the required positions to move to.
+    */
+    if (SETTINGS.isSearchStarted()) {
+      saveScrollPosForSearch(aayah.page, aayah.id, true);
+      /*
+       LayoutManager#scrollToPosition() and RecyclerView#scrollToPosition() don't work
+       if SearchView is collapsed while not focused (if cleared onBackPressed()).
+      */
+      mB.bottomBar.searchV.post(() -> mB.bottomBar.searchV.requestFocus());
+      mB.bottomBar.searchV.post(this::collapseSearchView);
+      return;
     }
 
-    int page = aayah.page;
-    if (SETTINGS.isPageModeAndNotInSearch()) {
-      synchronized (mScrollPos) {
-        mScrollPos.page = page;
-        mScrollPos.aayahId = aayah.id;
-      }
-      int pos = page - 1;
-      Utils.runUi(
-          this,
-          () -> {
-            if (mB.pager.getCurrentItem() == pos) {
-              scrollRvToAayahId(page);
-            } else {
-              mB.pager.setCurrentItem(pos, true);
-            }
-          });
-    } else {
-      Utils.runUi(this, () -> scrollRvToPos(null, aayah.id, true));
+    if (SETTINGS.isSlideModeAndNotInSearch() && mB.pager.getCurrentItem() != aayah.page - 1) {
+      saveScrollPos(aayah.page, aayah.id, true);
+      mB.pager.setCurrentItem(aayah.page - 1, true);
+      return;
     }
+
+    /*
+     No need to scroll the pager if:
+     - In slide (page) mode and not in search, but current page is already the required page, or
+     - Not breaking Aayahs and not in search and not showing translation below text, or
+     - In search mode, or
+     - In non-slide (continuous) mode
+    */
+    scrollRvToAayah(null, aayah.id);
   }
 
-  private void goToAayah(Intent intent) {
+  private boolean goToAayah(Intent intent) {
     int surahNum, aayahNum;
     if (intent != null
         && (surahNum = intent.getIntExtra(EXTRA_SURAH_NUM, 0)) > 0
         && (aayahNum = intent.getIntExtra(EXTRA_AAYAH_NUM, 0)) > 0) {
-      Utils.runBg(() -> goTo(surahNum, aayahNum));
+      Utils.runBg(
+          () -> {
+            AayahEntity aayah = SETTINGS.getQuranDb().getAayahEntity(surahNum, aayahNum);
+            // Wait for QuranPageAdapter to come up;
+            for (int i = 0; i < 50; i++) {
+              if (getPageFrag(null) != null) {
+                goTo(aayah);
+                break;
+              }
+              SystemClock.sleep(100);
+            }
+          });
+      return true;
     }
+    return false;
   }
 
-  private void goTo(int surahNum, int aayahNum) {
-    AayahEntity aayah = SETTINGS.getQuranDb().getAayahEntity(surahNum, aayahNum);
-    goTo(aayah);
-  }
-
-  private static class ScrollPos {
-
-    Integer page, aayahId;
-
-    private void reset() {
-      page = null;
-      aayahId = null;
-    }
-  }
-
+  // Null page means current page
   private QuranPageFragment getPageFrag(@Nullable Integer page) {
     if (page == null) {
       page = mB.pager.getCurrentItem() + 1;
@@ -1019,47 +1047,100 @@ public class MainActivity extends BaseActivity {
     return null;
   }
 
-  private void scrollRvToPos(@Nullable Integer page, int rvPos, boolean highlight) {
+  // Null page means current page. If Aayah ID is null, get the saved one.
+  private boolean scrollRvToAayah(@Nullable Integer page, @Nullable Integer aayahId) {
     QuranPageFragment pageFrag = getPageFrag(page);
-    if (pageFrag != null) {
-      pageFrag.scrollToPos(rvPos, 0, highlight);
-    }
-  }
-
-  private boolean scrollRvToAayahId(int page) {
-    synchronized (mScrollPos) {
-      if (mScrollPos.page != null && mScrollPos.page == page) {
-        QuranPageFragment pageFrag = getPageFrag(page);
-        if (pageFrag != null) {
-          int id = mScrollPos.aayahId;
-          mScrollPos.reset();
-          pageFrag.scrollToAayahId(id);
-        }
-        return true;
-      }
+    if (pageFrag == null) {
       return false;
     }
-  }
-
-  Integer getScrollPos(int page) {
-    synchronized (mScrollPos) {
-      if (mScrollPos.page != null && mScrollPos.page == page) {
-        int id = mScrollPos.aayahId;
-        mScrollPos.reset();
-        return id;
+    boolean blink = true;
+    if (aayahId == null) {
+      ScrollPos scrollPos = getScrollPos(page);
+      if (scrollPos != null) {
+        aayahId = scrollPos.aayahId;
+        blink = scrollPos.blink;
+      } else {
+        return false;
       }
-      return null;
     }
+
+    pageFrag.scrollToAayah(aayahId, blink);
+    return true;
   }
 
   private final AtomicInteger mLastPage = new AtomicInteger();
 
+  /*
+   Restoring RV scroll position is handled in QuranPageFragment
+   if the page does not already exists in Pager.
+  */
   private void onPageSelected(int page) {
     synchronized (mLastPage) {
-      if (!scrollRvToAayahId(page) && page != mLastPage.get()) {
-        scrollRvToPos(page, 0, false);
+      // If there's no scroll info saved, and the page is scrolled, go to the top of the page.
+      if (!scrollRvToAayah(page, null) && page != mLastPage.getAndSet(page)) {
+        QuranPageFragment pageFrag = getPageFrag(page);
+        if (pageFrag != null) {
+          pageFrag.scrollToRvItem(0, 0, false);
+        }
       }
-      mLastPage.set(page);
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////
+  /////////////////////// PAGE SCROLL POSITION /////////////////////
+  //////////////////////////////////////////////////////////////////
+
+  /*
+   If we want to go to an Aayah which is not on current slide, we save the Aayah ID
+   and scroll to the required page. After the page is selected, it checks for a saved
+   Aayah ID to scroll to.
+  */
+  static class ScrollPos {
+
+    int page, aayahId;
+    boolean blink;
+
+    ScrollPos(int page, int aayahId, boolean blink) {
+      this.page = page;
+      this.aayahId = aayahId;
+      this.blink = blink;
+    }
+  }
+
+  private final Object SCROLL_POS_LOCK = new Object();
+  private ScrollPos mScrollPos;
+
+  private void saveScrollPos(int page, int aayahId, boolean blink) {
+    synchronized (SCROLL_POS_LOCK) {
+      if (page >= 1 && aayahId >= 0) {
+        mScrollPos = new ScrollPos(page, aayahId, blink);
+      }
+    }
+  }
+
+  private ScrollPos mScrollPosSearch;
+
+  private void saveScrollPosForSearch(int page, int aayahId, boolean blink) {
+    synchronized (SCROLL_POS_LOCK) {
+      if (page >= 1 && aayahId >= 0) {
+        mScrollPosSearch = new ScrollPos(page, aayahId, blink);
+      }
+    }
+  }
+
+  // Null page means we are not in slide-page mode. So page is always one.
+  ScrollPos getScrollPos(@Nullable Integer page) {
+    synchronized (SCROLL_POS_LOCK) {
+      if (mScrollPos != null) {
+        if (page == null || mScrollPos.page == page) {
+          try {
+            return mScrollPos;
+          } finally {
+            mScrollPos = null;
+          }
+        }
+      }
+      return null;
     }
   }
 
@@ -1162,7 +1243,7 @@ public class MainActivity extends BaseActivity {
       Utils.runUi(this, () -> setSearchViewVisibility(true));
     }
     if (refreshUi) {
-      refreshUi(true);
+      refreshUi();
     }
   }
 
@@ -1179,7 +1260,7 @@ public class MainActivity extends BaseActivity {
           if (fontName != null) {
             SETTINGS.setFont(fontName);
           }
-          refreshUi(true);
+          refreshUi();
         };
     FileDownload fd = new FileDownload(this, "/fonts/", zip, callback, R.string.downloading_font);
     if (askToDownload) {
@@ -1274,9 +1355,31 @@ public class MainActivity extends BaseActivity {
       mB.bottomBar.container.setBackgroundColor(Utils.getAttrColor(this, R.attr.accentTrans1));
     }
     SETTINGS.setSearchStarted(visible);
-    // If showing SearchView, hide the header, submit single page, and save
-    // scroll positions to restore after search.
-    refreshUi(visible);
+
+    /*
+     If showing SearchView, hide the header, submit single page, and save
+     scroll positions to restore after search.
+     Current position is restored after Search. But if GoTo is selected from long press menu,
+     current search is overridden in goTo() by a new position.
+    */
+    ScrollPos scrollPos;
+    synchronized (SCROLL_POS_LOCK) {
+      scrollPos = mScrollPosSearch;
+      mScrollPosSearch = null;
+    }
+    if (visible) {
+      saveScrollPosForSearch(mCurrentPage, mCurrentAayah, false);
+    } else if (scrollPos != null) {
+      saveScrollPos(scrollPos.page, scrollPos.aayahId, scrollPos.blink);
+    }
+    refreshUi(RestorePosType.NONE);
+    if (!visible
+        && SETTINGS.isSlideModeAndNotInSearch()
+        && scrollPos != null
+        && scrollPos.page >= 1) {
+      mB.pager.setCurrentItem(scrollPos.page - 1, false);
+    }
+
     toggleArrowsVisibility(visible); // Hide arrows when in search.
   }
 
@@ -1313,7 +1416,7 @@ public class MainActivity extends BaseActivity {
   //////////////////////////////////////////////////////////////////
 
   private void updateHeaderCosmetics() {
-    if (!SETTINGS.getShowHeader() || (!mB.bottomBar.searchV.isIconified())) {
+    if (!SETTINGS.getShowHeader() || SETTINGS.isSearchStarted()) {
       mB.headerContainer.setVisibility(View.GONE);
     } else {
       mB.headerContainer.setVisibility(View.VISIBLE);
@@ -1352,7 +1455,8 @@ public class MainActivity extends BaseActivity {
   private int mCurrentPage = -1, mCurrentAayah = -1;
 
   void updateHeader(AayahEntity entity, SurahEntity surah) {
-    if (SETTINGS.isPageModeAndNotInSearch() && mB.pager.getCurrentItem() != entity.page - 1) {
+    // If updateHeader() is called for previous page after we have slided to a new page.
+    if (SETTINGS.isSlideModeAndNotInSearch() && mB.pager.getCurrentItem() != entity.page - 1) {
       return;
     }
 
@@ -1395,7 +1499,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onPageSelected(int position) {
-      if (!SETTINGS.isPageModeAndNotInSearch()) {
+      if (!SETTINGS.isSlideModeAndNotInSearch()) {
         return;
       }
 

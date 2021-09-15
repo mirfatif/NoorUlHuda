@@ -112,7 +112,6 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
     synchronized (mTags) {
       mTags.clear();
       mTags.addAll(SETTINGS.getTagsDb().getTags());
-      mTags.sort((t1, t2) -> Long.compare(t2.timeStamp, t1.timeStamp));
     }
     for (TagEntity tag : new ArrayList<>(mTags)) {
       tag.aayahIds.addAll(SETTINGS.getTagAayahsDb().getAayahIds(tag.id));

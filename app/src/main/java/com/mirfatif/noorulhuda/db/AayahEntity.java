@@ -23,4 +23,5 @@ public class AayahEntity {
       rukuEnds = false,
       hizbEnds = false,
       hasSajda = false;
+  public int aayahGroupPos, aayahGroupPosInPage;
 }

@@ -222,39 +222,6 @@ public enum MySettings {
     savePref(R.string.pref_settings_check_for_updates_key, check);
   }
 
-  private final Set<Integer> mTasmiaIds = new HashSet<>();
-
-  static {
-    String key = getString(R.string.pref_settings_tasmia_ids_nb_key);
-    String val = SETTINGS.mNoBkpPrefs.getString(key, null);
-    if (val != null) {
-      for (String i : val.split(",")) {
-        SETTINGS.mTasmiaIds.add(Integer.parseInt(i));
-      }
-    }
-  }
-
-  public boolean isTasmia(int id) {
-    return mTasmiaIds.contains(id);
-  }
-
-  public void saveTasmiaIds(List<Integer> tasmiaIds) {
-    mTasmiaIds.clear();
-    mTasmiaIds.addAll(tasmiaIds);
-
-    StringBuilder builder = new StringBuilder();
-    for (int i : tasmiaIds) {
-      if (builder.length() != 0) {
-        builder.append(",");
-      }
-      builder.append(i);
-    }
-    mNoBkpPrefs
-        .edit()
-        .putString(getString(R.string.pref_settings_tasmia_ids_nb_key), builder.toString())
-        .apply();
-  }
-
   private static final Object DB_LOCK = new Object();
   private String mLastQuranDb;
   private QuranDatabase mQuranDb;
@@ -424,21 +391,28 @@ public enum MySettings {
     savePref(R.string.pref_main_show_page_header_key, !getShowHeader());
   }
 
-  public boolean isPageMode() {
+  public boolean isSlideMode() {
     return getBoolPref(R.string.pref_main_page_view_key);
   }
 
-  public boolean isPageModeAndNotInSearch() {
-    return isPageMode() && !mIsSearchStarted;
+  public boolean isSlideModeAndNotInSearch() {
+    return isSlideMode() && !mIsSearchStarted;
   }
 
-  public void togglePageMode() {
-    int key = R.string.pref_main_page_view_key;
-    savePref(key, !getBoolPref(key));
+  public void toggleSlideMode() {
+    savePref(R.string.pref_main_page_view_key, !isSlideMode());
+  }
+
+  public boolean breakAayahs() {
+    return getBoolPref(R.string.pref_main_break_aayahs_key);
+  }
+
+  public void toggleAayahBreaks() {
+    savePref(R.string.pref_main_break_aayahs_key, !breakAayahs());
   }
 
   public boolean showSingleAayah() {
-    return !isPageModeAndNotInSearch() || (transEnabled() && showTransWithText());
+    return breakAayahs() || mIsSearchStarted || (transEnabled() && showTransWithText());
   }
 
   private boolean mIsSearchStarted = false;

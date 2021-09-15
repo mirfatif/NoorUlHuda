@@ -11,7 +11,6 @@
   <!-- MainActivity Preferences -->
   <string name="pref_main_crash_report_ts_nb_key" translatable="false">pref_main_crash_report_ts_nb</string>
   <string name="pref_main_bookmarks_key" translatable="false">pref_main_bookmarks</string>
-  <string name="pref_settings_tasmia_ids_nb_key" translatable="false">pref_settings_tasmia_ids_nb</string>
 
   <!-- MainActivity Preferences corresponding to default values -->
   <string name="pref_main_crash_report_count_nb_key" translatable="false">pref_main_crash_report_count_nb</string>
@@ -22,6 +21,8 @@
   <string name="pref_main_theme_color_default" translatable="false">@string/theme_color_green</string>
   <string name="pref_main_page_view_key" translatable="false">pref_main_page_view</string>
   <bool name="pref_main_page_view_default">true</bool>
+  <string name="pref_main_break_aayahs_key" translatable="false">pref_main_break_aayahs</string>
+  <bool name="pref_main_break_aayahs_default">false</bool>
   <string name="pref_main_show_page_header_key" translatable="false">pref_main_show_page_header</string>
   <bool name="pref_main_show_page_header_default">true</bool>
   <string name="pref_main_font_nb_key" translatable="false">pref_main_font_nb</string>

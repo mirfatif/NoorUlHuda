@@ -46,19 +46,22 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     mLongClickListener = listener;
   }
 
-  private final List<Aayah> mAayahList = new ArrayList<>();
+  private final List<AayahGroup> mAayahGroupList = new ArrayList<>();
+  private final List<Integer> mTasmiaPositions = new ArrayList<>();
 
   @SuppressLint("NotifyDataSetChanged")
-  void submitList(List<Aayah> list) {
-    synchronized (mAayahList) {
-      mAayahList.clear();
-      mAayahList.addAll(list);
+  void submitList(List<AayahGroup> aayahGroups, List<Integer> tasmiaPos) {
+    synchronized (mAayahGroupList) {
+      mAayahGroupList.clear();
+      mAayahGroupList.addAll(aayahGroups);
+      mTasmiaPositions.clear();
+      mTasmiaPositions.addAll(tasmiaPos);
       notifyDataSetChanged();
     }
   }
 
-  Aayah getAayah(int position) {
-    return mAayahList.get(position);
+  AayahGroup getAayahGroup(int position) {
+    return mAayahGroupList.get(position);
   }
 
   @NonNull
@@ -79,59 +82,54 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
   @Override
   public int getItemCount() {
-    return mAayahList.size();
+    return mAayahGroupList.size();
   }
 
+  private static final int TYPE_AAYAH = 0;
   private static final int TYPE_TASMIA = 1;
 
   @Override
   public int getItemViewType(int position) {
-    int id = position;
-    Aayah aayah = mAayahList.get(position);
-    if (aayah != null && !aayah.entities.isEmpty() && aayah.entities.get(0) != null) {
-      id = aayah.entities.get(0).id;
-    }
-    if (SETTINGS.isTasmia(id)) {
+    if (mTasmiaPositions.contains(position)) {
       return TYPE_TASMIA;
     }
-    return 0;
+    return TYPE_AAYAH;
   }
 
   protected abstract class ItemViewHolder extends RecyclerView.ViewHolder {
 
-    private final View mView;
-
     private ItemViewHolder(@NonNull View itemView) {
       super(itemView);
-      mView = itemView;
-    }
-
-    View getView() {
-      return mView;
     }
 
     private void bind(int position) {
-      Aayah aayah = mAayahList.get(position);
-      if (aayah == null) {
-        aayah = new Aayah();
-        synchronized (mAayahList) {
-          mAayahList.remove(position);
-          mAayahList.add(position, aayah);
+      AayahGroup aayahGroup = mAayahGroupList.get(position);
+      if (aayahGroup == null) {
+        aayahGroup = new AayahGroup();
+        synchronized (mAayahGroupList) {
+          mAayahGroupList.remove(position);
+          mAayahGroupList.add(position, aayahGroup);
         }
       }
-      if (aayah.entities.isEmpty()) {
-        aayah.entities.add(SETTINGS.getQuranDb().getAayahEntity(position));
+
+      // If it's non-slide and non-search mode.
+      if (aayahGroup.entities.isEmpty()) {
+        if (SETTINGS.showSingleAayah()) {
+          aayahGroup.entities.add(SETTINGS.getQuranDb().getAayahEntity(position));
+        } else {
+          aayahGroup.entities.addAll(SETTINGS.getQuranDb().getAayahsAtGroupPos(position));
+        }
       }
 
-      if (!aayah.entities.isEmpty()) {
-        bind(aayah);
+      if (!aayahGroup.entities.isEmpty()) {
+        bind(aayahGroup);
       }
     }
 
-    abstract void bind(Aayah aayah);
+    abstract void bind(AayahGroup aayahGroup);
   }
 
-  private class TasmiaViewHolder extends ItemViewHolder {
+  class TasmiaViewHolder extends ItemViewHolder {
 
     private final RvItemTasmiaBinding mB;
 
@@ -176,10 +174,11 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     }
 
     @Override
-    void bind(Aayah aayah) {
-      SurahEntity surah = SETTINGS.getMetaDb().getSurah(aayah.entities.get(0).surahNum);
+    void bind(AayahGroup aayahGroup) {
+      SurahEntity surah = SETTINGS.getMetaDb().getSurah(aayahGroup.entities.get(0).surahNum);
       if (surah != null) {
-        Utils.runUi(mA, () -> bindSurahHeader(surah));
+        Utils.runUi(mA, () -> bindSurahHeader(surah)).waitForMe();
+        aayahGroup.bound = true;
       }
     }
 
@@ -256,18 +255,18 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
       return mB.textV;
     }
 
-    private Aayah mAayah;
+    private AayahGroup mAayahGroup;
 
     @Override
-    void bind(Aayah aayah) {
-      mAayah = aayah;
-      if (aayah.prettyText == null) {
+    void bind(AayahGroup aayahGroup) {
+      mAayahGroup = aayahGroup;
+      if (aayahGroup.prettyText == null) {
         QuranDao db = SETTINGS.getTransDb();
         StringBuilder text = new StringBuilder();
         List<Pair<Integer, Integer>> aayahStartEndMarks = new ArrayList<>();
         List<Integer> rukuEndMarks = new ArrayList<>();
 
-        for (AayahEntity entity : aayah.entities) {
+        for (AayahEntity entity : aayahGroup.entities) {
           if (text.length() != 0) {
             text.append(" ");
           }
@@ -284,7 +283,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
           SpanMarks span =
               new SpanMarks(entity, trans, text.length(), text.length() + entity.text.length());
-          aayah.aayahSpans.add(span);
+          aayahGroup.aayahSpans.add(span);
 
           text.append(entity.text).append(" ");
           int start = text.length(), end = start;
@@ -318,28 +317,30 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
           if (SETTINGS.doSearchInTranslation()) {
             if (SETTINGS.transEnabled() && SETTINGS.showTransWithText()) {
               Utils.getHighlightString(
-                  aayah.aayahSpans.get(0).trans, getHighlight(), SETTINGS.getSearchQuery());
+                  aayahGroup.aayahSpans.get(0).trans, getHighlight(), SETTINGS.getSearchQuery());
             }
           } else if (SETTINGS.doSearchWithVowels()) {
-            Utils.getHighlightString(aayah.prettyText, getHighlight(), SETTINGS.getSearchQuery());
+            Utils.getHighlightString(
+                aayahGroup.prettyText, getHighlight(), SETTINGS.getSearchQuery());
           }
 
-          SurahEntity surah = SETTINGS.getMetaDb().getSurah(aayah.entities.get(0).surahNum);
-          aayah.surahName = getString(R.string.surah_name, surah.name);
+          SurahEntity surah = SETTINGS.getMetaDb().getSurah(aayahGroup.entities.get(0).surahNum);
+          aayahGroup.surahName = getString(R.string.surah_name, surah.name);
         }
       }
 
-      Utils.runUi(mA, () -> bindAayah(aayah));
+      Utils.runUi(mA, () -> bindAayah(aayahGroup)).waitForMe();
+      aayahGroup.bound = true;
     }
 
-    private void bindAayah(Aayah aayah) {
-      mB.textV.setText(aayah.prettyText);
+    private void bindAayah(AayahGroup aayahGroup) {
+      mB.textV.setText(aayahGroup.prettyText);
       if (SETTINGS.transEnabled() && SETTINGS.showTransWithText()) {
-        mB.transV.setText(aayah.aayahSpans.get(0).trans);
+        mB.transV.setText(aayahGroup.aayahSpans.get(0).trans);
       }
 
       if (SETTINGS.isSearching()) {
-        mB.refV.setText(aayah.surahName);
+        mB.refV.setText(aayahGroup.surahName);
         mB.refV.setVisibility(View.VISIBLE);
       } else {
         mB.refV.setVisibility(View.GONE);
@@ -359,7 +360,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
       for (Integer pos : rukuEndSpans) {
         spannable.setSpan(new RukuSignSpan(), pos, pos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       }
-      mAayah.prettyText = spannable;
+      mAayahGroup.prettyText = spannable;
     }
 
     private TextAppearanceSpan HIGHLIGHT;
@@ -374,10 +375,11 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     @Override
     public boolean onLongClick(View v) {
       if (SETTINGS.showSingleAayah()) {
-        mLongClickListener.onLongClick(mAayah.entities.get(0), mAayah.aayahSpans.get(0).trans, v);
+        mLongClickListener.onLongClick(
+            mAayahGroup.entities.get(0), mAayahGroup.aayahSpans.get(0).trans, v);
       } else {
         int offset = mB.textV.getTouchOffset();
-        for (SpanMarks span : mAayah.aayahSpans) {
+        for (SpanMarks span : mAayahGroup.aayahSpans) {
           if (offset >= span.start && offset <= span.end) {
             mLongClickListener.onTextSelected(
                 span.entity, span.trans, mB.textV, span.start, span.end);
@@ -389,13 +391,16 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     }
   }
 
-  static class Aayah {
+  static class AayahGroup {
 
     // Quranic text with Aayah signs and Ruku signs added.
     SpannableString prettyText;
 
     // To show in reference in search mode.
     String surahName;
+
+    // Indicates that the AayahGroup has passed from bind() at least once.
+    boolean bound = false;
 
     // Single Aayah (in single Aayah mode or with translation below Quranic text) or
     // a list of Aayahs (to show Quranic text as a block).

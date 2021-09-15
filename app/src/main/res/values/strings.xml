@@ -119,6 +119,8 @@
   <string name="theme_menu_item" maxLength="15">Theme</string>
   <string name="dark_theme_menu_item" maxLength="15">Dark Mode</string>
   <string name="page_view_menu_item" maxLength="15">Page Mode</string>
+  <string name="page_slide_menu_item" maxLength="15">Page Slide</string>
+  <string name="aayah_breaks_menu_item" maxLength="15">Āyah Breaks</string>
   <string name="info_header_menu_item" maxLength="15">Page Header</string>
   <string name="theme_color_green" maxLength="15">Green</string>
   <string name="theme_color_blue" maxLength="15">Blue</string>

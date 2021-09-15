@@ -86,7 +86,6 @@ public class DbBuilder {
       xmlParser.setInput(inputStream, null);
 
       List<AayahEntity> aayahEntities = new ArrayList<>();
-      List<Integer> tasmiaIds = new ArrayList<>();
 
       while (true) {
         int eventType = xmlParser.next(); // Get the next parsing event
@@ -110,7 +109,6 @@ public class DbBuilder {
               }
               int id = getId();
               aayahEntities.add(new AayahEntity(id, surahNum, 0));
-              tasmiaIds.add(id);
               lastAayahNum = 0;
               break;
           }
@@ -148,7 +146,6 @@ public class DbBuilder {
       if (MySettings.isQuranDb(dbName)) {
         mQuranMetaDao = SETTINGS.getMetaDb();
         if (dbName.equals(MAIN_DB)) {
-          SETTINGS.saveTasmiaIds(tasmiaIds);
           buildMetadata();
         }
         insertMetadata(JUZS_TAG, JUZ_TAG, dao::insertJuz, dao::addJuzStarts);
@@ -157,9 +154,11 @@ public class DbBuilder {
         insertMetadata(RUKUS_TAG, RUKU_TAG, null, dao::addRukuEnds);
         insertMetadata(HIZBS_TAG, HIZB_TAG, null, dao::addHizbEnds);
         insertMetadata(SAJDAS_TAG, SAJDA_TAG, null, dao::addHasSajda);
+        insertAayahGroupPositions(dao);
       }
 
       SETTINGS.setDbBuilt(dbName);
+
       return true;
     } catch (IOException | XmlPullParserException | NumberFormatException e) {
       e.printStackTrace();
@@ -349,6 +348,40 @@ public class DbBuilder {
       return;
     }
     markCallback.insertMark(markSurahNum, markAayahNum);
+  }
+
+  /*
+   Create a new AayahGroup if:
+   - Showing single Aayahs, or
+   - It's Tasmia at the start of Surah, or
+   - It's the first Aayah of a Surah.
+  */
+  private void insertAayahGroupPositions(QuranDao dao) {
+    int groupPos = 0;
+    List<Integer> aayahIds = new ArrayList<>();
+
+    for (int page = 1; page <= TOTAL_PAGES; page++) {
+      int groupPosInPage = 0;
+      aayahIds.clear();
+      List<AayahEntity> entities = dao.getAayahEntities(page);
+
+      for (AayahEntity entity : entities) {
+        if (entity.aayahNum == 0 || entity.aayahNum == 1) {
+          if (!aayahIds.isEmpty()) {
+            dao.insertAayahGroupPositions(aayahIds, groupPos, groupPosInPage);
+            aayahIds.clear();
+            groupPosInPage++;
+            groupPos++;
+          }
+        }
+        aayahIds.add(entity.id);
+      }
+
+      if (!aayahIds.isEmpty()) {
+        dao.insertAayahGroupPositions(aayahIds, groupPos, groupPosInPage);
+        groupPos++;
+      }
+    }
   }
 
   private int mId = 0;
