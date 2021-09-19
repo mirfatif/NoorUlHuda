@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -83,6 +85,8 @@ public class PrayerNotifySvc extends Service {
       return Service.START_NOT_STICKY;
     }
 
+    holdWakeLock();
+
     PostPrayerNotif ppn = null;
     if (intent != null) {
       long ppTime;
@@ -95,11 +99,15 @@ public class PrayerNotifySvc extends Service {
     }
     PostPrayerNotif postPrayerNotif = ppn;
 
-    mFuture = Utils.runBg(() -> create(runFgSvc, postPrayerNotif));
-    if (runFgSvc) {
-      return Service.START_STICKY;
-    } else {
-      return Service.START_NOT_STICKY;
+    try {
+      mFuture = Utils.runBg(() -> create(runFgSvc, postPrayerNotif));
+      if (runFgSvc) {
+        return Service.START_STICKY;
+      } else {
+        return Service.START_NOT_STICKY;
+      }
+    } finally {
+      releaseWakeLock();
     }
   }
 
@@ -358,6 +366,29 @@ public class PrayerNotifySvc extends Service {
       intent.putExtra(EXTRA_POST_PRAYER_TIME, val);
     }
     return PendingIntent.getService(App.getCxt(), WIDGET_NOTIF_ID, intent, getPiFlags(cancel));
+  }
+
+  private final WakeLock mWakeLock;
+
+  {
+    PowerManager pm = (PowerManager) App.getCxt().getSystemService(Context.POWER_SERVICE);
+    mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
+  }
+
+  private void holdWakeLock() {
+    synchronized (mWakeLock) {
+      if (!mWakeLock.isHeld()) {
+        mWakeLock.acquire(10000);
+      }
+    }
+  }
+
+  private void releaseWakeLock() {
+    synchronized (mWakeLock) {
+      if (mWakeLock.isHeld()) {
+        mWakeLock.release();
+      }
+    }
   }
 
   private static class PostPrayerNotif {
