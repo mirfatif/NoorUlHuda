@@ -632,7 +632,10 @@ public class QuranPageFragment extends Fragment {
   /////////////////////////// LONG CLICK ///////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private static final int POPUP_WIDTH = 150, POPUP_HEIGHT = 100;
+  public static final int POPUP_HEIGHT = 100;
+  public static final int POPUP_ICON_WIDTH = 36;
+  public static final int POPUP_PADDING = 16;
+
   private PopupWindow mPopup;
   private int mTapPosX, mTapPosY;
 
@@ -684,10 +687,10 @@ public class QuranPageFragment extends Fragment {
       setButtonListener(
           b.addTagButton, () -> Utils.runUi(QuranPageFragment.this, () -> openTags(entity.id)));
 
-      AtomicInteger popupWidth = new AtomicInteger(POPUP_WIDTH);
+      AtomicInteger iconCount = new AtomicInteger(3); // Copy, Share and Tag
 
       if (mShowingSearchResults) {
-        popupWidth.addAndGet(50);
+        iconCount.addAndGet(1);
         b.gotoButton.setVisibility(View.VISIBLE);
         b.gotoButton.setOnClickListener(
             v -> {
@@ -697,7 +700,7 @@ public class QuranPageFragment extends Fragment {
       }
 
       if (trans != null && !SETTINGS.showTransWithText()) {
-        popupWidth.addAndGet(50);
+        iconCount.addAndGet(1);
         b.transButton.setVisibility(View.VISIBLE);
         b.transButton.setOnClickListener(
             v -> {
@@ -737,7 +740,7 @@ public class QuranPageFragment extends Fragment {
       Utils.runBg(
           () -> {
             if (!SETTINGS.getBookmarks().contains(entity.id)) {
-              popupWidth.addAndGet(50);
+              iconCount.addAndGet(1);
               Utils.runUi(
                   QuranPageFragment.this,
                   () -> {
@@ -749,24 +752,22 @@ public class QuranPageFragment extends Fragment {
             Utils.runUi(
                 QuranPageFragment.this,
                 () -> {
-                  showPopupMenu(b.getRoot(), popupWidth.get());
+                  showPopupMenu(b.getRoot(), iconCount.get());
                   callback.run();
                 });
           });
     }
 
-    private void showPopupMenu(View contentView, int popupWidth) {
+    private void showPopupMenu(View contentView, int iconCount) {
       dismissPopup();
       mPopup = new PopupWindow(contentView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
       mPopup.setElevation(500);
       mPopup.setOverlapAnchor(true);
       mPopup.setOutsideTouchable(true); // Dismiss on outside touch.
 
-      int xOff = mTapPosX - Utils.toPx(popupWidth);
+      int popupWidth = POPUP_PADDING + iconCount * POPUP_ICON_WIDTH;
+      int xOff = Math.max(0, mTapPosX - Utils.toPx(popupWidth / 2));
       int yOff = mTapPosY - Utils.toPx(POPUP_HEIGHT);
-      if (xOff < 0) {
-        xOff = mTapPosX + Utils.toPx(popupWidth / 4);
-      }
       if (yOff < 0) {
         yOff = mTapPosY + Utils.toPx(POPUP_HEIGHT / 2);
       }

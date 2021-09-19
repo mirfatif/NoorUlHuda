@@ -5,6 +5,9 @@ import static com.mirfatif.noorulhuda.dua.DuaPageAdapter.DUA_TYPE_MASNOON;
 import static com.mirfatif.noorulhuda.dua.DuaPageAdapter.DUA_TYPE_OCCASIONS;
 import static com.mirfatif.noorulhuda.dua.DuaPageAdapter.DUA_TYPE_QURANIC;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.quran.QuranPageFragment.POPUP_HEIGHT;
+import static com.mirfatif.noorulhuda.quran.QuranPageFragment.POPUP_ICON_WIDTH;
+import static com.mirfatif.noorulhuda.quran.QuranPageFragment.POPUP_PADDING;
 import static com.mirfatif.noorulhuda.util.Utils.setTooltip;
 import static com.mirfatif.noorulhuda.util.Utils.toPx;
 
@@ -157,7 +160,6 @@ public class DuaPageFragment extends Fragment {
   /////////////////////////// LONG CLICK ///////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private static final int POPUP_WIDTH = 100, POPUP_HEIGHT = 100;
   private PopupWindow mPopup;
   private int mTapPosX, mTapPosY;
 
@@ -176,10 +178,10 @@ public class DuaPageFragment extends Fragment {
       b.copyButton.setOnClickListener(v -> shareDua(dua, true));
       b.shareButton.setOnClickListener(v -> shareDua(dua, false));
 
-      int popupWidth = POPUP_WIDTH;
+      int iconCount = 2; // Copy and Share
 
       if (mDuaType == DUA_TYPE_QURANIC) {
-        popupWidth += 50;
+        iconCount++;
         b.gotoButton.setVisibility(View.VISIBLE);
         b.gotoButton.setOnClickListener(
             v -> {
@@ -189,7 +191,7 @@ public class DuaPageFragment extends Fragment {
       }
 
       if (dua.trans != null && !SETTINGS.showTransWithText()) {
-        popupWidth += 50;
+        iconCount++;
         b.transButton.setVisibility(View.VISIBLE);
         b.transButton.setOnClickListener(
             v -> {
@@ -251,11 +253,9 @@ public class DuaPageFragment extends Fragment {
             mPopup = null;
           });
 
-      int xOff = mTapPosX - Utils.toPx(popupWidth);
+      int popupWidth = POPUP_PADDING + iconCount * POPUP_ICON_WIDTH;
+      int xOff = Math.max(0, mTapPosX - Utils.toPx(popupWidth / 2));
       int yOff = mTapPosY - Utils.toPx(POPUP_HEIGHT);
-      if (xOff < 0) {
-        xOff = mTapPosX + Utils.toPx(popupWidth / 4);
-      }
       if (yOff < 0) {
         yOff = mTapPosY + Utils.toPx(POPUP_HEIGHT / 2);
       }
