@@ -14,6 +14,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
+import androidx.room.RoomDatabase.Builder;
 import com.batoulapps.adhan.Coordinates;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
@@ -191,7 +192,49 @@ public enum MySettings {
     if (dbName == null) {
       return false;
     }
+
+    if (!dbName.equals(TRANS_NONE) && isDbInvalid(dbName)) {
+      return false;
+    }
+
     return dbName.equals(TRANS_NONE) || mNoBkpPrefs.getBoolean(getDbPrefString(dbName), false);
+  }
+
+  @SuppressLint("ApplySharedPref")
+  private boolean isDbInvalid(String dbName) {
+    // Force recreate Quran databases after upgrading to v2
+    Builder<QuranDatabase> dbBuilder =
+        Room.databaseBuilder(App.getCxt(), QuranDatabase.class, dbName + ".db");
+    QuranDatabase db = null;
+    try {
+      db = dbBuilder.allowMainThreadQueries().build();
+      db.getOpenHelper().getReadableDatabase().getVersion();
+      return false;
+    } catch (IllegalStateException e) {
+      mNoBkpPrefs.edit().putBoolean(getDbPrefString(dbName), false).commit();
+      if (db != null) {
+        db.close();
+      }
+      db = dbBuilder.allowMainThreadQueries().fallbackToDestructiveMigration().build();
+      db.getOpenHelper().getReadableDatabase().getVersion();
+      return true;
+    } finally {
+      if (db != null) {
+        db.close();
+      }
+    }
+  }
+
+  public void rebuildDb() {
+    String dbName = getQuranDbName();
+    if (isDbInvalid(dbName)) {
+      // It'll be built in MainActivity#onCreate()
+      setQuranDbName(DbBuilder.MAIN_DB);
+    }
+    dbName = getTransDbName();
+    if (!TRANS_NONE.equals(dbName) && isDbInvalid(dbName)) {
+      setTransDbName(TRANS_NONE);
+    }
   }
 
   public void setDbBuilt(String dbName) {
