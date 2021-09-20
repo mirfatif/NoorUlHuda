@@ -276,7 +276,9 @@
       <ul>
         <li>Visit a maps service like <a href="https://plus.codes/map">plus.codes/map</a> and manually select your location.</li>
         <li>Use an app that makes use of GPS and/or other location services on your device.
-        My Location <a href="https://github.com/mirfatif/MyLocation">LINK</a> is one such open-source app.</li>
+        My Location <a href="https://github.com/mirfatif/MyLocation">LINK</a> is one such open-source app.
+        You can copy the location (coordinates) to clipboard and paste here.
+        </li>
         <li>Search location by name.
       </ul>
       Your query or coordinates are sent to <a href="https://www.geonames.org">geonames.org</a> for (reverse) geocoding.</li>
