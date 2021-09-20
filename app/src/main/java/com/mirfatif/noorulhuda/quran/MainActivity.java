@@ -19,6 +19,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -47,6 +48,7 @@ import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.util.Pair;
 import androidx.core.view.MenuCompat;
 import androidx.fragment.app.Fragment;
@@ -267,9 +269,15 @@ public class MainActivity extends BaseActivity {
     SeekBar seekBar = b.getRoot();
     final int MAX = 100;
     seekBar.setMax(MAX);
+
+    int resId = R.drawable.brightness_thumb_auto;
     if (wParams.screenBrightness != BRIGHTNESS_OVERRIDE_NONE) {
+      resId = R.drawable.brightness_thumb;
       seekBar.setProgress((int) (wParams.screenBrightness * MAX));
     }
+    Drawable drawable = ResourcesCompat.getDrawable(App.getRes(), resId, getTheme());
+    b.getRoot().setThumb(drawable);
+
     int width = App.getRes().getDisplayMetrics().widthPixels * (isLandscape() ? 5 : 9) / 10;
     PopupWindow popup = new PopupWindow(seekBar, width, LayoutParams.WRAP_CONTENT);
     popup.setElevation(500);
@@ -281,9 +289,15 @@ public class MainActivity extends BaseActivity {
           @Override
           public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             wParams.screenBrightness = (float) progress / MAX;
+
+            int resId = R.drawable.brightness_thumb;
             if (wParams.screenBrightness == 0) {
+              resId = R.drawable.brightness_thumb_auto;
               wParams.screenBrightness = BRIGHTNESS_OVERRIDE_NONE;
             }
+            Drawable drawable = ResourcesCompat.getDrawable(App.getRes(), resId, getTheme());
+            b.getRoot().setThumb(drawable);
+
             window.setAttributes(wParams);
             SETTINGS.saveBrightness(wParams.screenBrightness);
             seekBar.removeCallbacks(hider);

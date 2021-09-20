@@ -160,7 +160,7 @@ public class TagDialogFragment extends AppCompatDialogFragment {
     view.requestFocus();
     InputMethodManager imm =
         (InputMethodManager) App.getCxt().getSystemService(Context.INPUT_METHOD_SERVICE);
-    imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+    view.postDelayed(() -> imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT), 100);
   }
 
   private List<AayahEntity> mAayahs;
