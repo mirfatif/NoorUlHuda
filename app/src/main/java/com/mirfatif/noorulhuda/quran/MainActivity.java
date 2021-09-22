@@ -8,6 +8,7 @@ import static com.mirfatif.noorulhuda.db.DbBuilder.TOTAL_SURAHS;
 import static com.mirfatif.noorulhuda.dua.DuaActivity.EXTRA_AAYAH_NUM;
 import static com.mirfatif.noorulhuda.dua.DuaActivity.EXTRA_SURAH_NUM;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.quran.AayahAdapter.removeUnsupportedChars;
 import static com.mirfatif.noorulhuda.util.Utils.getArNum;
 import static com.mirfatif.noorulhuda.util.Utils.isLandscape;
 import static com.mirfatif.noorulhuda.util.Utils.reduceDragSensitivity;
@@ -877,7 +878,7 @@ public class MainActivity extends BaseActivity {
       DialogListItem item = new DialogListItem();
       item.title = getString(R.string.surah_name, surah.name);
       item.subTitle = getArNum(aayah.aayahNum);
-      item.text = aayah.text;
+      item.text = removeUnsupportedChars(aayah.text);
       items.add(item);
     }
 

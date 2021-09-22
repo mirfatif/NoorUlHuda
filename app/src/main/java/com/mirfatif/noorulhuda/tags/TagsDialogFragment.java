@@ -1,6 +1,7 @@
 package com.mirfatif.noorulhuda.tags;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.quran.AayahAdapter.removeUnsupportedChars;
 import static com.mirfatif.noorulhuda.tags.TagDialogFragment.CREATED_NEW;
 import static com.mirfatif.noorulhuda.tags.TagDialogFragment.TAG_ID;
 import static com.mirfatif.noorulhuda.util.Utils.getArNum;
@@ -100,7 +101,7 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
           this,
           () -> {
             mB.surahNameV.setText(getString(R.string.surah_name, surah.name));
-            mB.aayahTextV.setText(aayah.text);
+            mB.aayahTextV.setText(removeUnsupportedChars(aayah.text));
             mB.aayahNumV.setText(getArNum(aayah.aayahNum));
           });
     }

@@ -8,7 +8,6 @@ import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.MetricAffectingSpan;
 import android.text.style.TextAppearanceSpan;
@@ -281,11 +280,14 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
             }
           }
 
+          String entityText = removeUnsupportedChars(entity.text);
+
           SpanMarks span =
-              new SpanMarks(entity, trans, text.length(), text.length() + entity.text.length());
+              new SpanMarks(
+                  entity, entityText, trans, text.length(), text.length() + entityText.length());
           aayahGroup.aayahSpans.add(span);
 
-          text.append(entity.text).append(" ");
+          text.append(entityText).append(" ");
           int start = text.length(), end = start;
 
           if (entity.hizbEnds) {
@@ -375,14 +377,13 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     @Override
     public boolean onLongClick(View v) {
       if (SETTINGS.showSingleAayah()) {
-        mLongClickListener.onLongClick(
-            mAayahGroup.entities.get(0), mAayahGroup.aayahSpans.get(0).trans, v);
+        mLongClickListener.onLongClick(mAayahGroup, 0, v);
       } else {
         int offset = mB.textV.getTouchOffset();
-        for (SpanMarks span : mAayahGroup.aayahSpans) {
+        for (int i = 0; i < mAayahGroup.aayahSpans.size(); i++) {
+          SpanMarks span = mAayahGroup.aayahSpans.get(i);
           if (offset >= span.start && offset <= span.end) {
-            mLongClickListener.onTextSelected(
-                span.entity, span.trans, mB.textV, span.start, span.end);
+            mLongClickListener.onTextSelected(mAayahGroup, i, mB.textV, span.start, span.end);
             break;
           }
         }
@@ -414,10 +415,12 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
     final int start, end;
     final AayahEntity entity;
+    final String text;
     final SpannableString trans;
 
-    private SpanMarks(AayahEntity entity, SpannableString trans, int start, int end) {
+    private SpanMarks(AayahEntity entity, String text, SpannableString trans, int start, int end) {
       this.entity = entity;
+      this.text = text;
       this.trans = trans;
       this.start = start;
       this.end = end;
@@ -426,9 +429,18 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
   interface AayahLongClickListener {
 
-    void onLongClick(AayahEntity entity, Spanned trans, View view);
+    void onLongClick(AayahGroup aayahGroup, int index, View view);
 
-    void onTextSelected(AayahEntity entity, Spanned trans, TextView textView, int start, int end);
+    void onTextSelected(AayahGroup aayahGroup, int index, TextView textView, int start, int end);
+  }
+
+  // Remove characters not rendered by Hafs font.
+  public static String removeUnsupportedChars(String text) {
+    if (getString(R.string.font_hafs).equals(SETTINGS.getFontName())) {
+      String regex = "[" + (char) 1759 + (char) 1763 + (char) 1771 + "]";
+      return text.replaceAll(regex, "");
+    }
+    return text;
   }
 
   // Combination of TextAppearanceSpan and TypefaceSpan.

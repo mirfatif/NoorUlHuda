@@ -646,10 +646,10 @@ public class QuranPageFragment extends Fragment {
   private class LongClickListener implements AayahLongClickListener {
 
     @Override
-    public void onLongClick(AayahEntity entity, Spanned trans, View view) {
+    public void onLongClick(AayahGroup aayahGroup, int index, View view) {
       showPopupMenu(
-          entity,
-          trans,
+          aayahGroup,
+          index,
           () -> {
             view.setBackgroundColor(getAttrColor(mA, R.attr.accentTrans3));
             setPopupDismissListener(() -> view.setBackgroundColor(Color.TRANSPARENT));
@@ -658,10 +658,10 @@ public class QuranPageFragment extends Fragment {
 
     @Override
     public void onTextSelected(
-        AayahEntity entity, Spanned trans, TextView textView, int start, int end) {
+        AayahGroup aayahGroup, int index, TextView textView, int start, int end) {
       showPopupMenu(
-          entity,
-          trans,
+          aayahGroup,
+          index,
           () -> {
             Spanned oldString = (Spanned) textView.getText();
             SpannableString newString = new SpannableString(oldString);
@@ -673,7 +673,7 @@ public class QuranPageFragment extends Fragment {
           });
     }
 
-    private void showPopupMenu(AayahEntity entity, Spanned trans, Runnable callback) {
+    private void showPopupMenu(AayahGroup aayahGroup, int index, Runnable callback) {
       AayahContextMenuBinding b = AayahContextMenuBinding.inflate(getLayoutInflater());
       setTooltip(b.copyButton);
       setTooltip(b.shareButton);
@@ -681,6 +681,10 @@ public class QuranPageFragment extends Fragment {
       setTooltip(b.addTagButton);
       setTooltip(b.gotoButton);
       setTooltip(b.transButton);
+
+      AayahEntity entity = aayahGroup.entities.get(index);
+      String text = aayahGroup.aayahSpans.get(index).text;
+      Spanned trans = aayahGroup.aayahSpans.get(index).trans;
 
       setButtonListener(b.copyButton, () -> shareAayah(entity, trans, true));
       setButtonListener(b.shareButton, () -> shareAayah(entity, trans, false));
@@ -726,7 +730,7 @@ public class QuranPageFragment extends Fragment {
 
               binding.textV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
               binding.transV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-              binding.textV.setText(entity.text);
+              binding.textV.setText(text);
               binding.transV.setText(trans);
 
               NestedScrollView scrollView = new NestedScrollView(mA);
