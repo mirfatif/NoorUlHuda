@@ -141,14 +141,16 @@ public class QuranPageFragment extends Fragment {
   @Override
   public void onStart() {
     super.onStart();
-    TOASTER = Executors.newSingleThreadScheduledExecutor();
     HEADER_UPDATER = new SingleTaskExecutor();
   }
 
+  private final Object EXECUTOR_LOCK = new Object();
+
   @Override
   public void onStop() {
-    TOASTER.shutdown();
-    HEADER_UPDATER.shutdown();
+    synchronized (EXECUTOR_LOCK) {
+      HEADER_UPDATER = null;
+    }
     super.onStop();
   }
 
@@ -224,28 +226,54 @@ public class QuranPageFragment extends Fragment {
   //////////////////////// SCROLL TO POSITION //////////////////////
   //////////////////////////////////////////////////////////////////
 
+  private static final int TMP_OFFSET = -Utils.toPx(24);
+  private final Runnable SMOOTH_SCROLL_TASK = this::smoothScrollRv;
+
+  private void smoothScrollRv() {
+    if (mB.recyclerV.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
+      if (mB != null && mB.recyclerV.canScrollVertically(1)) {
+        mB.recyclerV.smoothScrollBy(0, TMP_OFFSET);
+      }
+    }
+  }
+
   // Scroll to a RV item (with an optional offset from top), and optionally blink the RV item.
   void scrollToRvItem(int rvPos, int offset, boolean blink) {
-    if (offset == 0) {
-      // To avoid jump to top or bottom on first scrolling afterwards.
-      offset = -Utils.toPx(12);
+    if (mLayoutManager == null) {
+      return;
     }
-    if (mLayoutManager != null) {
-      mLayoutManager.scrollToPositionWithOffset(rvPos, offset);
-      int finalOffset = offset;
-      mB.recyclerV.postDelayed(
-          () -> {
-            boolean isNotAtBottom = mB.recyclerV.canScrollVertically(1);
-            if (isNotAtBottom && mLayoutManager.findFirstVisibleItemPosition() != rvPos) {
-              mLayoutManager.scrollToPositionWithOffset(rvPos, finalOffset);
-            }
-          },
-          100);
-      if (blink) {
-        mB.recyclerV.postDelayed(() -> blinkRvItem(rvPos), 1000);
-      }
-      updateHeader();
+
+    mB.recyclerV.removeCallbacks(SMOOTH_SCROLL_TASK);
+    if (blink) {
+      mA.toggleFullScreen(true);
     }
+
+    // To avoid jump to top or bottom on first scrolling afterwards.
+    boolean revScrollRv = false;
+    if (offset == 0 && !SETTINGS.isSlideModeAndNotInSearch()) {
+      offset = TMP_OFFSET;
+      revScrollRv = true;
+    }
+    int finalOffset = offset;
+
+    mLayoutManager.scrollToPositionWithOffset(rvPos, finalOffset);
+    mB.recyclerV.postDelayed(
+        () -> {
+          if (mLayoutManager.findFirstVisibleItemPosition() != rvPos) {
+            mLayoutManager.scrollToPositionWithOffset(rvPos, finalOffset);
+          }
+        },
+        100);
+
+    if (revScrollRv) {
+      mB.recyclerV.postDelayed(SMOOTH_SCROLL_TASK, 800);
+    }
+
+    if (blink) {
+      mB.recyclerV.postDelayed(() -> blinkRvItem(rvPos), 1000);
+    }
+
+    mB.recyclerV.postDelayed(this::updateHeader, 100);
   }
 
   // Blink the whole RV item.
@@ -293,7 +321,7 @@ public class QuranPageFragment extends Fragment {
     boolean isTasmia = aayah.aayahNum == 0;
     if (SETTINGS.showSingleAayah() || isTasmia) {
       // Move to the RV item and blink the whole item.
-      Utils.runUi(this, () -> scrollToRvItem(rvPos, 0, blink));
+      Utils.runUi(this, () -> scrollToRvItem(rvPos, 0, blink && rvPos != 0 && !isTasmia));
     } else {
       // Move to the selected Aayah in AayahGroup and blink only the Aayah;
       scrollToAayahWithOffset(aayahId, rvPos, blink);
@@ -346,6 +374,13 @@ public class QuranPageFragment extends Fragment {
       line = Math.max(0, line - 1);
     }
     int offset = tv.getLineHeight() * line;
+
+    blink = blink && (rvPos != 0 || offset != 0);
+
+    if (blink) {
+      mA.toggleFullScreen(true);
+    }
+
     scrollToRvItem(rvPos, -offset, false);
 
     if (blink) {
@@ -406,7 +441,7 @@ public class QuranPageFragment extends Fragment {
     }
   }
 
-  private ScheduledExecutorService TOASTER;
+  private final ScheduledExecutorService TOASTER = Executors.newSingleThreadScheduledExecutor();
   private Future<?> mToastFuture;
 
   private void handleSearchQueryInBg(String query) {
@@ -507,24 +542,26 @@ public class QuranPageFragment extends Fragment {
   ////////////////////////////// HEADER ////////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private final Object HEADER_UPDATE_LOCK = new Object();
   private boolean mUpdatingHeader;
 
   private SingleTaskExecutor HEADER_UPDATER;
+  private final Object HEADER_UPDATE_LOCK = new Object();
   private long mLastHeaderUpdate;
 
   private void headerUpdated() {
     synchronized (HEADER_UPDATE_LOCK) {
       mUpdatingHeader = false;
-      HEADER_UPDATER.notifyAll();
+      HEADER_UPDATE_LOCK.notifyAll();
     }
   }
 
   private void updateHeader() {
-    if (HEADER_UPDATER.getPendingTasks() == 0) {
-      long delay = 500 + mLastHeaderUpdate - System.currentTimeMillis();
-      delay = Math.max(0, delay);
-      HEADER_UPDATER.schedule(this::waitForHeaderUpdated, delay, TimeUnit.MILLISECONDS);
+    synchronized (EXECUTOR_LOCK) {
+      if (HEADER_UPDATER != null && HEADER_UPDATER.getPendingTasks() == 0) {
+        long delay = 500 + mLastHeaderUpdate - System.currentTimeMillis();
+        delay = Math.max(0, delay);
+        HEADER_UPDATER.schedule(this::waitForHeaderUpdated, delay, TimeUnit.MILLISECONDS);
+      }
     }
   }
 
@@ -534,7 +571,7 @@ public class QuranPageFragment extends Fragment {
     synchronized (HEADER_UPDATE_LOCK) {
       while (mUpdatingHeader) {
         try {
-          HEADER_UPDATER.wait();
+          HEADER_UPDATE_LOCK.wait();
         } catch (InterruptedException ignored) {
         }
       }

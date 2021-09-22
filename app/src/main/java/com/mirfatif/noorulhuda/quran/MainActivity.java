@@ -435,7 +435,7 @@ public class MainActivity extends BaseActivity {
     androidx.appcompat.widget.SearchView auto clears focus when Soft Keyboard is closed. So
     we need to manually check if focus is due to soft keyboard.
     */
-    if (mB != null && mB.bottomBar.searchV.hasFocus() && mSoftKbVisible) {
+    if (mB == null || (mB.bottomBar.searchV.hasFocus() && mSoftKbVisible)) {
       return;
     }
 
@@ -1000,12 +1000,7 @@ public class MainActivity extends BaseActivity {
     */
     if (SETTINGS.isSearchStarted()) {
       saveScrollPosForSearch(aayah.page, aayah.id, true);
-      /*
-       LayoutManager#scrollToPosition() and RecyclerView#scrollToPosition() don't work
-       if SearchView is collapsed while not focused (if cleared onBackPressed()).
-      */
-      mB.bottomBar.searchV.post(() -> mB.bottomBar.searchV.requestFocus());
-      mB.bottomBar.searchV.post(this::collapseSearchView);
+      collapseSearchView();
       return;
     }
 
@@ -1360,15 +1355,17 @@ public class MainActivity extends BaseActivity {
       mB.bottomBar.searchV.setVisibility(View.VISIBLE);
       mB.bottomBar.actionSearchHelp.setVisibility(View.VISIBLE);
       mB.bottomBar.actionSearchSettings.setVisibility(View.VISIBLE);
-      mB.bottomBar.searchV.setIconified(false);
-      mB.bottomBar.searchV.requestFocus();
+      mB.bottomBar.searchV.setIconified(false); // requestFocus() is unnecessary.
       mB.bottomBar.container.setBackgroundResource(R.drawable.app_bar_bg);
     } else {
-      mB.bottomBar.searchV.setVisibility(View.GONE);
       mB.bottomBar.actionSearchHelp.setVisibility(View.GONE);
       mB.bottomBar.actionSearchSettings.setVisibility(View.GONE);
+      mB.bottomBar.searchSettingsCont.setVisibility(View.GONE);
+      mB.bottomBar.searchV.clearFocus();
+      mB.bottomBar.searchV.setVisibility(View.GONE);
       mB.bottomBar.container.setBackgroundColor(Utils.getAttrColor(this, R.attr.accentTrans1));
     }
+
     SETTINGS.setSearchStarted(visible);
 
     /*
@@ -1384,27 +1381,41 @@ public class MainActivity extends BaseActivity {
     }
     if (visible) {
       saveScrollPosForSearch(mCurrentPage, mCurrentAayah, false);
+      refreshUi(RestorePosType.NONE);
     } else if (scrollPos != null) {
       saveScrollPos(scrollPos.page, scrollPos.aayahId, scrollPos.blink);
-    }
-    refreshUi(RestorePosType.NONE);
-    if (!visible
-        && SETTINGS.isSlideModeAndNotInSearch()
-        && scrollPos != null
-        && scrollPos.page >= 1) {
-      mB.pager.setCurrentItem(scrollPos.page - 1, false);
+      refreshUi(RestorePosType.NONE);
+      if (SETTINGS.isSlideModeAndNotInSearch() && scrollPos.page >= 1) {
+        mB.pager.setCurrentItem(scrollPos.page - 1, false);
+      }
     }
 
     toggleArrowsVisibility(visible); // Hide arrows when in search.
   }
 
+  private boolean mSearchViewCollapsing = false;
+
   private void collapseSearchView() {
-    mB.bottomBar.searchV.onActionViewCollapsed();
+    if (mSearchViewCollapsing) {
+      return;
+    }
+    mSearchViewCollapsing = true;
+
+    /*
+     Calling SearchView#onActionViewCollapsed() is problematic. When called with SearchView not
+     focused (if cleared in onBackPressed() or automatically on keyboard closed),
+     LayoutManager#scrollToPosition() and RecyclerView#scrollToPosition() don't work immediately.
+     So we only rely on SearchView#clearFocus()
+    */
+
     setSearchViewVisibility(false);
-    mB.bottomBar.searchV.setQuery(null, false);
-    mLastSearchQuery = null; // SearchView.setQuery(null, true) doesn't work
     setProgBarVisibility(false);
-    mB.bottomBar.searchSettingsCont.setVisibility(View.GONE);
+
+    // SearchView.setQuery(null, true) doesn't work
+    mB.bottomBar.searchV.setQuery(null, false);
+    mLastSearchQuery = null;
+
+    mSearchViewCollapsing = false;
   }
 
   private String mLastSearchQuery;
@@ -1418,10 +1429,12 @@ public class MainActivity extends BaseActivity {
       query = null;
     }
     SETTINGS.setSearchQuery(query);
-    QuranPageFragment page = getPageFrag(null);
-    if (!Objects.equals(mLastSearchQuery, query) && page != null) {
-      mLastSearchQuery = query;
-      page.handleSearchQuery(query);
+    if (!mSearchViewCollapsing) {
+      QuranPageFragment page = getPageFrag(null);
+      if (!Objects.equals(mLastSearchQuery, query) && page != null) {
+        mLastSearchQuery = query;
+        page.handleSearchQuery(query);
+      }
     }
     return true;
   }
