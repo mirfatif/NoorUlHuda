@@ -4,6 +4,10 @@
 # Hide the original source file name.
 -renamesourcefileattribute SourceFile
 
+# Move all obfuscated classes into the root package.
+-repackageclasses
+-allowaccessmodification
+
 # Default preferences are accessed through Reflection in MySettings
 -keepclassmembers class com.mirfatif.noorulhuda.R$integer {
   int pref_*_default;

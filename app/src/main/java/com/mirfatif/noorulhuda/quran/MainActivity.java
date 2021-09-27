@@ -96,6 +96,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 
 public class MainActivity extends BaseActivity {
 
@@ -390,7 +391,10 @@ public class MainActivity extends BaseActivity {
 
   private void showHelpDialog() {
     SearchHelpBinding b = SearchHelpBinding.inflate(getLayoutInflater());
-    b.searchHelpV.setText(R.string.search_help);
+    b.searchHelpV.setText(Utils.htmlToString(R.string.search_help));
+    b.searchHelpV.setMovementMethod(
+        BetterLinkMovementMethod.newInstance()
+            .setOnLinkClickListener((tv, url) -> Utils.openWebUrl(this, url)));
     int[] charArray = getResources().getIntArray(R.array.search_chars);
     String[] descArray = getResources().getStringArray(R.array.search_chars_desc);
     List<Pair<Integer, String>> chars = new ArrayList<>();

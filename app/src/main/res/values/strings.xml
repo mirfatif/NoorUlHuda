@@ -109,9 +109,14 @@
   <string name="title">Title</string>
   <string name="description">Description</string>
   <string name="double_click_to_edit">Double tap to edit</string>
-  <string name="search_help">Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) operators
-    for complex search.\n\nFollowing characters can be used in plain Arabic search or with vowels
-    (diacritics). Tap to copy.
+  <string name="search_help">
+    <![CDATA[
+      Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) operators for complex search.
+      <br/>
+      Following characters can be used in plain Arabic search or with vowels (diacritics). Tap to
+      copy. Or to type them yourself, you can use <i>Urdu for AnySoftKeyboard</i>
+      <a href="https://play.google.com/store/apps/details?id=com.anysoftkeyboard.languagepack.mirfatif.urdu">LINK</a>.
+    ]]>
   </string>
 
   <!-- MainActivity Navigation Drawer / Menu items -->
