@@ -91,9 +91,12 @@
   <string name="no_matches">No matches</string>
   <string name="texts" maxLength="15">Mushaf Text</string>
   <string name="translations" maxLength="15">Translations</string>
-  <string name="download_file">Download file?</string>
-  <string name="downloading_file" maxLength="15">Downloading File</string>
+  <string name="download_db_file">Download database file?</string>
+  <string name="download_font_file">Download font file?</string>
+  <string name="download_audio_file">Download audio file?</string>
+  <string name="downloading_db" maxLength="15">Downloading Database</string>
   <string name="downloading_font" maxLength="15">Downloading Font</string>
+  <string name="downloading_adhan" maxLength="15">Downloading Adhan</string>
   <string name="no_internet" maxLength="20">No internet connection</string>
   <string name="download_failed" maxLength="20">Download failed</string>
   <string name="extraction_failed" maxLength="20">Extraction failed</string>

@@ -807,7 +807,7 @@ public class MainActivity extends BaseActivity {
           refreshUi();
         }
       } else {
-        downloadFonts(QURAN_FONTS_ZIP, getString(fontName), true);
+        downloadFonts(QURAN_FONTS_ZIP, getString(fontName));
       }
       return true;
     }
@@ -1259,16 +1259,21 @@ public class MainActivity extends BaseActivity {
                     return;
                   }
                   String dbName = dbNames[which];
+
+                  String fontFile = null;
+                  if (downloadFont) {
+                    fontFile = SETTINGS.getTransFontFile(which);
+                  }
+                  if (fontFile != null && SETTINGS.getFontFile(fontFile).exists()) {
+                    fontFile = null;
+                  }
+
                   if (SETTINGS.isDbBuilt(dbName)) {
                     setDbNameAndRefreshUi(dbName);
+                    if (fontFile != null) {
+                      downloadFonts(fontFile + ".zip", null);
+                    }
                   } else {
-                    String fontFile = null;
-                    if (downloadFont) {
-                      fontFile = SETTINGS.getTransFontFile(which);
-                    }
-                    if (fontFile != null && SETTINGS.getFontFile(fontFile).exists()) {
-                      fontFile = null;
-                    }
                     askToDownloadDb(dbName, fontFile);
                   }
                 });
@@ -1278,7 +1283,13 @@ public class MainActivity extends BaseActivity {
   private void askToDownloadDb(String dbName, String fontFile) {
     Runnable callback = () -> onDbFileDownloaded(dbName, fontFile);
     FileDownload fd =
-        new FileDownload(this, "/databases/", dbName + ".zip", callback, R.string.downloading_file);
+        new FileDownload(
+            this,
+            "/databases/",
+            dbName + ".zip",
+            callback,
+            R.string.download_db_file,
+            R.string.downloading_db);
     fd.askToDownload();
   }
 
@@ -1313,7 +1324,7 @@ public class MainActivity extends BaseActivity {
                 if (result) {
                   setDbNameAndRefreshUi(dbName);
                   if (fontFile != null) {
-                    downloadFonts(fontFile + ".zip", null, false);
+                    downloadFonts(fontFile + ".zip", null);
                   }
                 }
               });
@@ -1342,7 +1353,7 @@ public class MainActivity extends BaseActivity {
 
   private static final String QURAN_FONTS_ZIP = "arabic.zip";
 
-  private void downloadFonts(String zip, String fontName, boolean askToDownload) {
+  private void downloadFonts(String zip, String fontName) {
     Runnable callback =
         () -> {
           SETTINGS.resetTypeface();
@@ -1351,12 +1362,10 @@ public class MainActivity extends BaseActivity {
           }
           refreshUi();
         };
-    FileDownload fd = new FileDownload(this, "/fonts/", zip, callback, R.string.downloading_font);
-    if (askToDownload) {
-      fd.askToDownload();
-    } else {
-      fd.downloadFile();
-    }
+    FileDownload fd =
+        new FileDownload(
+            this, "/fonts/", zip, callback, R.string.download_font_file, R.string.downloading_font);
+    fd.askToDownload();
   }
 
   //////////////////////////////////////////////////////////////////

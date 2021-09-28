@@ -1086,7 +1086,13 @@ public class PrayerTimeActivity extends BaseActivity {
                 v.setChecked(false);
                 Runnable callback =
                     () -> Utils.runUi(this, () -> mAdhanCheckBoxes[order].setChecked(true));
-                new FileDownload(this, "/adhan/", ADHAN_FILE, callback, R.string.downloading_file)
+                new FileDownload(
+                        this,
+                        "/adhan/",
+                        ADHAN_FILE,
+                        callback,
+                        R.string.download_audio_file,
+                        R.string.downloading_adhan)
                     .askToDownload();
               }
             } else {
