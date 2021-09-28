@@ -77,7 +77,7 @@ public class DuaActivity extends BaseActivity {
       window.setAttributes(params);
     }
 
-    SETTINGS.getFontSizeChanged().observe(this, empty -> refreshUi());
+    SETTINGS.getFontSizeChanged().observe(this, empty -> resetFontSize());
   }
 
   private int mQuranicDuaPos = -1, mMasnoonDuaPos = -1, mOccDuaPos = -1;
@@ -187,9 +187,43 @@ public class DuaActivity extends BaseActivity {
     finishAfterTransition();
   }
 
-  private void refreshUi() {
-    saveScrollPositions();
-    mDuaPageAdapter.refreshUi(); // Recreate pages.
-    mB.pager.setCurrentItem(SETTINGS.getLastDuaPage()); // Restore page.
+  private void resetFontSize() {
+    DuaPageFragment frag = getPageFrag(null);
+    if (frag == null) {
+      return;
+    }
+    frag.resetFontSize();
+    int pos = mB.pager.getCurrentItem();
+    for (int page = pos + 2; page < Integer.MAX_VALUE; page++) {
+      frag = getPageFrag(page);
+      if (frag == null) {
+        break;
+      } else {
+        frag.resetFontSize();
+      }
+    }
+    for (int page = pos; page > -Integer.MAX_VALUE; page--) {
+      frag = getPageFrag(page);
+      if (frag == null) {
+        break;
+      } else {
+        frag.resetFontSize();
+      }
+    }
+  }
+
+  // Null page means current page
+  private DuaPageFragment getPageFrag(@Nullable Integer page) {
+    if (page == null) {
+      page = mB.pager.getCurrentItem() + 1;
+    }
+    if (mDuaPageAdapter != null) {
+      String fragTag = "f" + mDuaPageAdapter.getItemId(page - 1);
+      Fragment frag = getSupportFragmentManager().findFragmentByTag(fragTag);
+      if (frag instanceof DuaPageFragment) {
+        return (DuaPageFragment) frag;
+      }
+    }
+    return null;
   }
 }

@@ -278,8 +278,39 @@ public class MainActivity extends BaseActivity {
     NONE
   }
 
+  /*
+   Do not recreate whole Pager and RecyclerViews if
+   only font, its size or color needs to be changed.
+  */
   private void refreshUi() {
-    refreshUi(RestorePosType.CURRENT);
+    if (!Utils.isMainThread()) {
+      Utils.runUi(this, this::refreshUi).waitForMe();
+      return;
+    }
+
+    updateHeaderCosmetics();
+    QuranPageFragment frag = getPageFrag(null);
+    if (frag == null) {
+      return;
+    }
+    frag.refresh();
+    int pos = mB.pager.getCurrentItem();
+    for (int page = pos + 2; page < Integer.MAX_VALUE; page++) {
+      frag = getPageFrag(page);
+      if (frag == null) {
+        break;
+      } else {
+        frag.refresh();
+      }
+    }
+    for (int page = pos; page > -Integer.MAX_VALUE; page--) {
+      frag = getPageFrag(page);
+      if (frag == null) {
+        break;
+      } else {
+        frag.refresh();
+      }
+    }
   }
 
   private void refreshUi(RestorePosType restorePosType) {
@@ -749,7 +780,7 @@ public class MainActivity extends BaseActivity {
       popupMenu.show();
     } else if (itemId == R.id.action_info_header) {
       SETTINGS.toggleShowHeader();
-      refreshUi();
+      updateHeaderCosmetics();
     } else if (itemId == R.id.action_overflow) {
       PopupMenu popupMenu = new PopupMenu(this, mB.bottomBar.actionOverflow);
       popupMenu.inflate(R.menu.main_overflow);
@@ -817,7 +848,7 @@ public class MainActivity extends BaseActivity {
   private boolean handlePageViewItemClick(int itemId) {
     if (itemId == R.id.action_page_view) {
       SETTINGS.toggleSlideMode();
-      refreshUi();
+      refreshUi(RestorePosType.CURRENT);
       if (!mIsFullScreen) {
         toggleArrowsVisibility(false);
       }
@@ -825,7 +856,7 @@ public class MainActivity extends BaseActivity {
     }
     if (itemId == R.id.action_aayah_breaks) {
       SETTINGS.toggleAayahBreaks();
-      refreshUi();
+      refreshUi(RestorePosType.CURRENT);
       return true;
     }
     return false;
@@ -910,7 +941,7 @@ public class MainActivity extends BaseActivity {
     if (itemId == R.id.action_trans_with_text) {
       item.setChecked(!item.isChecked());
       SETTINGS.setShowTransWithText(item.isChecked());
-      refreshUi();
+      refreshUi(RestorePosType.CURRENT);
       return true;
     }
 
@@ -1343,7 +1374,7 @@ public class MainActivity extends BaseActivity {
       Utils.runUi(this, () -> setSearchViewVisibility(true));
     }
     if (refreshUi) {
-      refreshUi();
+      refreshUi(RestorePosType.CURRENT);
     }
   }
 

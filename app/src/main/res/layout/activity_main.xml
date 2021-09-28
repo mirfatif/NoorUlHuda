@@ -39,6 +39,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             tools:ignore="RtlSymmetry" />
 
           <TextView
@@ -46,6 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="@string/juz"
             tools:ignore="RtlSymmetry" />
 
@@ -54,12 +58,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             tools:ignore="RtlSymmetry" />
 
           <TextView
             android:id="@+id/manzil_v"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="@string/manzil" />
 
         </LinearLayout>
@@ -73,7 +81,9 @@
           android:paddingBottom="4dp"
           android:paddingStart="8dp"
           android:paddingEnd="8dp"
+          android:ellipsize="end"
           android:gravity="center"
+          android:maxLines="1"
           android:textAlignment="center" />
 
         <LinearLayout
@@ -92,12 +102,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             tools:ignore="RtlSymmetry" />
 
           <TextView
             android:id="@+id/surah_value_v"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1" />
 
         </LinearLayout>
       </LinearLayout>

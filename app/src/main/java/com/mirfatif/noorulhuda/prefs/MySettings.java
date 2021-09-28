@@ -574,7 +574,7 @@ public enum MySettings {
     if (fontFile != null && (file = getFontFile(fontFile)).exists()) {
       mTransTypeface = createTypeface(file);
     } else {
-      mTransTypeface = null;
+      mTransTypeface = Typeface.DEFAULT; // Or null
     }
     return mTransTypeface;
   }
@@ -664,7 +664,7 @@ public enum MySettings {
     }
   }
 
-  public static final int FONT_SIZE_MIN = 12, FONT_SIZE_MAX = 32;
+  public static final int FONT_SIZE_MIN = 12, FONT_SIZE_MAX = 28;
 
   public int getFontSizeSliderVal() {
     return getFontSize() - FONT_SIZE_MIN;

@@ -416,6 +416,12 @@ public class QuranPageFragment extends Fragment {
     return false;
   }
 
+  void refresh() {
+    if (mAayahAdapter != null) {
+      mAayahAdapter.refreshUi();
+    }
+  }
+
   //////////////////////////////////////////////////////////////////
   ///////////////////////////// SEARCH /////////////////////////////
   //////////////////////////////////////////////////////////////////
@@ -761,9 +767,7 @@ public class QuranPageFragment extends Fragment {
               Typeface typeface = SETTINGS.getTypeface();
               Typeface transTypeface = SETTINGS.getTransTypeface();
               binding.textV.setTypeface(typeface);
-              if (transTypeface != null) {
-                binding.transV.setTypeface(transTypeface);
-              }
+              binding.transV.setTypeface(transTypeface);
 
               binding.textV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
               binding.transV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -899,9 +903,9 @@ public class QuranPageFragment extends Fragment {
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
       float scaleFactor = detector.getScaleFactor();
-      if (scaleFactor / mOldScaleFactor > 1.25) {
+      if (scaleFactor / mOldScaleFactor > 1.1) {
         SETTINGS.increaseFontSize();
-      } else if (scaleFactor / mOldScaleFactor < 0.8) {
+      } else if (scaleFactor / mOldScaleFactor < 0.9) {
         SETTINGS.decreaseFontSize();
       } else {
         return false;

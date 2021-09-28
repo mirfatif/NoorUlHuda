@@ -156,6 +156,12 @@ public class DuaPageFragment extends Fragment {
     return false;
   }
 
+  void resetFontSize() {
+    if (mAdapter != null) {
+      mAdapter.resetFontSize();
+    }
+  }
+
   //////////////////////////////////////////////////////////////////
   /////////////////////////// LONG CLICK ///////////////////////////
   //////////////////////////////////////////////////////////////////
@@ -213,10 +219,8 @@ public class DuaPageFragment extends Fragment {
               Typeface typeface = SETTINGS.getTypeface();
               Typeface transTypeface = SETTINGS.getTransTypeface();
               binding.textV.setTypeface(typeface);
-              if (transTypeface != null) {
-                binding.titleV.setTypeface(transTypeface);
-                binding.transV.setTypeface(transTypeface);
-              }
+              binding.titleV.setTypeface(transTypeface);
+              binding.transV.setTypeface(transTypeface);
               binding.refV.setTypeface(typeface);
 
               binding.textV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -305,9 +309,9 @@ public class DuaPageFragment extends Fragment {
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
       float scaleFactor = detector.getScaleFactor();
-      if (scaleFactor / mScaleFactor > 1.25) {
+      if (scaleFactor / mScaleFactor > 1.1) {
         SETTINGS.increaseFontSize();
-      } else if (scaleFactor / mScaleFactor < 0.8) {
+      } else if (scaleFactor / mScaleFactor < 0.9) {
         SETTINGS.decreaseFontSize();
       } else {
         return false;

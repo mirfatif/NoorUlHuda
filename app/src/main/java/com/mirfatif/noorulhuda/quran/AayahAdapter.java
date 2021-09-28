@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.util.Pair;
@@ -31,7 +32,11 @@ import com.mirfatif.noorulhuda.db.SurahEntity;
 import com.mirfatif.noorulhuda.quran.AayahAdapter.ItemViewHolder;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
@@ -63,15 +68,21 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     return mAayahGroupList.get(position);
   }
 
+  private final Map<ItemViewHolder, Integer> mViewHolders =
+      Collections.synchronizedMap(new WeakHashMap<>());
+
   @NonNull
   @Override
   public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    ItemViewHolder holder;
     LayoutInflater inflater = LayoutInflater.from(parent.getContext());
     if (viewType == TYPE_TASMIA) {
-      return new TasmiaViewHolder(RvItemTasmiaBinding.inflate(inflater, parent, false));
+      holder = new TasmiaViewHolder(RvItemTasmiaBinding.inflate(inflater, parent, false));
     } else {
-      return new AayahViewHolder(RvItemAayahBinding.inflate(inflater, parent, false));
+      holder = new AayahViewHolder(RvItemAayahBinding.inflate(inflater, parent, false));
     }
+    mViewHolders.put(holder, null);
+    return holder;
   }
 
   @Override
@@ -93,6 +104,17 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
       return TYPE_TASMIA;
     }
     return TYPE_AAYAH;
+  }
+
+  void refreshUi() {
+    TextView tv = new TextView(mA);
+    int color = tv.getCurrentTextColor();
+    Set<ItemViewHolder> viewHolders = mViewHolders.keySet();
+    for (ItemViewHolder holder : viewHolders) {
+      if (holder != null) {
+        holder.refreshUi(color);
+      }
+    }
   }
 
   protected abstract class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -126,6 +148,8 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     }
 
     abstract void bind(AayahGroup aayahGroup);
+
+    abstract void refreshUi(@ColorInt Integer defColor);
   }
 
   class TasmiaViewHolder extends ItemViewHolder {
@@ -135,7 +159,20 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     private TasmiaViewHolder(RvItemTasmiaBinding binding) {
       super(binding.getRoot());
       mB = binding;
+      refreshUi(null);
+    }
 
+    @Override
+    void bind(AayahGroup aayahGroup) {
+      SurahEntity surah = SETTINGS.getMetaDb().getSurah(aayahGroup.entities.get(0).surahNum);
+      if (surah != null) {
+        Utils.runUi(mA, () -> bindSurahHeader(surah)).waitForMe();
+        aayahGroup.bound = true;
+      }
+    }
+
+    @Override
+    public void refreshUi(Integer defColor) {
       Typeface typeface = SETTINGS.getTypeface();
 
       mB.durationV.setTypeface(typeface);
@@ -145,8 +182,14 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
       mB.tasmiaV.setTypeface(typeface);
 
       int colorRes = SETTINGS.getFontColor();
+      Integer color = null;
       if (colorRes > 0) {
-        int color = mB.getRoot().getContext().getColor(colorRes);
+        color = mB.getRoot().getContext().getColor(colorRes);
+      } else if (defColor != null) {
+        color = defColor;
+      }
+
+      if (color != null) {
         mB.numberV.setTextColor(color);
         mB.durationV.setTextColor(color);
         mB.rukuCountV.setTextColor(color);
@@ -170,15 +213,6 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
       mB.nameLeftV.setTextSize(size * 2.25f);
       mB.nameRightV.setTextSize(size * 2.25f);
       mB.tasmiaV.setTextSize(sizeAr * 1.5f);
-    }
-
-    @Override
-    void bind(AayahGroup aayahGroup) {
-      SurahEntity surah = SETTINGS.getMetaDb().getSurah(aayahGroup.entities.get(0).surahNum);
-      if (surah != null) {
-        Utils.runUi(mA, () -> bindSurahHeader(surah)).waitForMe();
-        aayahGroup.bound = true;
-      }
     }
 
     private void bindSurahHeader(SurahEntity surah) {
@@ -213,29 +247,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     private AayahViewHolder(RvItemAayahBinding binding) {
       super(binding.getRoot());
       mB = binding;
-
-      int colorRes = SETTINGS.getFontColor();
-      if (colorRes > 0) {
-        int color = mB.getRoot().getContext().getColor(colorRes);
-        mB.textV.setTextColor(color);
-        mB.transV.setTextColor(color);
-        mB.refV.setTextColor(color);
-      }
-
-      int sizeAr = SETTINGS.getArabicFontSize();
-      int size = SETTINGS.getFontSize();
-
-      Typeface typeface = SETTINGS.getTypeface();
-      Typeface transTypeface = SETTINGS.getTransTypeface();
-
-      mB.textV.setTextSize(sizeAr * 1.5f);
-      mB.textV.setTypeface(typeface);
-      mB.transV.setTextSize(size);
-      if (transTypeface != null) {
-        mB.transV.setTypeface(transTypeface);
-      }
-      mB.refV.setTextSize(sizeAr * 0.8f);
-      mB.refV.setTypeface(typeface);
+      refreshUi(null);
 
       if (SETTINGS.transEnabled() && SETTINGS.showTransWithText()) {
         mB.transV.setVisibility(View.VISIBLE);
@@ -244,9 +256,11 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
       }
 
       if (SETTINGS.showSingleAayah()) {
-        binding.getRoot().setOnLongClickListener(this);
+        mB.getRoot().setOnLongClickListener(this);
+        mB.textV.setOnLongClickListener(null);
       } else {
-        binding.textV.setOnLongClickListener(this);
+        mB.getRoot().setOnLongClickListener(null);
+        mB.textV.setOnLongClickListener(this);
       }
     }
 
@@ -333,6 +347,35 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
       Utils.runUi(mA, () -> bindAayah(aayahGroup)).waitForMe();
       aayahGroup.bound = true;
+    }
+
+    @Override
+    void refreshUi(Integer defColor) {
+      int colorRes = SETTINGS.getFontColor();
+      Integer color = null;
+      if (colorRes > 0) {
+        color = mB.getRoot().getContext().getColor(colorRes);
+      } else if (defColor != null) {
+        color = defColor;
+      }
+
+      if (color != null) {
+        mB.textV.setTextColor(color);
+        mB.transV.setTextColor(color);
+        mB.refV.setTextColor(color);
+      }
+
+      int sizeAr = SETTINGS.getArabicFontSize();
+      int size = SETTINGS.getFontSize();
+
+      Typeface typeface = SETTINGS.getTypeface();
+
+      mB.textV.setTextSize(sizeAr * 1.5f);
+      mB.textV.setTypeface(typeface);
+      mB.transV.setTextSize(size);
+      mB.transV.setTypeface(SETTINGS.getTransTypeface());
+      mB.refV.setTextSize(sizeAr * 0.8f);
+      mB.refV.setTypeface(typeface);
     }
 
     private void bindAayah(AayahGroup aayahGroup) {
