@@ -585,12 +585,31 @@ public enum MySettings {
   }
 
   private static final int COLOR_DEFAULT = -1;
-  private static final int COLOR_V_SHARP = 0;
-  private static final int COLOR_SHARP = 1;
+  private static final int COLOR_V_LIGHT = 0;
+  private static final int COLOR_LIGHT = 1;
   private static final int COLOR_MEDIUM = 2;
-  private static final int COLOR_LIGHT = 3;
-  private static final int COLOR_V_LIGHT = 4;
-  private static final int COLOR_COUNT = 5;
+  private static final int COLOR_SHARP = 3;
+  private static final int COLOR_V_SHARP = 4;
+  public static final int COLOR_COUNT = 5;
+
+  public int getBgColorSliderVal() {
+    int color = getIntPref(R.string.pref_main_bg_color_key);
+    if (color < COLOR_DEFAULT || color > COLOR_V_SHARP) {
+      color = COLOR_DEFAULT;
+    }
+    return color + 1;
+  }
+
+  public void setBgColor(int color) {
+    color--;
+    if (color < COLOR_DEFAULT || color > COLOR_V_SHARP) {
+      color = COLOR_DEFAULT;
+    }
+    if (color == COLOR_DEFAULT) {
+      Utils.showShortToast(R.string._default);
+    }
+    savePref(R.string.pref_main_bg_color_key, color);
+  }
 
   public @ColorRes int getBgColor() {
     int color = getIntPref(R.string.pref_main_bg_color_key);
@@ -609,8 +628,23 @@ public enum MySettings {
     }
   }
 
-  public void setNextBgColor() {
-    setNextColor(R.string.pref_main_bg_color_key);
+  public int getFontColorSliderVal() {
+    int color = getIntPref(R.string.pref_main_font_color_key);
+    if (color < COLOR_DEFAULT || color > COLOR_V_SHARP) {
+      color = COLOR_DEFAULT;
+    }
+    return color + 1;
+  }
+
+  public void setFontColor(int color) {
+    color--;
+    if (color < COLOR_DEFAULT || color > COLOR_V_SHARP) {
+      color = COLOR_DEFAULT;
+    }
+    if (color == COLOR_DEFAULT) {
+      Utils.showShortToast(R.string._default);
+    }
+    savePref(R.string.pref_main_font_color_key, color);
   }
 
   public @ColorRes int getFontColor() {
@@ -630,22 +664,40 @@ public enum MySettings {
     }
   }
 
-  public void setNextFontColor() {
-    setNextColor(R.string.pref_main_font_color_key);
+  public static final int FONT_SIZE_MIN = 12, FONT_SIZE_MAX = 32;
+
+  public int getFontSizeSliderVal() {
+    return getFontSize() - FONT_SIZE_MIN;
   }
 
-  private void setNextColor(int keyResId) {
-    int color = getIntPref(keyResId) + 1;
-    if (color >= COLOR_COUNT) {
-      color = COLOR_DEFAULT;
-      Utils.showShortToast(R.string._default);
-    } else if (color <= 0) {
-      color = COLOR_V_SHARP;
+  public void setFontSize(int size) {
+    size += 12;
+    if (size > FONT_SIZE_MAX) {
+      size = FONT_SIZE_MAX;
+    } else if (size < FONT_SIZE_MIN) {
+      size = FONT_SIZE_MIN;
     }
-    savePref(keyResId, color);
+    savePref(R.string.pref_main_font_size_key, size);
+    onFontSizeChanged();
   }
 
-  private static final int SIZE_MIN = 12, SIZE_MAX = 24;
+  public void increaseFontSize() {
+    int size = getIntPref(R.string.pref_main_font_size_key);
+    if (size >= FONT_SIZE_MAX) {
+      return;
+    }
+    savePref(R.string.pref_main_font_size_key, Math.min(FONT_SIZE_MAX, size + 1));
+    onFontSizeChanged();
+  }
+
+  public void decreaseFontSize() {
+    int size = getIntPref(R.string.pref_main_font_size_key);
+    if (size <= FONT_SIZE_MIN) {
+      return;
+    }
+    savePref(R.string.pref_main_font_size_key, Math.max(FONT_SIZE_MIN, size - 1));
+    onFontSizeChanged();
+  }
 
   public int getFontSize() {
     return getIntPref(R.string.pref_main_font_size_key);
@@ -664,35 +716,6 @@ public enum MySettings {
       size *= 0.85;
     }
     return size;
-  }
-
-  public void setNextFontSize() {
-    int size = getIntPref(R.string.pref_main_font_size_key);
-    if (size >= SIZE_MAX) {
-      size = 12;
-    } else {
-      size = Math.min(SIZE_MAX, size + 2);
-    }
-    savePref(R.string.pref_main_font_size_key, size);
-    onFontSizeChanged();
-  }
-
-  public void increaseFontSize() {
-    int size = getIntPref(R.string.pref_main_font_size_key);
-    if (size >= SIZE_MAX) {
-      return;
-    }
-    savePref(R.string.pref_main_font_size_key, Math.min(SIZE_MAX, size + 1));
-    onFontSizeChanged();
-  }
-
-  public void decreaseFontSize() {
-    int size = getIntPref(R.string.pref_main_font_size_key);
-    if (size <= SIZE_MIN) {
-      return;
-    }
-    savePref(R.string.pref_main_font_size_key, Math.max(SIZE_MIN, size - 1));
-    onFontSizeChanged();
   }
 
   private final MutableLiveData<Void> mFontSizeChangedNotifier = new MutableLiveData<>();

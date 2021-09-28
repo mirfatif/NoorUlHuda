@@ -17,6 +17,7 @@ import static com.mirfatif.noorulhuda.util.Utils.setTooltip;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -28,7 +29,6 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.HapticFeedbackConstants;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +41,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import androidx.annotation.ArrayRes;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
@@ -251,72 +252,6 @@ public class MainActivity extends BaseActivity {
   ///////////////////////////// GENERAL ////////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private void setBgColor() {
-    int bgColorRes = SETTINGS.getBgColor();
-    if (bgColorRes > 0) {
-      mB.getRoot().setBackgroundColor(getColor(bgColorRes));
-    } else {
-      mB.getRoot().setBackgroundColor(Color.TRANSPARENT);
-    }
-  }
-
-  private void showBrightnessSlider() {
-    Window window = getWindow();
-    if (window == null) {
-      return;
-    }
-    LayoutParams wParams = window.getAttributes();
-
-    SliderBinding b = SliderBinding.inflate(getLayoutInflater());
-    SeekBar seekBar = b.getRoot();
-    final int MAX = 100;
-    seekBar.setMax(MAX);
-
-    int resId = R.drawable.brightness_thumb_auto;
-    if (wParams.screenBrightness != BRIGHTNESS_OVERRIDE_NONE) {
-      resId = R.drawable.brightness_thumb;
-      seekBar.setProgress((int) (wParams.screenBrightness * MAX));
-    }
-    Drawable drawable = ResourcesCompat.getDrawable(App.getRes(), resId, getTheme());
-    b.getRoot().setThumb(drawable);
-
-    int width = App.getRes().getDisplayMetrics().widthPixels * (isLandscape() ? 5 : 9) / 10;
-    PopupWindow popup = new PopupWindow(seekBar, width, LayoutParams.WRAP_CONTENT);
-    popup.setElevation(500);
-    popup.setOverlapAnchor(true);
-    popup.setOutsideTouchable(true); // Dismiss on outside touch.
-    Runnable hider = popup::dismiss;
-    seekBar.setOnSeekBarChangeListener(
-        new OnSeekBarChangeListener() {
-          @Override
-          public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            wParams.screenBrightness = (float) progress / MAX;
-
-            int resId = R.drawable.brightness_thumb;
-            if (wParams.screenBrightness == 0) {
-              resId = R.drawable.brightness_thumb_auto;
-              wParams.screenBrightness = BRIGHTNESS_OVERRIDE_NONE;
-            }
-            Drawable drawable = ResourcesCompat.getDrawable(App.getRes(), resId, getTheme());
-            b.getRoot().setThumb(drawable);
-
-            window.setAttributes(wParams);
-            SETTINGS.saveBrightness(wParams.screenBrightness);
-            seekBar.removeCallbacks(hider);
-            seekBar.postDelayed(hider, 5000);
-          }
-
-          @Override
-          public void onStartTrackingTouch(SeekBar seekBar) {}
-
-          @Override
-          public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-    popup.showAtLocation(
-        mB.bottomBar.getRoot(), Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, 2 * Utils.toPx(48));
-    seekBar.postDelayed(hider, 5000);
-  }
-
   private void buildDbAndRefreshUi() {
     AlertDialogFragment dialog = showDbBuildDialog();
     Utils.showThirdPartyCredits(this, false);
@@ -406,6 +341,157 @@ public class MainActivity extends BaseActivity {
     Builder builder =
         new Builder(this).setTitle(R.string.search_help_menu_item).setView(b.getRoot());
     AlertDialogFragment.show(this, builder.create(), "SEARCH_HELP");
+  }
+
+  //////////////////////////////////////////////////////////////////
+  ///////////////////////////// SLIDERS ////////////////////////////
+  //////////////////////////////////////////////////////////////////
+
+  private void setBgColor() {
+    int bgColorRes = SETTINGS.getBgColor();
+    if (bgColorRes > 0) {
+      mB.getRoot().setBackgroundColor(getColor(bgColorRes));
+    } else {
+      mB.getRoot().setBackgroundColor(Color.TRANSPARENT);
+    }
+  }
+
+  private void showBrightnessSlider() {
+    Window window = getWindow();
+    if (window == null) {
+      return;
+    }
+    LayoutParams wParams = window.getAttributes();
+
+    final int MAX = 100;
+    int thumb = R.drawable.brightness_thumb_auto;
+    int curVal = 0;
+    if (wParams.screenBrightness != BRIGHTNESS_OVERRIDE_NONE) {
+      thumb = R.drawable.brightness_thumb;
+      curVal = (int) (wParams.screenBrightness * MAX);
+    }
+
+    SliderPopup.SliderCallback callback =
+        (seekBar, newValue) -> {
+          wParams.screenBrightness = (float) newValue / MAX;
+
+          int resId = R.drawable.brightness_thumb;
+          if (wParams.screenBrightness == 0) {
+            resId = R.drawable.brightness_thumb_auto;
+            wParams.screenBrightness = BRIGHTNESS_OVERRIDE_NONE;
+          }
+          Drawable drawable = ResourcesCompat.getDrawable(App.getRes(), resId, getTheme());
+          seekBar.setThumb(drawable);
+
+          window.setAttributes(wParams);
+          SETTINGS.saveBrightness(wParams.screenBrightness);
+        };
+
+    new SliderPopup(this, MAX, curVal, thumb, callback).show(mB.bottomBar.getRoot());
+  }
+
+  private void showBgColorSlider() {
+    SliderPopup.SliderCallback callback =
+        (seekBar, newValue) -> {
+          SETTINGS.setBgColor(newValue);
+          setBgColor();
+        };
+
+    new SliderPopup(
+            this,
+            MySettings.COLOR_COUNT,
+            SETTINGS.getBgColorSliderVal(),
+            R.drawable.colorize,
+            callback)
+        .show(mB.bottomBar.getRoot());
+  }
+
+  private void showFontColorSlider() {
+    SliderPopup.SliderCallback callback =
+        (seekBar, newValue) -> {
+          SETTINGS.setFontColor(newValue);
+          refreshUi();
+        };
+
+    new SliderPopup(
+            this,
+            MySettings.COLOR_COUNT,
+            SETTINGS.getFontColorSliderVal(),
+            R.drawable.contrast,
+            callback)
+        .show(mB.bottomBar.getRoot());
+  }
+
+  private void showFontSizeSlider() {
+    SliderPopup.SliderCallback callback = (seekBar, newValue) -> SETTINGS.setFontSize(newValue);
+
+    new SliderPopup(
+            this,
+            MySettings.FONT_SIZE_MAX - MySettings.FONT_SIZE_MIN,
+            SETTINGS.getFontSizeSliderVal(),
+            R.drawable.text_size,
+            callback)
+        .show(mB.bottomBar.getRoot());
+  }
+
+  private static class SliderPopup {
+
+    private final SeekBar mSeekBar;
+    private final PopupWindow mPopup;
+    private final Runnable mHider;
+
+    private SliderPopup(
+        Activity activity,
+        int maxVal,
+        int curVal,
+        @DrawableRes int thumb,
+        SliderCallback sliderCallback) {
+      mSeekBar = SliderBinding.inflate(activity.getLayoutInflater()).getRoot();
+      mSeekBar.setMax(maxVal);
+      mSeekBar.setProgress(curVal);
+
+      Drawable drawable = ResourcesCompat.getDrawable(App.getRes(), thumb, activity.getTheme());
+      if (drawable != null) {
+        drawable.setTint(Utils.getColor(activity, R.attr.accent));
+      }
+      mSeekBar.setThumb(drawable);
+
+      int width = App.getRes().getDisplayMetrics().widthPixels * (isLandscape() ? 5 : 9) / 10;
+      mPopup = new PopupWindow(mSeekBar, width, LayoutParams.WRAP_CONTENT);
+      mPopup.setElevation(500);
+      mPopup.setOverlapAnchor(true);
+      mPopup.setOutsideTouchable(true); // Dismiss on outside touch.
+
+      mHider = mPopup::dismiss;
+      mSeekBar.setOnSeekBarChangeListener(
+          new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+              sliderCallback.onValueChanged(seekBar, progress);
+              seekBar.removeCallbacks(mHider);
+              seekBar.postDelayed(mHider, 5000);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+          });
+    }
+
+    private static final int GRAVITY = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+    private static final int Y_POS = 2 * Utils.toPx(48);
+
+    private void show(View view) {
+      mPopup.showAtLocation(view, GRAVITY, 0, Y_POS);
+      mSeekBar.postDelayed(mHider, 5000);
+    }
+
+    private interface SliderCallback {
+
+      void onValueChanged(SeekBar seekBar, int newValue);
+    }
   }
 
   //////////////////////////////////////////////////////////////////
@@ -525,16 +611,7 @@ public class MainActivity extends BaseActivity {
         };
 
     for (ImageView view : bottomBarItems) {
-      view.setOnClickListener(
-          v -> {
-            if (v == mB.bottomBar.actionBgColor
-                || v == mB.bottomBar.actionTextColor
-                || v == mB.bottomBar.actionFontSize
-                || v == mB.bottomBar.actionInfoHeader) {
-              v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            }
-            handleMenuItemClick(v.getId());
-          });
+      view.setOnClickListener(v -> handleMenuItemClick(v.getId()));
       setTooltip(view);
     }
 
@@ -629,13 +706,11 @@ public class MainActivity extends BaseActivity {
     } else if (itemId == R.id.action_brightness) {
       showBrightnessSlider();
     } else if (itemId == R.id.action_bg_color) {
-      SETTINGS.setNextBgColor();
-      setBgColor();
+      showBgColorSlider();
     } else if (itemId == R.id.action_text_color) {
-      SETTINGS.setNextFontColor();
-      refreshUi();
+      showFontColorSlider();
     } else if (itemId == R.id.action_font_size) {
-      SETTINGS.setNextFontSize();
+      showFontSizeSlider();
     } else if (itemId == R.id.action_font) {
       PopupMenu popupMenu = new PopupMenu(this, mB.bottomBar.actionFont);
       popupMenu.inflate(R.menu.main_font);
