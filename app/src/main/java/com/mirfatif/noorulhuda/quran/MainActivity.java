@@ -272,12 +272,6 @@ public class MainActivity extends BaseActivity {
     return dialog;
   }
 
-  private enum RestorePosType {
-    SAVED,
-    CURRENT,
-    NONE
-  }
-
   /*
    Do not recreate whole Pager and RecyclerViews if
    only font, its size or color needs to be changed.
@@ -313,7 +307,13 @@ public class MainActivity extends BaseActivity {
     }
   }
 
-  private void refreshUi(RestorePosType restorePosType) {
+  enum RestorePosType {
+    SAVED,
+    CURRENT,
+    NONE
+  }
+
+  void refreshUi(RestorePosType restorePosType) {
     if (!Utils.isMainThread()) {
       Utils.runUi(this, () -> refreshUi(restorePosType)).waitForMe();
       return;

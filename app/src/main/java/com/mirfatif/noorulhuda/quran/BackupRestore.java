@@ -23,6 +23,7 @@ import com.mirfatif.noorulhuda.db.TagAayahsEntity;
 import com.mirfatif.noorulhuda.db.TagEntity;
 import com.mirfatif.noorulhuda.db.TagsDao;
 import com.mirfatif.noorulhuda.prayer.WidgetProvider;
+import com.mirfatif.noorulhuda.quran.MainActivity.RestorePosType;
 import com.mirfatif.noorulhuda.svc.PrayerNotifySvc;
 import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
 import com.mirfatif.noorulhuda.util.Utils;
@@ -112,6 +113,9 @@ public class BackupRestore {
       try (InputStream is = App.getCxt().getContentResolver().openInputStream(uri)) {
         restore(is);
         Utils.showToast(R.string.restore_success);
+        PrayerNotifySvc.reset(false);
+        WidgetProvider.reset();
+        mA.refreshUi(RestorePosType.SAVED);
       } catch (IOException | XmlPullParserException e) {
         e.printStackTrace();
         Utils.showToast(R.string.restore_failed);
