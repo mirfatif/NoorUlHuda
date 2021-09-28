@@ -1422,6 +1422,9 @@ public class MainActivity extends BaseActivity {
       }
     }
     PLAIN_ARABIC_CHARS.add((int) ' ');
+    PLAIN_ARABIC_CHARS.add((int) '&');
+    PLAIN_ARABIC_CHARS.add((int) '|');
+    PLAIN_ARABIC_CHARS.add((int) '!');
   }
 
   private void setUpSearchView() {
