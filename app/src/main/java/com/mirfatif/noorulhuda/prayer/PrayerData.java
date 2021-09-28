@@ -80,6 +80,10 @@ public class PrayerData {
 
   public static PrayerData getPrayerData() {
     Coordinates location = SETTINGS.getLngLat();
+    if (location == null) {
+      throw new Error("Location is null");
+    }
+
     Calendar gregCal;
     String tzId = SETTINGS.getLocTimeZoneId();
     if (tzId == null) {
@@ -162,7 +166,7 @@ public class PrayerData {
 
     data.day = gregCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
     data.time = setSpan(formatter.format(gregCal.getTime()), false, false);
-    formatter.applyPattern("dd MMM yyyy");
+    formatter = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
     data.date = formatter.format(gregCal.getTime());
 
     gregCal.add(Calendar.DAY_OF_MONTH, 1);
