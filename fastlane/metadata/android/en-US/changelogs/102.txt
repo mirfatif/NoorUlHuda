@@ -1,0 +1,22 @@
+- Parse html strings of English transliteration
+- Do not show unsupported vowels in Uthmani text when using Hafs font
+- Added options for page and continuous modes
+- Fixed widget showing wrong time: hold wake lock while updating widgets
+- Fixed search stuck due to SQLite host parameters limit
+- Added pinch zoom Quranic and Dua text
+- Paste location for Prayer Time from clipboard
+- Added "Go to Aayah" popup option in search mode
+- Added option to search Arabic text with vowels
+- Highlight matched words in search
+- Added option to show translation under Arabic text or in dialog
+- Fixed long press popup menu position
+- Show dialogs after orientation change
+- Moved theme settings to single menu
+- Updated search help and prayer time location help
+- Made font color and size changes appear without flicker
+- Improve text blink logic after GoTo
+- Added sliders for changing colors and font size
+- Added "Auto" thumb to brightness slider
+- Show keyboard to edit title when creating new tag
+- Reset UI and services after restoring backup
+- Ask for feedback

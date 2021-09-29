@@ -8,11 +8,10 @@ android {
         applicationId "com.mirfatif.noorulhuda"
         minSdk minSdkVer
         targetSdk targetSdkVer
-        versionCode 101
-        versionName "v1.01"
+        versionCode 102
+        versionName "v1.02"
 
-        def br = "git rev-parse --abbrev-ref HEAD".execute().text.trim()
-        buildConfigField "boolean", "GH_VERSION", (br != "ps" && br != "ps-dev") ? "true" : "false"
+        buildConfigField "boolean", "GH_VERSION", System.getenv('IS_PS_VERSION') != "true" ? "true" : "false"
     }
 
     buildTypes {
