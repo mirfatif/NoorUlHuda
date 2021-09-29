@@ -11,7 +11,6 @@
   <!-- MainActivity Preferences -->
   <string name="pref_main_crash_report_ts_nb_key" translatable="false">pref_main_crash_report_ts_nb</string>
   <string name="pref_main_bookmarks_key" translatable="false">pref_main_bookmarks</string>
-  <string name="pref_settings_tasmia_ids_nb_key" translatable="false">pref_settings_tasmia_ids_nb</string>
 
   <!-- MainActivity Preferences corresponding to default values -->
   <string name="pref_main_crash_report_count_nb_key" translatable="false">pref_main_crash_report_count_nb</string>
@@ -22,6 +21,8 @@
   <string name="pref_main_theme_color_default" translatable="false">@string/theme_color_green</string>
   <string name="pref_main_page_view_key" translatable="false">pref_main_page_view</string>
   <bool name="pref_main_page_view_default">true</bool>
+  <string name="pref_main_break_aayahs_key" translatable="false">pref_main_break_aayahs</string>
+  <bool name="pref_main_break_aayahs_default">false</bool>
   <string name="pref_main_show_page_header_key" translatable="false">pref_main_show_page_header</string>
   <bool name="pref_main_show_page_header_default">true</bool>
   <string name="pref_main_font_nb_key" translatable="false">pref_main_font_nb</string>
@@ -46,6 +47,10 @@
   <string name="pref_main_trans_db_nb_default" translatable="false">@string/db_trans_none</string>
   <string name="pref_main_trans_search_key" translatable="false">pref_main_trans_search</string>
   <bool name="pref_main_trans_search_default">false</bool>
+  <string name="pref_main_vowels_search_key" translatable="false">pref_main_vowels_search</string>
+  <bool name="pref_main_vowels_search_default">false</bool>
+  <string name="pref_main_trans_with_text_key" translatable="false">pref_main_trans_with_text</string>
+  <bool name="pref_main_trans_with_text_default">true</bool>
   <string name="pref_main_last_quranic_dua_key" translatable="false">pref_main_last_quranic_dua</string>
   <integer name="pref_main_last_quranic_dua_default">0</integer>
   <string name="pref_main_last_masnoon_dua_key" translatable="false">pref_main_last_masnoon_dua</string>
@@ -54,6 +59,9 @@
   <integer name="pref_main_last_occasions_dua_default">0</integer>
   <string name="pref_main_last_dua_page_key" translatable="false">pref_main_last_dua_page</string>
   <integer name="pref_main_last_dua_page_default">0</integer>
+  <string name="pref_main_ask_for_feedback_ts_nb_key" translatable="false">pref_main_ask_for_feedback_ts_nb</string>
+  <string name="pref_main_app_launch_count_for_feedback_nb_key" translatable="false">pref_main_app_launch_count_for_feedback_nb</string>
+  <integer name="pref_main_app_launch_count_for_feedback_nb_default">0</integer>
 
   <!-- AboutActivity -->
   <string name="pref_settings_check_for_updates_key" translatable="false">pref_settings_check_for_updates</string>

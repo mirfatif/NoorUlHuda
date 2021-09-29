@@ -8,11 +8,10 @@ android {
         applicationId "com.mirfatif.noorulhuda"
         minSdk minSdkVer
         targetSdk targetSdkVer
-        versionCode 101
-        versionName "v1.01"
+        versionCode 102
+        versionName "v1.02"
 
-        def br = "git rev-parse --abbrev-ref HEAD".execute().text.trim()
-        buildConfigField "boolean", "GH_VERSION", (br != "ps" && br != "ps-dev") ? "true" : "false"
+        buildConfigField "boolean", "GH_VERSION", System.getenv('IS_PS_VERSION') != "true" ? "true" : "false"
     }
 
     buildTypes {
@@ -52,10 +51,15 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.3.0'
     annotationProcessor 'androidx.room:room-compiler:2.3.0'
 
+    // For Snackbar, TabLayout and BottomSheetDialogFragment.
+    // Also includes CoordinatorLayout.
     implementation 'com.google.android.material:material:1.4.0'
 
     // To handle hyperlink onClick in TextView
     implementation 'me.saket:better-link-movement-method:2.2.0'
+
+    // To use Iterables for splitting Collections
+    implementation("com.google.guava:guava:30.1.1-android")
 
     // Let's behave responsibly
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'

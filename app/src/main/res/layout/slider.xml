@@ -7,5 +7,4 @@
   android:paddingStart="28dp"
   android:paddingEnd="28dp"
   android:background="@drawable/alert_dialog_bg_bordered"
-  android:progressTint="?android:attr/colorPrimary"
-  android:thumb="@drawable/thumb" />
+  android:progressTint="?android:attr/colorPrimary" />

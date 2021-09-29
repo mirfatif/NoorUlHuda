@@ -5,23 +5,32 @@ import static com.mirfatif.noorulhuda.dua.DuaPageAdapter.DUA_TYPE_MASNOON;
 import static com.mirfatif.noorulhuda.dua.DuaPageAdapter.DUA_TYPE_OCCASIONS;
 import static com.mirfatif.noorulhuda.dua.DuaPageAdapter.DUA_TYPE_QURANIC;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.quran.QuranPageFragment.POPUP_HEIGHT;
+import static com.mirfatif.noorulhuda.quran.QuranPageFragment.POPUP_ICON_WIDTH;
+import static com.mirfatif.noorulhuda.quran.QuranPageFragment.POPUP_PADDING;
 import static com.mirfatif.noorulhuda.util.Utils.setTooltip;
+import static com.mirfatif.noorulhuda.util.Utils.toPx;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,8 +41,10 @@ import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.AayahContextMenuBinding;
 import com.mirfatif.noorulhuda.databinding.RecyclerViewBinding;
+import com.mirfatif.noorulhuda.databinding.RvItemAayahBinding;
 import com.mirfatif.noorulhuda.dua.DuasAdapter.Dua;
 import com.mirfatif.noorulhuda.dua.DuasAdapter.DuaLongClickListener;
+import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +52,13 @@ import java.util.List;
 public class DuaPageFragment extends Fragment {
 
   private DuaActivity mA;
+  private ScaleGestureDetector mRvScaleGestureDetector;
 
   @Override
   public void onAttach(@NonNull Context context) {
     super.onAttach(context);
     mA = (DuaActivity) getActivity();
+    mRvScaleGestureDetector = new ScaleGestureDetector(mA, new RvScaleGestureListener());
   }
 
   @Nullable
@@ -143,11 +156,16 @@ public class DuaPageFragment extends Fragment {
     return false;
   }
 
+  void resetFontSize() {
+    if (mAdapter != null) {
+      mAdapter.resetFontSize();
+    }
+  }
+
   //////////////////////////////////////////////////////////////////
   /////////////////////////// LONG CLICK ///////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private static final int POPUP_WIDTH = 150, POPUP_HEIGHT = 100;
   private PopupWindow mPopup;
   private int mTapPosX, mTapPosY;
 
@@ -159,24 +177,69 @@ public class DuaPageFragment extends Fragment {
       setTooltip(b.copyButton);
       setTooltip(b.shareButton);
       setTooltip(b.gotoButton);
+      setTooltip(b.transButton);
 
-      b.bookmarkButton.setVisibility(View.GONE);
       b.addTagButton.setVisibility(View.GONE);
 
       b.copyButton.setOnClickListener(v -> shareDua(dua, true));
       b.shareButton.setOnClickListener(v -> shareDua(dua, false));
 
-      int popupWidth = POPUP_WIDTH;
+      int iconCount = 2; // Copy and Share
 
       if (mDuaType == DUA_TYPE_QURANIC) {
+        iconCount++;
         b.gotoButton.setVisibility(View.VISIBLE);
         b.gotoButton.setOnClickListener(
             v -> {
               mPopup.dismiss();
               mA.goTo(dua);
             });
-      } else {
-        popupWidth -= popupWidth / 3;
+      }
+
+      if (dua.trans != null && !SETTINGS.showTransWithText()) {
+        iconCount++;
+        b.transButton.setVisibility(View.VISIBLE);
+        b.transButton.setOnClickListener(
+            v -> {
+              mPopup.dismiss();
+
+              RvItemAayahBinding binding = RvItemAayahBinding.inflate(getLayoutInflater());
+              int color = mA.getColor(R.color.fgSharp2);
+              binding.titleV.setTextColor(color);
+              binding.textV.setTextColor(color);
+              binding.transV.setTextColor(color);
+              binding.refV.setTextColor(color);
+
+              int sizeAr = SETTINGS.getArabicFontSize();
+              binding.titleV.setTextSize(sizeAr);
+              binding.textV.setTextSize(sizeAr * 1.5f);
+              binding.transV.setTextSize(SETTINGS.getFontSize());
+              binding.refV.setTextSize(sizeAr * 0.8f);
+
+              Typeface typeface = SETTINGS.getTypeface();
+              Typeface transTypeface = SETTINGS.getTransTypeface();
+              binding.textV.setTypeface(typeface);
+              binding.titleV.setTypeface(transTypeface);
+              binding.transV.setTypeface(transTypeface);
+              binding.refV.setTypeface(typeface);
+
+              binding.textV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+              binding.transV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+              if (dua.title != null) {
+                binding.titleV.setText(dua.title);
+                binding.titleV.setVisibility(View.VISIBLE);
+              }
+              binding.textV.setText(dua.text);
+              binding.transV.setText(dua.trans);
+              binding.refV.setText(dua.ref);
+
+              NestedScrollView scrollView = new NestedScrollView(mA);
+              scrollView.setPadding(toPx(8), toPx(8), toPx(8), toPx(8));
+              scrollView.addView(binding.getRoot());
+              AlertDialog dialog = new AlertDialog.Builder(mA).setView(scrollView).create();
+              AlertDialogFragment.show(mA, dialog, "TEXT_TRANS");
+            });
       }
 
       if (mPopup != null) {
@@ -194,11 +257,9 @@ public class DuaPageFragment extends Fragment {
             mPopup = null;
           });
 
-      int xOff = mTapPosX - Utils.toPx(popupWidth);
+      int popupWidth = POPUP_PADDING + iconCount * POPUP_ICON_WIDTH;
+      int xOff = Math.max(0, mTapPosX - Utils.toPx(popupWidth / 2));
       int yOff = mTapPosY - Utils.toPx(POPUP_HEIGHT);
-      if (xOff < 0) {
-        xOff = mTapPosX + Utils.toPx(popupWidth / 4);
-      }
       if (yOff < 0) {
         yOff = mTapPosY + Utils.toPx(POPUP_HEIGHT / 2);
       }
@@ -234,10 +295,48 @@ public class DuaPageFragment extends Fragment {
     }
   }
 
+  private class RvScaleGestureListener implements OnScaleGestureListener {
+
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+      mScaleFactor = 1;
+      mRvScaling = true;
+      return true;
+    }
+
+    private float mScaleFactor = 1;
+
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+      float scaleFactor = detector.getScaleFactor();
+      if (scaleFactor / mScaleFactor > 1.1) {
+        SETTINGS.increaseFontSize();
+      } else if (scaleFactor / mScaleFactor < 0.9) {
+        SETTINGS.decreaseFontSize();
+      } else {
+        return false;
+      }
+      mScaleFactor = scaleFactor;
+      return false;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+      mRvScaling = false;
+    }
+  }
+
+  private boolean mRvScaling = false;
+
   private class RvTouchListener implements OnItemTouchListener {
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+      mRvScaleGestureDetector.onTouchEvent(e);
+      if (mRvScaling) {
+        return true;
+      }
+
       if (e.getAction() == MotionEvent.ACTION_DOWN) {
         mScrolling = false;
       } else if (e.getAction() == MotionEvent.ACTION_UP
@@ -254,7 +353,9 @@ public class DuaPageFragment extends Fragment {
     }
 
     @Override
-    public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {}
+    public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+      mRvScaleGestureDetector.onTouchEvent(e);
+    }
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}

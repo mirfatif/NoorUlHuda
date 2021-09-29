@@ -5,6 +5,8 @@ A simple, open source Quran reader app with extras, completely free forever
 <a href="https://play.google.com/store/apps/details?id=com.mirfatif.noorulhuda"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100"></a>
 <a href="https://apt.izzysoft.de/fdroid/index/apk/com.mirfatif.noorulhuda"><img alt="Get it on F-Droid" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="100"></a>
 
+Noor-Ul-Huda is an offline Quran app with Prayer Time and Duas (supplications), made with ❤️ and تقوٰى. Here's what you can do with it.
+
 ## Features
 Customize your reading experience the way you want:
 
@@ -65,6 +67,7 @@ https://mirfatif.github.io/NoorUlHuda/privacy_policy.html
 * https://github.com/saket/Better-Link-Movement-Method
 * https://github.com/square/leakcanary
 * https://github.com/sherter/google-java-format-gradle-plugin
+* https://github.com/google/guava
 
 **Quranic Texts and Translations:**
 
@@ -101,4 +104,5 @@ You **CANNOT** use and distribute the app icon in anyway, except for **Noor Ul H
 ## Contact Us
 
 **Telegram:** [https://t.me/NoorUlHudaApp](https://t.me/NoorUlHudaApp)  
+**XDA Thread:** [https://forum.xda-developers.com...](https://forum.xda-developers.com/t/app-7-0-noor-ul-huda-nur-alxd-quran-reader-prayer-time-and-duas-app.4306203/)  
 **Email:** [mirfatif@gmail.com](mailto:mirfatif@gmail.com)

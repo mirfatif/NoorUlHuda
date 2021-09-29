@@ -1,17 +1,13 @@
 package com.mirfatif.noorulhuda.ui.dialog;
 
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.BaseAdapter;
 
 public abstract class MyBaseAdapter extends BaseAdapter {
 
-  public final LayoutInflater mInflater;
   public final DialogListCallback mCallback;
 
-  public MyBaseAdapter(Context context, DialogListCallback callback) {
-    mInflater = LayoutInflater.from(context);
+  public MyBaseAdapter(DialogListCallback callback) {
     mCallback = callback;
   }
 

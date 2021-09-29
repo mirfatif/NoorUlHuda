@@ -23,6 +23,7 @@ import com.mirfatif.noorulhuda.db.TagAayahsEntity;
 import com.mirfatif.noorulhuda.db.TagEntity;
 import com.mirfatif.noorulhuda.db.TagsDao;
 import com.mirfatif.noorulhuda.prayer.WidgetProvider;
+import com.mirfatif.noorulhuda.quran.MainActivity.RestorePosType;
 import com.mirfatif.noorulhuda.svc.PrayerNotifySvc;
 import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
 import com.mirfatif.noorulhuda.util.Utils;
@@ -74,15 +75,13 @@ public class BackupRestore {
         mA.registerForActivityResult(new ActivityResultContracts.OpenDocument(), restoreCallback);
   }
 
-  void doBackupRestore() {
-    AlertDialog dialog =
-        new Builder(mA)
-            .setPositiveButton(R.string.backup, (d, which) -> doBackupRestore(true))
-            .setNegativeButton(R.string.restore, (d, which) -> doBackupRestore(false))
-            .setTitle(getString(R.string.backup) + " / " + getString(R.string.restore))
-            .setMessage(R.string.choose_backup_restore)
-            .create();
-    new AlertDialogFragment(dialog).show(mA, "BACKUP_RESTORE", false);
+  AlertDialog createDialog() {
+    return new Builder(mA)
+        .setPositiveButton(R.string.backup, (d, which) -> doBackupRestore(true))
+        .setNegativeButton(R.string.restore, (d, which) -> doBackupRestore(false))
+        .setTitle(getString(R.string.backup) + " / " + getString(R.string.restore))
+        .setMessage(R.string.choose_backup_restore)
+        .create();
   }
 
   private void doBackupRestore(boolean isBackup) {
@@ -114,6 +113,9 @@ public class BackupRestore {
       try (InputStream is = App.getCxt().getContentResolver().openInputStream(uri)) {
         restore(is);
         Utils.showToast(R.string.restore_success);
+        PrayerNotifySvc.reset(false);
+        WidgetProvider.reset();
+        mA.refreshUi(RestorePosType.SAVED);
       } catch (IOException | XmlPullParserException e) {
         e.printStackTrace();
         Utils.showToast(R.string.restore_failed);
@@ -435,9 +437,9 @@ public class BackupRestore {
 
   private void showProgressDialog(@StringRes int resId) {
     Builder builder = new Builder(mA).setTitle(resId).setView(R.layout.dialog_progress);
-    mDialog = new AlertDialogFragment(builder.create());
+    mDialog = new AlertDialogFragment();
     mDialog.setCancelable(false);
-    mCallback = () -> mDialog.show(mA, "BACKUP_RESTORE", false);
+    mCallback = () -> AlertDialogFragment.show(mA, mDialog, builder.create(), "BACKUP_RESTORE");
     DELAYED_POSTER.postDelayed(mCallback, 500);
   }
 

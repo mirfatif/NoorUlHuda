@@ -2,16 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
-    android:id="@+id/action_dark_theme"
-    android:checkable="true"
-    android:icon="@drawable/dark_mode"
-    android:title="@string/dark_theme_menu_item" />
-
-  <item
+    android:id="@+id/action_theme"
     android:icon="@drawable/theme"
-    android:title="@string/theme_color_menu_item">
+    android:title="@string/theme_menu_item">
     <menu>
-      <group android:checkableBehavior="single">
+      <item
+        android:id="@+id/action_dark_theme"
+        android:checkable="true"
+        android:title="@string/dark_theme_menu_item" />
+
+      <group
+        android:id="@+id/group0"
+        android:checkableBehavior="single">
         <item
           android:id="@+id/action_theme_color_green"
           android:title="@string/theme_color_green" />
@@ -59,9 +61,22 @@
       android:title="@string/texts_menu_item" />
 
     <item
-      android:id="@+id/action_translations"
       android:icon="@drawable/language"
-      android:title="@string/translations_menu_item" />
+      android:title="@string/translations_menu_item">
+
+      <menu>
+        <item
+          android:id="@+id/action_select_trans"
+          android:title="@string/select_trans_menu_item" />
+
+        <item
+          android:id="@+id/action_trans_with_text"
+          android:checkable="true"
+          android:title="@string/trans_with_text_menu_item" />
+      </menu>
+
+    </item>
+
   </group>
 
   <group android:id="@+id/group4">

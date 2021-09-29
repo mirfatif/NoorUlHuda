@@ -1,6 +1,7 @@
 package com.mirfatif.noorulhuda.tags;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.quran.AayahAdapter.removeUnsupportedChars;
 import static com.mirfatif.noorulhuda.tags.TagsDialogFragment.PARENT_FRAG_TAG;
 import static com.mirfatif.noorulhuda.util.Utils.getArNum;
 
@@ -25,10 +26,12 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.google.common.collect.Iterables;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.TagDialogViewBinding;
 import com.mirfatif.noorulhuda.db.AayahEntity;
+import com.mirfatif.noorulhuda.db.QuranDao;
 import com.mirfatif.noorulhuda.db.SurahEntity;
 import com.mirfatif.noorulhuda.db.TagAayahsDao;
 import com.mirfatif.noorulhuda.db.TagEntity;
@@ -39,7 +42,6 @@ import com.mirfatif.noorulhuda.ui.dialog.MyBaseAdapter.DialogListCallback;
 import com.mirfatif.noorulhuda.ui.dialog.MyBaseAdapter.DialogListItem;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -116,7 +118,9 @@ public class TagDialogFragment extends AppCompatDialogFragment {
         () -> {
           mTagsDb.updateTag(mTag);
           if (mRemovedAayahs.size() > 0) {
-            mTagAayahsDb.remove(mTag.id, mRemovedAayahs);
+            for (List<Integer> ids : Iterables.partition(mRemovedAayahs, 999)) {
+              mTagAayahsDb.remove(mTag.id, ids);
+            }
           }
           if (mTagsListFrag != null) {
             mTagsListFrag.submitList();
@@ -157,7 +161,7 @@ public class TagDialogFragment extends AppCompatDialogFragment {
     view.requestFocus();
     InputMethodManager imm =
         (InputMethodManager) App.getCxt().getSystemService(Context.INPUT_METHOD_SERVICE);
-    imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+    view.postDelayed(() -> imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT), 100);
   }
 
   private List<AayahEntity> mAayahs;
@@ -199,8 +203,7 @@ public class TagDialogFragment extends AppCompatDialogFragment {
       List<DialogListItem> items = new ArrayList<>();
       mTag.aayahIds.addAll(mTagAayahsDb.getAayahIds(mTag.id));
 
-      mAayahs = SETTINGS.getQuranDb().getAayahEntities(mTag.aayahIds);
-      mAayahs.sort(Comparator.comparingInt(a -> a.id));
+      mAayahs = QuranDao.getAayahEntities(SETTINGS.getQuranDb(), mTag.aayahIds);
 
       for (AayahEntity aayah : mAayahs) {
         SurahEntity surah;
@@ -210,7 +213,7 @@ public class TagDialogFragment extends AppCompatDialogFragment {
         DialogListItem item = new DialogListItem();
         item.title = getString(R.string.surah_name, surah.name);
         item.subTitle = getArNum(aayah.aayahNum);
-        item.text = aayah.text;
+        item.text = removeUnsupportedChars(aayah.text);
         items.add(item);
       }
       Utils.runUi(this, () -> mAdapter.submitList(items));

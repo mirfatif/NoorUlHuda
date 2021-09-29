@@ -5,6 +5,7 @@ import static com.mirfatif.noorulhuda.tags.TagsDialogFragment.AAYAH_ID;
 import static com.mirfatif.noorulhuda.util.Utils.getArNum;
 import static com.mirfatif.noorulhuda.util.Utils.getAttrColor;
 import static com.mirfatif.noorulhuda.util.Utils.setTooltip;
+import static com.mirfatif.noorulhuda.util.Utils.toPx;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -12,9 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.SystemClock;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -22,9 +22,10 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.MetricAffectingSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -33,6 +34,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,42 +48,44 @@ import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.AayahContextMenuBinding;
 import com.mirfatif.noorulhuda.databinding.RecyclerViewBinding;
+import com.mirfatif.noorulhuda.databinding.RvItemAayahBinding;
 import com.mirfatif.noorulhuda.db.AayahEntity;
 import com.mirfatif.noorulhuda.db.DbBuilder;
 import com.mirfatif.noorulhuda.db.QuranDao;
 import com.mirfatif.noorulhuda.db.SurahEntity;
-import com.mirfatif.noorulhuda.quran.AayahAdapter.Aayah;
+import com.mirfatif.noorulhuda.quran.AayahAdapter.AayahGroup;
 import com.mirfatif.noorulhuda.quran.AayahAdapter.AayahLongClickListener;
 import com.mirfatif.noorulhuda.quran.AayahAdapter.AayahViewHolder;
 import com.mirfatif.noorulhuda.quran.AayahAdapter.ItemViewHolder;
 import com.mirfatif.noorulhuda.quran.AayahAdapter.SpanMarks;
+import com.mirfatif.noorulhuda.quran.AayahAdapter.TasmiaViewHolder;
+import com.mirfatif.noorulhuda.quran.MainActivity.ScrollPos;
 import com.mirfatif.noorulhuda.tags.TagsDialogFragment;
+import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
+import com.mirfatif.noorulhuda.util.SingleTaskExecutor;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuranPageFragment extends Fragment {
 
-  private static final String TAG = "QuranPageFragment";
-
   private MainActivity mA;
+  private ScaleGestureDetector mRvScaleGestureDetector;
 
   @Override
   public void onAttach(@NonNull Context context) {
     super.onAttach(context);
     mA = (MainActivity) getActivity();
+    mRvScaleGestureDetector = new ScaleGestureDetector(mA, new RvScaleGestureListener());
   }
 
   @Nullable
@@ -117,7 +122,7 @@ public class QuranPageFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    mAayahAdapter = new AayahAdapter(this, new LongClickListener());
+    mAayahAdapter = new AayahAdapter(mA, new LongClickListener());
     mB.recyclerV.setAdapter(mAayahAdapter);
 
     mLayoutManager = new LinearLayoutManager(mA);
@@ -133,99 +138,149 @@ public class QuranPageFragment extends Fragment {
     refreshUi();
   }
 
-  private void refreshUi() {
-    mB.recyclerV.removeItemDecoration(getDivider());
-    if (SETTINGS.showTranslation() || SETTINGS.isSearchStarted()) {
-      mB.recyclerV.addItemDecoration(getDivider());
-    }
+  @Override
+  public void onStart() {
+    super.onStart();
+    HEADER_UPDATER = new SingleTaskExecutor();
+  }
 
-    if (SETTINGS.isPageMode()) {
-      Utils.runBg(this::submitPageAayahs);
-    } else {
-      mAayahAdapter.submitList(Arrays.asList(new Aayah[DbBuilder.TOTAL_AAYAHS]));
-      // Restore scroll position.
-      scrollToPos(SETTINGS.getLastAayah(), 0, false);
+  private final Object EXECUTOR_LOCK = new Object();
+
+  @Override
+  public void onStop() {
+    synchronized (EXECUTOR_LOCK) {
+      HEADER_UPDATER = null;
     }
+    super.onStop();
   }
 
   //////////////////////////////////////////////////////////////////
   ///////////////////////////// GENERAL ////////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private final List<Aayah> mAayahs = new ArrayList<>();
-  private final Map<Integer, Integer> mIdPosMap = new HashMap<>();
+  private void refreshUi() {
+    mB.recyclerV.removeItemDecoration(getDivider());
+    if ((SETTINGS.transEnabled() && SETTINGS.showTransWithText()) || SETTINGS.isSearchStarted()) {
+      mB.recyclerV.addItemDecoration(getDivider());
+    }
 
-  private void submitPageAayahs() {
-    int page = requireArguments().getInt(QuranPageAdapter.KEY_PAGE);
-    List<Aayah> aayahs = new ArrayList<>();
-    List<AayahEntity> entities = SETTINGS.getQuranDb().getAayahEntities(page);
-    mAayahs.clear();
-    mIdPosMap.clear();
-    if (SETTINGS.showSingleAayah()) {
-      for (int i = 0; i < entities.size(); i++) {
-        AayahEntity entity = entities.get(i);
-        Aayah aayah = new Aayah();
-        mAayahs.add(aayah);
-        aayah.entities.add(entity);
-        aayahs.add(aayah);
-        mIdPosMap.put(entity.id, i);
+    Utils.runBg(this::submitList);
+  }
+
+  private void submitList() {
+    final List<AayahGroup> aayahGroups = new ArrayList<>();
+    final List<Integer> tasmiaPositions = new ArrayList<>();
+    Integer page = null;
+
+    if (SETTINGS.isSlideModeAndNotInSearch()) {
+      page = requireArguments().getInt(QuranPageAdapter.KEY_PAGE);
+
+      AayahGroup aayahGroup = null;
+      int lastPos = -1;
+
+      List<AayahEntity> aayahEntities = SETTINGS.getQuranDb().getAayahEntities(page);
+      for (AayahEntity entity : aayahEntities) {
+        if (SETTINGS.showSingleAayah() || entity.aayahGroupPos != lastPos) {
+          aayahGroup = new AayahGroup();
+          aayahGroups.add(aayahGroup);
+          lastPos = entity.aayahGroupPos;
+        }
+        if (aayahGroup != null) {
+          aayahGroup.entities.add(entity);
+        }
       }
+
+      if (SETTINGS.showSingleAayah()) {
+        for (int i = 0; i < aayahEntities.size(); i++) {
+          if (aayahEntities.get(i).aayahNum == 0) {
+            tasmiaPositions.add(i);
+          }
+        }
+      } else {
+        tasmiaPositions.addAll(SETTINGS.getQuranDb().getTasmiaGroupPosInPage(page));
+      }
+
+    } else if (!SETTINGS.showSingleAayah()) {
+      int aayahGroupCount = SETTINGS.getQuranDb().getAayahGroupsCount(-1);
+      aayahGroups.addAll(Arrays.asList(new AayahGroup[aayahGroupCount]));
+      tasmiaPositions.addAll(SETTINGS.getQuranDb().getTasmiaGroupPos());
+
     } else {
-      int lastSurahNum = 0;
-      Aayah aayah = null;
-      int itemPos = -1;
-      for (int i = 0; i < entities.size(); i++) {
-        AayahEntity entity = entities.get(i);
-        if (entity.surahNum != lastSurahNum) {
-          if (aayah != null) {
-            aayahs.add(aayah);
-          }
-          if (entity.aayahNum == 0) {
-            lastSurahNum = 0;
-          } else {
-            lastSurahNum = entity.surahNum;
-          }
-          aayah = new Aayah();
-          mAayahs.add(aayah);
-          itemPos++;
-        }
-        if (aayah != null) {
-          aayah.entities.add(entity);
-          mIdPosMap.put(entity.id, itemPos);
-        }
-      }
-      if (aayah != null) {
-        aayahs.add(aayah);
+      aayahGroups.addAll(Arrays.asList(new AayahGroup[DbBuilder.TOTAL_AAYAHS]));
+      tasmiaPositions.addAll(SETTINGS.getQuranDb().getTasmiaIds(-1));
+    }
+
+    Utils.runUi(this, () -> mAayahAdapter.submitList(aayahGroups, tasmiaPositions));
+
+    /*
+     In case of slide-page mode (and not in search), restoring RV scroll position
+     is handled in MainActivity if the page already exists in Pager.
+    */
+    ScrollPos scrollPos = mA.getScrollPos(page);
+    if (scrollPos != null) {
+      scrollToAayah(scrollPos.aayahId, scrollPos.blink);
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////
+  //////////////////////// SCROLL TO POSITION //////////////////////
+  //////////////////////////////////////////////////////////////////
+
+  private static final int TMP_OFFSET = -Utils.toPx(24);
+  private final Runnable SMOOTH_SCROLL_TASK = this::smoothScrollRv;
+
+  private void smoothScrollRv() {
+    if (mB.recyclerV.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
+      if (mB != null && mB.recyclerV.canScrollVertically(1)) {
+        mB.recyclerV.smoothScrollBy(0, TMP_OFFSET);
       }
     }
-    Integer aayahId = mA.getScrollPos(page);
-    Utils.runUi(
-        this,
+  }
+
+  // Scroll to a RV item (with an optional offset from top), and optionally blink the RV item.
+  void scrollToRvItem(int rvPos, int offset, boolean blink) {
+    if (mLayoutManager == null) {
+      return;
+    }
+
+    mB.recyclerV.removeCallbacks(SMOOTH_SCROLL_TASK);
+    if (blink) {
+      mA.toggleFullScreen(true);
+    }
+
+    // To avoid jump to top or bottom on first scrolling afterwards.
+    boolean revScrollRv = false;
+    if (offset == 0 && !SETTINGS.isSlideModeAndNotInSearch()) {
+      offset = TMP_OFFSET;
+      revScrollRv = true;
+    }
+    int finalOffset = offset;
+
+    mLayoutManager.scrollToPositionWithOffset(rvPos, finalOffset);
+    mB.recyclerV.postDelayed(
         () -> {
-          mAayahAdapter.submitList(aayahs);
-          if (aayahId != null) {
-            scrollToAayahId(aayahId);
+          if (mLayoutManager.findFirstVisibleItemPosition() != rvPos) {
+            mLayoutManager.scrollToPositionWithOffset(rvPos, finalOffset);
           }
-        });
-  }
+        },
+        100);
 
-  private final Handler SCROLLER = new Handler(Looper.getMainLooper());
-
-  // Continuous mode
-  void scrollToPos(int pos, int offset, boolean highlight) {
-    if (mLayoutManager != null) {
-      mLayoutManager.scrollToPositionWithOffset(pos, offset);
-      SCROLLER.postDelayed(() -> mLayoutManager.scrollToPositionWithOffset(pos, offset), 100);
-      if (highlight) {
-        SCROLLER.postDelayed(() -> highlight(pos), 1000);
-      }
+    if (revScrollRv) {
+      mB.recyclerV.postDelayed(SMOOTH_SCROLL_TASK, 800);
     }
+
+    if (blink) {
+      mB.recyclerV.postDelayed(() -> blinkRvItem(rvPos), 1000);
+    }
+
+    mB.recyclerV.postDelayed(this::updateHeader, 100);
   }
 
-  private void highlight(int pos) {
-    ItemViewHolder h = (ItemViewHolder) mB.recyclerV.findViewHolderForAdapterPosition(pos);
-    View v;
-    if (h != null && (v = h.getView()) != null) {
+  // Blink the whole RV item.
+  private void blinkRvItem(int rvPos) {
+    ItemViewHolder h = (ItemViewHolder) mB.recyclerV.findViewHolderForAdapterPosition(rvPos);
+    if (h != null) {
+      View v = h.itemView;
       v.setVisibility(View.INVISIBLE);
       v.postDelayed(() -> v.setVisibility(View.VISIBLE), 250);
       v.postDelayed(() -> v.setVisibility(View.INVISIBLE), 500);
@@ -233,34 +288,79 @@ public class QuranPageFragment extends Fragment {
     }
   }
 
-  // Page mode
-  void scrollToAayahId(int aayahId) {
-    Integer pos = mIdPosMap.get(aayahId);
-    if (pos == null) {
+  /*
+   Find the Aayah (RV item), scroll RV there, and highlight the item.
+   Or find the AayahGroup (RV item) containing an Aayah, scroll to the single Aayah
+   inside it, and blink the Aayah.
+  */
+  void scrollToAayah(int aayahId, boolean blink) {
+    if (Utils.isMainThread()) {
+      Utils.runBg(() -> scrollToAayah(aayahId, blink));
       return;
     }
-    if (SETTINGS.showSingleAayah() || SETTINGS.isTasmia(aayahId)) {
-      scrollToPos(pos, 0, true);
-    } else {
-      Utils.runBg(() -> highlightAayah(aayahId, pos));
-    }
-  }
 
-  private void highlightAayah(int aayahId, int pos) {
-    SystemClock.sleep(1000);
-    if (mAayahs.size() > pos) {
-      Aayah aayah = mAayahs.get(pos);
-      for (SpanMarks marks : aayah.aayahSpans) {
-        if (marks.entity.id == aayahId) {
-          Utils.runUi(this, () -> highlightAayah(marks, pos));
-          break;
-        }
+    AayahEntity aayah = SETTINGS.getQuranDb().getAayahEntity(aayahId);
+
+    int rvPos;
+    if (SETTINGS.isSlideModeAndNotInSearch()) {
+      if (SETTINGS.showSingleAayah()) {
+        rvPos = SETTINGS.getQuranDb().getAayahIds(aayah.page).indexOf(aayahId);
+      } else {
+        rvPos = SETTINGS.getQuranDb().getAayahGroupPosInPage(aayahId);
       }
+    } else if (!SETTINGS.showSingleAayah()) {
+      rvPos = SETTINGS.getQuranDb().getAayahGroupPos(aayahId);
+    } else {
+      rvPos = aayahId;
+    }
+
+    if (rvPos < 0) {
+      return;
+    }
+
+    boolean isTasmia = aayah.aayahNum == 0;
+    if (SETTINGS.showSingleAayah() || isTasmia) {
+      // Move to the RV item and blink the whole item.
+      Utils.runUi(this, () -> scrollToRvItem(rvPos, 0, blink && rvPos != 0 && !isTasmia));
+    } else {
+      // Move to the selected Aayah in AayahGroup and blink only the Aayah;
+      scrollToAayahWithOffset(aayahId, rvPos, blink);
     }
   }
 
-  private void highlightAayah(SpanMarks marks, int pos) {
-    ViewHolder h = mB.recyclerV.findViewHolderForAdapterPosition(pos);
+  /*
+   Get the AayahGroup (RV item) containing an Aayah, find Aayah's offset from
+   the top of RV item, scroll RV there, and blink the Aayah text.
+  */
+  private void scrollToAayahWithOffset(int aayahId, int rvPos, boolean blink) {
+    /*
+     Force create the view at the required position by moving there.
+     Another way is to call RecyclerView.mRecycler.getViewForPosition() using Reflection.
+    */
+    Utils.runUi(this, () -> scrollToRvItem(rvPos, 0, false)).waitForMe();
+
+    AayahGroup aayahGroup = null;
+    ViewHolder holder = null;
+    for (int i = 0; i < 50; i++) {
+      if (aayahGroup == null) {
+        aayahGroup = mAayahAdapter.getAayahGroup(rvPos);
+      } else if (holder == null) {
+        holder = mB.recyclerV.findViewHolderForAdapterPosition(rvPos);
+      } else if (aayahGroup.bound) {
+        for (SpanMarks marks : aayahGroup.aayahSpans) {
+          if (marks.entity.id == aayahId) {
+            final ViewHolder h = holder;
+            Utils.runUi(this, () -> scrollToAayahWithOffset(h, marks, rvPos, blink));
+            break;
+          }
+        }
+        break;
+      }
+      SystemClock.sleep(100);
+    }
+  }
+
+  private void scrollToAayahWithOffset(ViewHolder h, SpanMarks marks, int rvPos, boolean blink) {
     if (!(h instanceof AayahViewHolder)) {
       return;
     }
@@ -270,17 +370,29 @@ public class QuranPageFragment extends Fragment {
     }
 
     int line = tv.getLayout().getLineForOffset(marks.start);
+    if (blink) {
+      line = Math.max(0, line - 1);
+    }
     int offset = tv.getLineHeight() * line;
-    scrollToPos(pos, -offset, false);
 
-    Spanned oldString = (Spanned) tv.getText();
-    SpannableString newString = new SpannableString(oldString);
-    InvisibleFontSpan span = new InvisibleFontSpan();
-    newString.setSpan(span, marks.start, marks.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-    tv.postDelayed(() -> tv.setText(newString), 250);
-    tv.postDelayed(() -> tv.setText(oldString), 500);
-    tv.postDelayed(() -> tv.setText(newString), 750);
-    tv.postDelayed(() -> tv.setText(oldString), 1000);
+    blink = blink && (rvPos != 0 || offset != 0);
+
+    if (blink) {
+      mA.toggleFullScreen(true);
+    }
+
+    scrollToRvItem(rvPos, -offset, false);
+
+    if (blink) {
+      Spanned oldString = (Spanned) tv.getText();
+      SpannableString newString = new SpannableString(oldString);
+      InvisibleFontSpan span = new InvisibleFontSpan();
+      newString.setSpan(span, marks.start, marks.end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+      tv.postDelayed(() -> tv.setText(newString), 1250);
+      tv.postDelayed(() -> tv.setText(oldString), 1500);
+      tv.postDelayed(() -> tv.setText(newString), 1750);
+      tv.postDelayed(() -> tv.setText(oldString), 2000);
+    }
   }
 
   public static class InvisibleFontSpan extends MetricAffectingSpan {
@@ -304,10 +416,17 @@ public class QuranPageFragment extends Fragment {
     return false;
   }
 
+  void refresh() {
+    if (mAayahAdapter != null) {
+      mAayahAdapter.refreshUi();
+    }
+  }
+
   //////////////////////////////////////////////////////////////////
   ///////////////////////////// SEARCH /////////////////////////////
   //////////////////////////////////////////////////////////////////
 
+  private boolean mShowingSearchResults = false;
   private final Object SEARCH_LOCK = new Object();
   private Future<?> mSearchFuture;
 
@@ -320,6 +439,7 @@ public class QuranPageFragment extends Fragment {
         stopToastTask();
         refreshUi();
         mA.setProgBarVisibility(false);
+        mShowingSearchResults = false;
         return;
       }
       mA.setProgBarVisibility(true);
@@ -338,31 +458,32 @@ public class QuranPageFragment extends Fragment {
       return;
     }
 
-    List<AayahEntity> entities = SETTINGS.getQuranDb().getAayahEntities(idList);
-    entities.sort(Comparator.comparingInt(a -> a.id));
+    List<AayahEntity> entities = QuranDao.getAayahEntities(SETTINGS.getQuranDb(), idList);
 
-    List<Aayah> aayahs = new ArrayList<>();
+    List<AayahGroup> aayahGroups = new ArrayList<>();
     for (AayahEntity entity : entities) {
       if (Thread.interrupted()) {
         return;
       }
-      Aayah aayah = new Aayah();
-      aayah.entities.add(entity);
-      aayahs.add(aayah);
+      AayahGroup aayahGroup = new AayahGroup();
+      aayahGroup.entities.add(entity);
+      aayahGroups.add(aayahGroup);
     }
     Utils.runUi(
         this,
         () -> {
-          mAayahAdapter.submitList(aayahs);
+          mAayahAdapter.submitList(aayahGroups, new ArrayList<>());
           mA.setProgBarVisibility(false);
         });
 
+    mShowingSearchResults = true;
+
     stopToastTask();
-    Runnable task = () -> Utils.showShortToast(R.string.results, aayahs.size());
+    Runnable task = () -> Utils.showShortToast(R.string.results, aayahGroups.size());
     mToastFuture = TOASTER.schedule(task, 1500, TimeUnit.MILLISECONDS);
   }
 
-  public Set<Integer> containsORed(String queryText) throws InterruptedException {
+  private Set<Integer> containsORed(String queryText) throws InterruptedException {
     Set<Integer> idList = new HashSet<>();
     for (String str : queryText.split("\\|")) {
       if (!TextUtils.isEmpty(str)) {
@@ -401,15 +522,19 @@ public class QuranPageFragment extends Fragment {
       contains = false;
     }
     QuranDao db;
-    if (SETTINGS.getSearchInTranslation() && SETTINGS.showTranslation()) {
+    if (SETTINGS.doSearchInTranslation()
+        && SETTINGS.transEnabled()
+        && SETTINGS.showTransWithText()) {
       db = SETTINGS.getTransDb();
+    } else if (SETTINGS.doSearchWithVowels()) {
+      db = SETTINGS.getQuranDb();
     } else {
       db = SETTINGS.getSearchDb();
     }
     if (contains) {
-      return new HashSet<>(db.matchQuery(queryText));
+      return new HashSet<>(Objects.requireNonNull(db).matchQuery(queryText));
     } else {
-      return new HashSet<>(db.misMatchQuery(queryText));
+      return new HashSet<>(Objects.requireNonNull(db).misMatchQuery(queryText));
     }
   }
 
@@ -423,60 +548,137 @@ public class QuranPageFragment extends Fragment {
   ////////////////////////////// HEADER ////////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private static final ReentrantLock UPDATE_HEADER_LOCK = new ReentrantLock();
+  private boolean mUpdatingHeader;
+
+  private SingleTaskExecutor HEADER_UPDATER;
+  private final Object HEADER_UPDATE_LOCK = new Object();
   private long mLastHeaderUpdate;
 
-  private void releaseUpdateHeaderLock() {
-    if (UPDATE_HEADER_LOCK.isHeldByCurrentThread()) {
-      UPDATE_HEADER_LOCK.unlock();
+  private void headerUpdated() {
+    synchronized (HEADER_UPDATE_LOCK) {
+      mUpdatingHeader = false;
+      HEADER_UPDATE_LOCK.notifyAll();
     }
   }
 
   private void updateHeader() {
-    if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
-      Utils.runBg(this::updateHeader);
-      return;
+    synchronized (EXECUTOR_LOCK) {
+      if (HEADER_UPDATER != null && HEADER_UPDATER.getPendingTasks() == 0) {
+        long delay = 500 + mLastHeaderUpdate - System.currentTimeMillis();
+        delay = Math.max(0, delay);
+        HEADER_UPDATER.schedule(this::waitForHeaderUpdated, delay, TimeUnit.MILLISECONDS);
+      }
     }
+  }
 
-    if (!UPDATE_HEADER_LOCK.tryLock()) {
-      return;
+  private void waitForHeaderUpdated() {
+    mUpdatingHeader = true;
+    Utils.runUi(this, this::updateHeaderUi);
+    synchronized (HEADER_UPDATE_LOCK) {
+      while (mUpdatingHeader) {
+        try {
+          HEADER_UPDATE_LOCK.wait();
+        } catch (InterruptedException ignored) {
+        }
+      }
     }
+  }
 
-    long sleepTime = 500 + mLastHeaderUpdate - System.currentTimeMillis();
-    if (sleepTime > 0) {
-      SystemClock.sleep(sleepTime);
-    }
-
+  private void updateHeaderUi() {
     int topItem = mLayoutManager.findFirstVisibleItemPosition();
-    if (topItem != RecyclerView.NO_POSITION) {
-      Aayah aayah;
-      AayahEntity entity;
-      if ((aayah = mAayahAdapter.getAayah(topItem)) != null && !aayah.entities.isEmpty()) {
-        entity = aayah.entities.get(0);
-      } else {
-        entity = SETTINGS.getQuranDb().getAayahEntity(topItem);
-      }
-
-      if (entity != null) {
-        SurahEntity surah = SETTINGS.getMetaDb().getSurah(entity.surahNum);
-        mLastHeaderUpdate = System.currentTimeMillis();
-        releaseUpdateHeaderLock();
-        Utils.runUi(this, () -> mA.updateHeader(entity, surah));
-      } else {
-        Log.e(TAG, "updateHeader: failed to get AayahEntity");
-      }
-    } else {
-      Log.e(TAG, "updateHeaderLocked: failed to get Aayah");
+    if (topItem == RecyclerView.NO_POSITION) {
+      headerUpdated();
+      return;
     }
 
-    releaseUpdateHeaderLock();
+    if (SETTINGS.showSingleAayah()) {
+      updateHeader(true, topItem, -1);
+      return;
+    }
+
+    View view = mLayoutManager.findViewByPosition(topItem);
+    ViewHolder h = mB.recyclerV.findViewHolderForLayoutPosition(topItem);
+    if (h instanceof TasmiaViewHolder) {
+      updateHeader(true, topItem, -1);
+      return;
+    }
+
+    if (view == null || !(h instanceof AayahViewHolder)) {
+      updateHeader(true, topItem, -1);
+      return;
+    }
+
+    /*
+     Using the first Aayah from AayahGroup does not reflect the exact position of
+     the view. So we take into account the offset of the visible RV item from top.
+    */
+    TextView tv = ((AayahViewHolder) h).getTextView();
+    int line;
+    if (tv != null && (line = view.getTop() / tv.getLineHeight()) < 0) {
+      int offset = tv.getLayout().getLineEnd(line * -1);
+      updateHeader(false, topItem, Math.max(0, offset - 1));
+    } else {
+      updateHeader(true, topItem, -1);
+    }
+  }
+
+  private void updateHeader(boolean isSingleAayah, int topItem, int textOffset) {
+    if (Utils.isMainThread()) {
+      Utils.runBg(() -> updateHeader(isSingleAayah, topItem, textOffset));
+      return;
+    }
+
+    AayahGroup aayahGroup = mAayahAdapter.getAayahGroup(topItem);
+    if (aayahGroup == null || aayahGroup.entities.isEmpty()) {
+      headerUpdated();
+      return;
+    }
+
+    if (isSingleAayah) {
+      updateHeader(aayahGroup.entities.get(0));
+    } else {
+      AayahEntity lastEntity = null;
+      boolean found = false;
+      int lastMarkEnd = 0;
+      for (SpanMarks marks : aayahGroup.aayahSpans) {
+        if (textOffset < marks.start) {
+          // Handle Aayah end mark within AayahGroup which is outside SpanMarks.
+          if (lastEntity != null) {
+            updateHeader(lastEntity);
+            found = true;
+          }
+          break;
+        } else if (marks.start <= textOffset && marks.end >= textOffset) {
+          updateHeader(marks.entity);
+          found = true;
+          break;
+        }
+        lastEntity = marks.entity;
+        lastMarkEnd = marks.end;
+      }
+      if (!found && lastMarkEnd < textOffset && lastEntity != null) {
+        // Handle Aayah end mark at the end of AayahGroup which is outside SpanMarks.
+        updateHeader(lastEntity);
+      }
+    }
+
+    headerUpdated();
+  }
+
+  private void updateHeader(AayahEntity entity) {
+    SurahEntity surah = SETTINGS.getMetaDb().getSurah(entity.surahNum);
+    mLastHeaderUpdate = System.currentTimeMillis();
+    Utils.runUi(this, () -> mA.updateHeader(entity, surah));
   }
 
   //////////////////////////////////////////////////////////////////
   /////////////////////////// LONG CLICK ///////////////////////////
   //////////////////////////////////////////////////////////////////
 
-  private static final int POPUP_WIDTH = 200, POPUP_HEIGHT = 100;
+  public static final int POPUP_HEIGHT = 100;
+  public static final int POPUP_ICON_WIDTH = 36;
+  public static final int POPUP_PADDING = 16;
+
   private PopupWindow mPopup;
   private int mTapPosX, mTapPosY;
 
@@ -487,10 +689,10 @@ public class QuranPageFragment extends Fragment {
   private class LongClickListener implements AayahLongClickListener {
 
     @Override
-    public void onLongClick(AayahEntity entity, String trans, View view) {
+    public void onLongClick(AayahGroup aayahGroup, int index, View view) {
       showPopupMenu(
-          entity,
-          trans,
+          aayahGroup,
+          index,
           () -> {
             view.setBackgroundColor(getAttrColor(mA, R.attr.accentTrans3));
             setPopupDismissListener(() -> view.setBackgroundColor(Color.TRANSPARENT));
@@ -498,10 +700,11 @@ public class QuranPageFragment extends Fragment {
     }
 
     @Override
-    public void onTextSelected(AayahEntity entity, TextView textView, int start, int end) {
+    public void onTextSelected(
+        AayahGroup aayahGroup, int index, TextView textView, int start, int end) {
       showPopupMenu(
-          entity,
-          null,
+          aayahGroup,
+          index,
           () -> {
             Spanned oldString = (Spanned) textView.getText();
             SpannableString newString = new SpannableString(oldString);
@@ -513,55 +716,103 @@ public class QuranPageFragment extends Fragment {
           });
     }
 
-    private void showPopupMenu(AayahEntity entity, String trans, Runnable callback) {
+    private void showPopupMenu(AayahGroup aayahGroup, int index, Runnable callback) {
       AayahContextMenuBinding b = AayahContextMenuBinding.inflate(getLayoutInflater());
       setTooltip(b.copyButton);
       setTooltip(b.shareButton);
       setTooltip(b.bookmarkButton);
       setTooltip(b.addTagButton);
+      setTooltip(b.gotoButton);
+      setTooltip(b.transButton);
+
+      AayahEntity entity = aayahGroup.entities.get(index);
+      String text = aayahGroup.aayahSpans.get(index).text;
+      Spanned trans = aayahGroup.aayahSpans.get(index).trans;
 
       setButtonListener(b.copyButton, () -> shareAayah(entity, trans, true));
       setButtonListener(b.shareButton, () -> shareAayah(entity, trans, false));
-      setButtonListener(b.bookmarkButton, () -> saveBookmark(entity.id));
       setButtonListener(
           b.addTagButton, () -> Utils.runUi(QuranPageFragment.this, () -> openTags(entity.id)));
 
-      AtomicBoolean hideBookmarkButton = new AtomicBoolean(false);
+      AtomicInteger iconCount = new AtomicInteger(3); // Copy, Share and Tag
+
+      if (mShowingSearchResults) {
+        iconCount.addAndGet(1);
+        b.gotoButton.setVisibility(View.VISIBLE);
+        b.gotoButton.setOnClickListener(
+            v -> {
+              dismissPopup();
+              mA.goTo(entity);
+            });
+      }
+
+      if (trans != null && !SETTINGS.showTransWithText()) {
+        iconCount.addAndGet(1);
+        b.transButton.setVisibility(View.VISIBLE);
+        b.transButton.setOnClickListener(
+            v -> {
+              dismissPopup();
+
+              RvItemAayahBinding binding = RvItemAayahBinding.inflate(getLayoutInflater());
+              binding.refV.setVisibility(View.GONE);
+
+              int color = mA.getColor(R.color.fgSharp2);
+              binding.textV.setTextColor(color);
+              binding.transV.setTextColor(color);
+
+              int sizeAr = SETTINGS.getArabicFontSize();
+              binding.textV.setTextSize(sizeAr * 1.5f);
+              binding.transV.setTextSize(SETTINGS.getFontSize());
+
+              Typeface typeface = SETTINGS.getTypeface();
+              Typeface transTypeface = SETTINGS.getTransTypeface();
+              binding.textV.setTypeface(typeface);
+              binding.transV.setTypeface(transTypeface);
+
+              binding.textV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+              binding.transV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+              binding.textV.setText(text);
+              binding.transV.setText(trans);
+
+              NestedScrollView scrollView = new NestedScrollView(mA);
+              scrollView.setPadding(toPx(8), toPx(8), toPx(8), toPx(8));
+              scrollView.addView(binding.getRoot());
+              AlertDialog dialog = new AlertDialog.Builder(mA).setView(scrollView).create();
+              AlertDialogFragment.show(mA, dialog, "TEXT_TRANS");
+            });
+      }
 
       Utils.runBg(
           () -> {
-            if (SETTINGS.getBookmarks().contains(entity.id)) {
-              hideBookmarkButton.set(true);
+            if (!SETTINGS.getBookmarks().contains(entity.id)) {
+              iconCount.addAndGet(1);
+              Utils.runUi(
+                  QuranPageFragment.this,
+                  () -> {
+                    b.bookmarkButton.setVisibility(View.VISIBLE);
+                    setButtonListener(b.bookmarkButton, () -> saveBookmark(entity.id));
+                  });
             }
+
             Utils.runUi(
                 QuranPageFragment.this,
                 () -> {
-                  if (hideBookmarkButton.get()) {
-                    b.bookmarkButton.setVisibility(View.GONE);
-                  }
-                  showPopupMenu(b.getRoot(), hideBookmarkButton.get());
+                  showPopupMenu(b.getRoot(), iconCount.get());
                   callback.run();
                 });
           });
     }
 
-    private void showPopupMenu(View contentView, boolean reduceWidth) {
+    private void showPopupMenu(View contentView, int iconCount) {
       dismissPopup();
       mPopup = new PopupWindow(contentView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
       mPopup.setElevation(500);
       mPopup.setOverlapAnchor(true);
       mPopup.setOutsideTouchable(true); // Dismiss on outside touch.
 
-      int popupWidth = POPUP_WIDTH;
-      if (reduceWidth) {
-        popupWidth -= popupWidth / 4;
-      }
-
-      int xOff = mTapPosX - Utils.toPx(popupWidth);
+      int popupWidth = POPUP_PADDING + iconCount * POPUP_ICON_WIDTH;
+      int xOff = Math.max(0, mTapPosX - Utils.toPx(popupWidth / 2));
       int yOff = mTapPosY - Utils.toPx(POPUP_HEIGHT);
-      if (xOff < 0) {
-        xOff = mTapPosX + Utils.toPx(popupWidth / 4);
-      }
       if (yOff < 0) {
         yOff = mTapPosY + Utils.toPx(POPUP_HEIGHT / 2);
       }
@@ -585,11 +836,11 @@ public class QuranPageFragment extends Fragment {
     }
   }
 
-  private void shareAayah(AayahEntity entity, String trans, boolean toClipboard) {
+  private void shareAayah(AayahEntity entity, Spanned trans, boolean toClipboard) {
     Utils.runUi(this, this::dismissPopup);
 
     StringBuilder string = new StringBuilder(entity.text).append("\n\n");
-    if (SETTINGS.showTranslation() && trans != null) {
+    if (SETTINGS.transEnabled() && trans != null) {
       string.append(trans).append("\n\n");
     }
     SurahEntity surah = SETTINGS.getMetaDb().getSurah(entity.surahNum);
@@ -638,6 +889,39 @@ public class QuranPageFragment extends Fragment {
   //////////////////////// IMPLEMENTATIONS /////////////////////////
   //////////////////////////////////////////////////////////////////
 
+  private class RvScaleGestureListener implements OnScaleGestureListener {
+
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+      mOldScaleFactor = 1;
+      mRvScaling = true;
+      return true;
+    }
+
+    private float mOldScaleFactor = 1;
+
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+      float scaleFactor = detector.getScaleFactor();
+      if (scaleFactor / mOldScaleFactor > 1.1) {
+        SETTINGS.increaseFontSize();
+      } else if (scaleFactor / mOldScaleFactor < 0.9) {
+        SETTINGS.decreaseFontSize();
+      } else {
+        return false;
+      }
+      mOldScaleFactor = scaleFactor;
+      return false;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+      mRvScaling = false;
+    }
+  }
+
+  private boolean mRvScaling = false;
+
   private boolean mToggleFullScreen = false;
 
   /* We cannot rely on Popup.isShowing() (to decide whether to hide Popup or
@@ -656,6 +940,15 @@ public class QuranPageFragment extends Fragment {
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+      if (!mShowingSearchResults) {
+        mRvScaleGestureDetector.onTouchEvent(e);
+      }
+
+      if (mRvScaling) {
+        // Now we'll receive events in onTouchEvent()
+        return true;
+      }
+
       mTapPosX = (int) e.getX();
       mTapPosY = (int) e.getY();
 
@@ -675,7 +968,9 @@ public class QuranPageFragment extends Fragment {
     }
 
     @Override
-    public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {}
+    public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+      mRvScaleGestureDetector.onTouchEvent(e);
+    }
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {}

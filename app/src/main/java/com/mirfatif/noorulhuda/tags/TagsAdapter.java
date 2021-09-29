@@ -1,6 +1,6 @@
 package com.mirfatif.noorulhuda.tags;
 
-import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +14,8 @@ import java.util.List;
 
 public class TagsAdapter extends MyBaseAdapter {
 
-  public TagsAdapter(Context context, DialogListCallback callback) {
-    super(context, callback);
+  public TagsAdapter(DialogListCallback callback) {
+    super(callback);
   }
 
   private int mAayahId = -1;
@@ -60,7 +60,7 @@ public class TagsAdapter extends MyBaseAdapter {
 
     TagsListItemBinding b;
     if (convertView == null) {
-      b = TagsListItemBinding.inflate(mInflater);
+      b = TagsListItemBinding.inflate(LayoutInflater.from(parent.getContext()));
     } else {
       b = TagsListItemBinding.bind(convertView);
     }

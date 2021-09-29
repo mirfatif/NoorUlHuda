@@ -3,13 +3,18 @@ package com.mirfatif.noorulhuda.prefs;
 import static android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
 import static com.mirfatif.noorulhuda.util.Utils.getString;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import androidx.annotation.ArrayRes;
 import androidx.annotation.ColorRes;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
+import androidx.room.RoomDatabase.Builder;
 import com.batoulapps.adhan.Coordinates;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
@@ -30,14 +35,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class MySettings {
+public enum MySettings {
+  SETTINGS;
 
   private static final String TAG = "MySettings";
-  public static final MySettings SETTINGS = new MySettings();
 
   private final SharedPreferences mPrefs, mNoBkpPrefs;
 
-  private MySettings() {
+  MySettings() {
     mPrefs = Utils.getDefPrefs();
     mNoBkpPrefs = Utils.getNoBkpPrefs();
   }
@@ -162,26 +167,74 @@ public class MySettings {
     mPrefs.edit().putStringSet(getString(key), stringSet).apply();
   }
 
+  @SuppressLint("ApplySharedPref")
   public boolean shouldAskToSendCrashReport() {
     int crashCount = getIntPref(R.string.pref_main_crash_report_count_nb_key);
     long lastTS = getLongPref(R.string.pref_main_crash_report_ts_nb_key);
     long currTime = System.currentTimeMillis();
 
-    if (crashCount >= 5 || (currTime - lastTS) >= TimeUnit.DAYS.toMillis(1)) {
-      savePref(R.string.pref_main_crash_report_ts_nb_key, currTime);
-      savePref(R.string.pref_main_crash_report_count_nb_key, 1);
-      return true;
-    }
+    Editor prefEditor = mNoBkpPrefs.edit();
+    try {
+      if (crashCount >= 5 || (currTime - lastTS) >= TimeUnit.DAYS.toMillis(1)) {
+        prefEditor.putLong(getString(R.string.pref_main_crash_report_ts_nb_key), currTime);
+        prefEditor.putInt(getString(R.string.pref_main_crash_report_count_nb_key), 1);
+        return true;
+      }
 
-    savePref(R.string.pref_main_crash_report_count_nb_key, crashCount + 1);
-    return false;
+      prefEditor.putInt(getString(R.string.pref_main_crash_report_count_nb_key), crashCount + 1);
+      return false;
+    } finally {
+      prefEditor.commit();
+    }
   }
 
   public boolean isDbBuilt(String dbName) {
     if (dbName == null) {
       return false;
     }
+
+    if (!dbName.equals(TRANS_NONE) && isDbInvalid(dbName)) {
+      return false;
+    }
+
     return dbName.equals(TRANS_NONE) || mNoBkpPrefs.getBoolean(getDbPrefString(dbName), false);
+  }
+
+  @SuppressLint("ApplySharedPref")
+  private boolean isDbInvalid(String dbName) {
+    // Force recreate Quran databases after upgrading to v2
+    Builder<QuranDatabase> dbBuilder =
+        Room.databaseBuilder(App.getCxt(), QuranDatabase.class, dbName + ".db");
+    QuranDatabase db = null;
+    try {
+      db = dbBuilder.allowMainThreadQueries().build();
+      db.getOpenHelper().getReadableDatabase().getVersion();
+      return false;
+    } catch (IllegalStateException e) {
+      mNoBkpPrefs.edit().putBoolean(getDbPrefString(dbName), false).commit();
+      if (db != null) {
+        db.close();
+      }
+      db = dbBuilder.allowMainThreadQueries().fallbackToDestructiveMigration().build();
+      db.getOpenHelper().getReadableDatabase().getVersion();
+      return true;
+    } finally {
+      if (db != null) {
+        db.close();
+      }
+    }
+  }
+
+  public void rebuildDb() {
+    String dbName = getQuranDbName();
+    if (isDbInvalid(dbName)) {
+      // It'll be built in MainActivity#onCreate()
+      setQuranDbName(DbBuilder.MAIN_DB);
+    }
+    dbName = getTransDbName();
+    if (!TRANS_NONE.equals(dbName) && isDbInvalid(dbName)) {
+      setTransDbName(TRANS_NONE);
+    }
   }
 
   public void setDbBuilt(String dbName) {
@@ -210,39 +263,6 @@ public class MySettings {
 
   public void setCheckForUpdates(boolean check) {
     savePref(R.string.pref_settings_check_for_updates_key, check);
-  }
-
-  private final Set<Integer> mTasmiaIds = new HashSet<>();
-
-  static {
-    String key = getString(R.string.pref_settings_tasmia_ids_nb_key);
-    String val = SETTINGS.mNoBkpPrefs.getString(key, null);
-    if (val != null) {
-      for (String i : val.split(",")) {
-        SETTINGS.mTasmiaIds.add(Integer.parseInt(i));
-      }
-    }
-  }
-
-  public boolean isTasmia(int id) {
-    return mTasmiaIds.contains(id);
-  }
-
-  public void saveTasmiaIds(List<Integer> tasmiaIds) {
-    mTasmiaIds.clear();
-    mTasmiaIds.addAll(tasmiaIds);
-
-    StringBuilder builder = new StringBuilder();
-    for (int i : tasmiaIds) {
-      if (builder.length() != 0) {
-        builder.append(",");
-      }
-      builder.append(i);
-    }
-    mNoBkpPrefs
-        .edit()
-        .putString(getString(R.string.pref_settings_tasmia_ids_nb_key), builder.toString())
-        .apply();
   }
 
   private static final Object DB_LOCK = new Object();
@@ -329,8 +349,16 @@ public class MySettings {
 
   private static final String TRANS_NONE = getString(R.string.db_trans_none);
 
-  public boolean showTranslation() {
+  public boolean transEnabled() {
     return !getTransDbName().equals(TRANS_NONE);
+  }
+
+  public boolean showTransWithText() {
+    return getBoolPref(R.string.pref_main_trans_with_text_key);
+  }
+
+  public void setShowTransWithText(boolean transWithText) {
+    savePref(R.string.pref_main_trans_with_text_key, transWithText);
   }
 
   public String getTransDbName() {
@@ -406,27 +434,40 @@ public class MySettings {
     savePref(R.string.pref_main_show_page_header_key, !getShowHeader());
   }
 
-  public boolean isPageMode() {
-    return getBoolPref(R.string.pref_main_page_view_key) && !mIsSearchStarted;
+  public boolean isSlideMode() {
+    return getBoolPref(R.string.pref_main_page_view_key);
   }
 
-  public void togglePageMode() {
-    int key = R.string.pref_main_page_view_key;
-    savePref(key, !getBoolPref(key));
+  public boolean isSlideModeAndNotInSearch() {
+    return isSlideMode() && !mIsSearchStarted;
+  }
+
+  public void toggleSlideMode() {
+    savePref(R.string.pref_main_page_view_key, !isSlideMode());
+  }
+
+  public boolean breakAayahs() {
+    return getBoolPref(R.string.pref_main_break_aayahs_key);
+  }
+
+  public void toggleAayahBreaks() {
+    savePref(R.string.pref_main_break_aayahs_key, !breakAayahs());
   }
 
   public boolean showSingleAayah() {
-    return !isPageMode() || showTranslation();
+    return breakAayahs() || mIsSearchStarted || (transEnabled() && showTransWithText());
   }
 
-  private boolean mIsSearchStarted = false, mIsSearching = false;
+  private boolean mIsSearchStarted = false;
 
   public void setSearchStarted(boolean searchStarted) {
     mIsSearchStarted = searchStarted;
   }
 
-  public void setSearching(boolean searching) {
-    mIsSearching = searching;
+  private String mSearchQuery;
+
+  public void setSearchQuery(String query) {
+    mSearchQuery = query;
   }
 
   public boolean isSearchStarted() {
@@ -434,7 +475,11 @@ public class MySettings {
   }
 
   public boolean isSearching() {
-    return mIsSearching;
+    return mSearchQuery != null;
+  }
+
+  public String getSearchQuery() {
+    return mSearchQuery;
   }
 
   private int mLastFontFile = -1;
@@ -529,7 +574,7 @@ public class MySettings {
     if (fontFile != null && (file = getFontFile(fontFile)).exists()) {
       mTransTypeface = createTypeface(file);
     } else {
-      mTransTypeface = null;
+      mTransTypeface = Typeface.DEFAULT; // Or null
     }
     return mTransTypeface;
   }
@@ -540,12 +585,31 @@ public class MySettings {
   }
 
   private static final int COLOR_DEFAULT = -1;
-  private static final int COLOR_V_SHARP = 0;
-  private static final int COLOR_SHARP = 1;
+  private static final int COLOR_V_LIGHT = 0;
+  private static final int COLOR_LIGHT = 1;
   private static final int COLOR_MEDIUM = 2;
-  private static final int COLOR_LIGHT = 3;
-  private static final int COLOR_V_LIGHT = 4;
-  private static final int COLOR_COUNT = 5;
+  private static final int COLOR_SHARP = 3;
+  private static final int COLOR_V_SHARP = 4;
+  public static final int COLOR_COUNT = 5;
+
+  public int getBgColorSliderVal() {
+    int color = getIntPref(R.string.pref_main_bg_color_key);
+    if (color < COLOR_DEFAULT || color > COLOR_V_SHARP) {
+      color = COLOR_DEFAULT;
+    }
+    return color + 1;
+  }
+
+  public void setBgColor(int color) {
+    color--;
+    if (color < COLOR_DEFAULT || color > COLOR_V_SHARP) {
+      color = COLOR_DEFAULT;
+    }
+    if (color == COLOR_DEFAULT) {
+      Utils.showShortToast(R.string._default);
+    }
+    savePref(R.string.pref_main_bg_color_key, color);
+  }
 
   public @ColorRes int getBgColor() {
     int color = getIntPref(R.string.pref_main_bg_color_key);
@@ -564,8 +628,23 @@ public class MySettings {
     }
   }
 
-  public void setNextBgColor() {
-    setNextColor(R.string.pref_main_bg_color_key);
+  public int getFontColorSliderVal() {
+    int color = getIntPref(R.string.pref_main_font_color_key);
+    if (color < COLOR_DEFAULT || color > COLOR_V_SHARP) {
+      color = COLOR_DEFAULT;
+    }
+    return color + 1;
+  }
+
+  public void setFontColor(int color) {
+    color--;
+    if (color < COLOR_DEFAULT || color > COLOR_V_SHARP) {
+      color = COLOR_DEFAULT;
+    }
+    if (color == COLOR_DEFAULT) {
+      Utils.showShortToast(R.string._default);
+    }
+    savePref(R.string.pref_main_font_color_key, color);
   }
 
   public @ColorRes int getFontColor() {
@@ -585,22 +664,40 @@ public class MySettings {
     }
   }
 
-  public void setNextFontColor() {
-    setNextColor(R.string.pref_main_font_color_key);
+  public static final int FONT_SIZE_MIN = 12, FONT_SIZE_MAX = 28;
+
+  public int getFontSizeSliderVal() {
+    return getFontSize() - FONT_SIZE_MIN;
   }
 
-  private void setNextColor(int keyResId) {
-    int color = getIntPref(keyResId) + 1;
-    if (color >= COLOR_COUNT) {
-      color = COLOR_DEFAULT;
-      Utils.showShortToast(R.string._default);
-    } else if (color <= 0) {
-      color = COLOR_V_SHARP;
+  public void setFontSize(int size) {
+    size += 12;
+    if (size > FONT_SIZE_MAX) {
+      size = FONT_SIZE_MAX;
+    } else if (size < FONT_SIZE_MIN) {
+      size = FONT_SIZE_MIN;
     }
-    savePref(keyResId, color);
+    savePref(R.string.pref_main_font_size_key, size);
+    onFontSizeChanged();
   }
 
-  private static final int SIZE_MAX = 24;
+  public void increaseFontSize() {
+    int size = getIntPref(R.string.pref_main_font_size_key);
+    if (size >= FONT_SIZE_MAX) {
+      return;
+    }
+    savePref(R.string.pref_main_font_size_key, Math.min(FONT_SIZE_MAX, size + 1));
+    onFontSizeChanged();
+  }
+
+  public void decreaseFontSize() {
+    int size = getIntPref(R.string.pref_main_font_size_key);
+    if (size <= FONT_SIZE_MIN) {
+      return;
+    }
+    savePref(R.string.pref_main_font_size_key, Math.max(FONT_SIZE_MIN, size - 1));
+    onFontSizeChanged();
+  }
 
   public int getFontSize() {
     return getIntPref(R.string.pref_main_font_size_key);
@@ -621,12 +718,14 @@ public class MySettings {
     return size;
   }
 
-  public void setNextFontSize() {
-    int size = getIntPref(R.string.pref_main_font_size_key) + 2;
-    if (size >= SIZE_MAX) {
-      size = 12;
-    }
-    savePref(R.string.pref_main_font_size_key, size);
+  private final MutableLiveData<Void> mFontSizeChangedNotifier = new MutableLiveData<>();
+
+  private void onFontSizeChanged() {
+    Utils.runBg(() -> mFontSizeChangedNotifier.postValue(null));
+  }
+
+  public LiveData<Void> getFontSizeChanged() {
+    return mFontSizeChangedNotifier;
   }
 
   public int getLastPage() {
@@ -732,7 +831,7 @@ public class MySettings {
   public File getDownloadedFile(String file) {
     File downloadDir = new File(App.getCxt().getExternalFilesDir(null), "downloads");
     if (!downloadDir.exists() && !downloadDir.mkdirs()) {
-      return null;
+      throw new Error("Failed to create directory " + downloadDir);
     }
     return new File(downloadDir, file);
   }
@@ -745,12 +844,20 @@ public class MySettings {
     return Arrays.asList(App.getRes().getStringArray(R.array.db_trans_files)).contains(dbName);
   }
 
-  public boolean getSearchInTranslation() {
+  public boolean doSearchInTranslation() {
     return getBoolPref(R.string.pref_main_trans_search_key);
   }
 
   public void toggleSearchInTranslation() {
-    savePref(R.string.pref_main_trans_search_key, !getSearchInTranslation());
+    savePref(R.string.pref_main_trans_search_key, !doSearchInTranslation());
+  }
+
+  public boolean doSearchWithVowels() {
+    return getBoolPref(R.string.pref_main_vowels_search_key);
+  }
+
+  public void toggleSearchWithVowels() {
+    savePref(R.string.pref_main_vowels_search_key, !doSearchWithVowels());
   }
 
   private float mBrightness = BRIGHTNESS_OVERRIDE_NONE;
@@ -943,5 +1050,30 @@ public class MySettings {
 
   public void setLogging(boolean logging) {
     mLogging = logging;
+  }
+
+  public void plusAppLaunchCount() {
+    int appLaunchCountId = R.string.pref_main_app_launch_count_for_feedback_nb_key;
+    savePref(appLaunchCountId, getIntPref(appLaunchCountId) + 1);
+  }
+
+  public boolean shouldAskForFeedback() {
+    long lastTS = getLongPref(R.string.pref_main_ask_for_feedback_ts_nb_key);
+    if (lastTS == 0) {
+      setAskForFeedbackTs(System.currentTimeMillis());
+      return false;
+    }
+    int appLaunchCountId = R.string.pref_main_app_launch_count_for_feedback_nb_key;
+    boolean ask = getIntPref(appLaunchCountId) >= 10;
+    ask = ask && (System.currentTimeMillis() - lastTS) >= TimeUnit.DAYS.toMillis(10);
+    if (ask) {
+      savePref(appLaunchCountId, 0);
+      setAskForFeedbackTs(System.currentTimeMillis());
+    }
+    return ask;
+  }
+
+  public void setAskForFeedbackTs(long ts) {
+    savePref(R.string.pref_main_ask_for_feedback_ts_nb_key, ts);
   }
 }

@@ -21,6 +21,9 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipData.Item;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -51,6 +54,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.SearchView.OnSuggestionListener;
@@ -64,6 +68,7 @@ import com.mirfatif.noorulhuda.BuildConfig;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.ActivityPrayerTimeBinding;
 import com.mirfatif.noorulhuda.databinding.OffsetPickerBinding;
+import com.mirfatif.noorulhuda.quran.MainActivity;
 import com.mirfatif.noorulhuda.svc.PrayerNotifySvc;
 import com.mirfatif.noorulhuda.ui.base.BaseActivity;
 import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
@@ -175,6 +180,14 @@ public class PrayerTimeActivity extends BaseActivity {
   }
 
   @Override
+  public void onWindowFocusChanged(boolean hasFocus) {
+    super.onWindowFocusChanged(hasFocus);
+    if (hasFocus) {
+      getLocFromClipboard();
+    }
+  }
+
+  @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.prayer, menu);
     MenuCompat.setGroupDividerEnabled(menu, true);
@@ -195,6 +208,24 @@ public class PrayerTimeActivity extends BaseActivity {
       return true;
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  private static final String CLASS = MainActivity.class.getName();
+  private static final String TAG_BATTERY_OPT = CLASS + ".BATTERY_OPT";
+
+  @Override
+  public AlertDialog createDialog(String tag, AlertDialogFragment dialogFragment) {
+    if (TAG_BATTERY_OPT.equals(tag)) {
+      Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+      return new Builder(this)
+          .setTitle(R.string.battery_optimization)
+          .setMessage(R.string.battery_optimization_detail)
+          .setNegativeButton(R.string.no, (d, w) -> SETTINGS.doNotAskToExcBatteryOpt())
+          .setNeutralButton(android.R.string.cancel, null)
+          .setPositiveButton(R.string.yes, (d, w) -> startActivity(intent))
+          .create();
+    }
+    return super.createDialog(tag, dialogFragment);
   }
 
   //////////////////////////////////////////////////////////////////
@@ -263,7 +294,7 @@ public class PrayerTimeActivity extends BaseActivity {
             .setPositiveButton(R.string.save, (d, w) -> callback.onSave(b.picker.getValue() + fx))
             .setNegativeButton(android.R.string.cancel, null)
             .setView(b.getRoot());
-    new AlertDialogFragment(builder.create()).show(this, "OFFSET_PICK", false);
+    AlertDialogFragment.show(this, builder.create(), "OFFSET_PICK");
   }
 
   private interface OffsetDialogCallback {
@@ -472,6 +503,13 @@ public class PrayerTimeActivity extends BaseActivity {
   private void initLocContainer() {
     setupHelpDialog(mB.locCont.helpV, R.string.location_help);
 
+    mB.locCont.pasteV.setOnClickListener(
+        v -> {
+          mB.locCont.latV.setText(String.valueOf(mClipboardLat));
+          mB.locCont.lngV.setText(String.valueOf(mClipboardLng));
+          Utils.runBg(() -> doRevGeocoding(mClipboardLng, mClipboardLat));
+        });
+
     mB.locCont.clearV.setOnClickListener(
         v -> {
           saveLocation(null, null);
@@ -617,6 +655,41 @@ public class PrayerTimeActivity extends BaseActivity {
     } else {
       mB.locCont.clearV.setEnabled(false);
       mB.locCont.mapV.setEnabled(false);
+    }
+  }
+
+  private double mClipboardLat, mClipboardLng;
+
+  private void getLocFromClipboard() {
+    mB.locCont.pasteV.setEnabled(false);
+
+    if (mB == null) {
+      return;
+    }
+
+    ClipboardManager clipboard =
+        (ClipboardManager) App.getCxt().getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipData data = clipboard.getPrimaryClip();
+    if (data != null && data.getItemCount() > 0) {
+      Item item = data.getItemAt(0);
+      if (item != null) {
+        CharSequence text = item.getText();
+        if (text != null) {
+          String[] coordinates = text.toString().split(",");
+          if (coordinates.length >= 2) {
+            try {
+              mClipboardLat = Double.parseDouble(coordinates[0].replaceFirst("^geo:", ""));
+              mClipboardLng = Double.parseDouble(coordinates[1]);
+              mB.locCont.pasteV.setEnabled(
+                  mClipboardLat <= 90
+                      && mClipboardLat >= -90
+                      && mClipboardLng <= 180
+                      && mClipboardLng >= -180);
+            } catch (NumberFormatException ignored) {
+            }
+          }
+        }
+      }
     }
   }
 
@@ -1013,7 +1086,13 @@ public class PrayerTimeActivity extends BaseActivity {
                 v.setChecked(false);
                 Runnable callback =
                     () -> Utils.runUi(this, () -> mAdhanCheckBoxes[order].setChecked(true));
-                new FileDownload(this, "/adhan/", ADHAN_FILE, callback, R.string.downloading_file)
+                new FileDownload(
+                        this,
+                        "/adhan/",
+                        ADHAN_FILE,
+                        callback,
+                        R.string.download_audio_file,
+                        R.string.downloading_adhan)
                     .askToDownload();
               }
             } else {
@@ -1058,20 +1137,9 @@ public class PrayerTimeActivity extends BaseActivity {
     }
 
     PowerManager pm = (PowerManager) App.getCxt().getSystemService(Context.POWER_SERVICE);
-    if (pm.isIgnoringBatteryOptimizations(getPackageName())) {
-      return;
+    if (!pm.isIgnoringBatteryOptimizations(getPackageName())) {
+      Utils.runUi(this, () -> AlertDialogFragment.show(this, null, TAG_BATTERY_OPT));
     }
-
-    Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-    Builder builder =
-        new Builder(this)
-            .setTitle(R.string.battery_optimization)
-            .setMessage(R.string.battery_optimization_detail)
-            .setNegativeButton(R.string.no, (d, w) -> SETTINGS.doNotAskToExcBatteryOpt())
-            .setNeutralButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.yes, (d, w) -> startActivity(intent));
-    Utils.runUi(
-        this, () -> new AlertDialogFragment(builder.create()).show(this, "BATTERY_OPT", false));
   }
 
   //////////////////////////////////////////////////////////////////

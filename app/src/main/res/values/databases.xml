@@ -133,6 +133,8 @@
     <item order="113">Uzbek - Мухаммад Содик</item>
   </array>
 
+  <string name="en_transliteration">en.transliteration</string>
+
   <array name="db_trans_files">
     <item order="0">@string/db_trans_none</item>
     <item order="1">sq.nahi</item>
@@ -171,7 +173,7 @@
     <item order="34">en.sahih</item>
     <item order="35">en.sarwar</item>
     <item order="36">en.shakir</item>
-    <item order="37">en.transliteration</item>
+    <item order="37">@string/en_transliteration</item>
     <item order="38">en.wahiduddin</item>
     <item order="39">en.yusufali</item>
     <item order="40">fr.hamidullah</item>

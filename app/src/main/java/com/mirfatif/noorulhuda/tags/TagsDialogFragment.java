@@ -1,6 +1,7 @@
 package com.mirfatif.noorulhuda.tags;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.quran.AayahAdapter.removeUnsupportedChars;
 import static com.mirfatif.noorulhuda.tags.TagDialogFragment.CREATED_NEW;
 import static com.mirfatif.noorulhuda.tags.TagDialogFragment.TAG_ID;
 import static com.mirfatif.noorulhuda.util.Utils.getArNum;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
+import com.google.common.collect.Iterables;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.DialogListViewBinding;
 import com.mirfatif.noorulhuda.db.AayahEntity;
@@ -68,7 +70,7 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
     setEmptyViewText();
     mB.listV.setEmptyView(mB.emptyV);
 
-    mAdapter = new TagsAdapter(mA, new DialogListCbImpl());
+    mAdapter = new TagsAdapter(new DialogListCbImpl());
     Utils.runBg(this::submitList);
     mB.listV.setAdapter(mAdapter);
 
@@ -99,7 +101,7 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
           this,
           () -> {
             mB.surahNameV.setText(getString(R.string.surah_name, surah.name));
-            mB.aayahTextV.setText(aayah.text);
+            mB.aayahTextV.setText(removeUnsupportedChars(aayah.text));
             mB.aayahNumV.setText(getArNum(aayah.aayahNum));
           });
     }
@@ -111,11 +113,13 @@ public class TagsDialogFragment extends AppCompatDialogFragment {
     synchronized (mTags) {
       mTags.clear();
       mTags.addAll(SETTINGS.getTagsDb().getTags());
-      mTags.sort((t1, t2) -> Long.compare(t2.timeStamp, t1.timeStamp));
     }
     for (TagEntity tag : new ArrayList<>(mTags)) {
       tag.aayahIds.addAll(SETTINGS.getTagAayahsDb().getAayahIds(tag.id));
-      tag.surahCount = new HashSet<>(SETTINGS.getQuranDb().getSurahs(tag.aayahIds)).size();
+      tag.surahCount = 0;
+      for (List<Integer> aayahIds : Iterables.partition(tag.aayahIds, 999)) {
+        tag.surahCount += new HashSet<>(SETTINGS.getQuranDb().getSurahs(aayahIds)).size();
+      }
     }
     Utils.runUi(
         this,

@@ -84,15 +84,19 @@
   <string name="share" maxLength="15">Share</string>
   <string name="bookmark" maxLength="15">Bookmark</string>
   <string name="tag" maxLength="15">Tag</string>
+  <string name="translation" maxLength="15">Translation</string>
   <string name="copied" maxLength="20">Copied</string>
   <string name="bookmarked" maxLength="20">Bookmarked</string>
   <string name="remove_filter" maxLength="15">Remove Filter</string>
   <string name="no_matches">No matches</string>
   <string name="texts" maxLength="15">Mushaf Text</string>
   <string name="translations" maxLength="15">Translations</string>
-  <string name="download_file">Download file?</string>
-  <string name="downloading_file" maxLength="15">Downloading File</string>
+  <string name="download_db_file">Download database file?</string>
+  <string name="download_font_file">Download font file?</string>
+  <string name="download_audio_file">Download audio file?</string>
+  <string name="downloading_db" maxLength="15">Downloading Database</string>
   <string name="downloading_font" maxLength="15">Downloading Font</string>
+  <string name="downloading_adhan" maxLength="15">Downloading Adhan</string>
   <string name="no_internet" maxLength="20">No internet connection</string>
   <string name="download_failed" maxLength="20">Download failed</string>
   <string name="extraction_failed" maxLength="20">Extraction failed</string>
@@ -110,19 +114,21 @@
   <string name="double_click_to_edit">Double tap to edit</string>
   <string name="search_help">
     <![CDATA[
-      <ul>
-        <li>Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) characters to join search queries.</li>
-        <li>Tap on language icon to toggle between search in Arabic text and translation.</li>
-        <li>Following characters can be used in Arabic search. Tap to copy.</li>
-      </ul>
+      Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) operators for complex search.
+      <br/>
+      Following characters can be used in plain Arabic search or with vowels (diacritics). Tap to
+      copy. Or to type them yourself, you can use <i>Urdu for AnySoftKeyboard</i>
+      <a href="https://play.google.com/store/apps/details?id=com.anysoftkeyboard.languagepack.mirfatif.urdu">LINK</a>.
     ]]>
   </string>
 
   <!-- MainActivity Navigation Drawer / Menu items -->
   <string name="menu" maxLength="15">Menu</string>
-  <string name="theme_color_menu_item" maxLength="15">Theme Color</string>
-  <string name="dark_theme_menu_item" maxLength="15">Dark Theme</string>
+  <string name="theme_menu_item" maxLength="15">Theme</string>
+  <string name="dark_theme_menu_item" maxLength="15">Dark Mode</string>
   <string name="page_view_menu_item" maxLength="15">Page Mode</string>
+  <string name="page_slide_menu_item" maxLength="15">Page Slide</string>
+  <string name="aayah_breaks_menu_item" maxLength="15">Āyah Breaks</string>
   <string name="info_header_menu_item" maxLength="15">Page Header</string>
   <string name="theme_color_green" maxLength="15">Green</string>
   <string name="theme_color_blue" maxLength="15">Blue</string>
@@ -138,9 +144,13 @@
   <string name="tags_menu_item" maxLength="15">Tags</string>
   <string name="texts_menu_item" maxLength="15">Texts</string>
   <string name="translations_menu_item" maxLength="15">Translations</string>
+  <string name="select_trans_menu_item" maxLength="15">Select Language</string>
+  <string name="trans_with_text_menu_item" maxLength="15">Show Under Text</string>
   <string name="prayer_time_menu_item" maxLength="15">Prayer Time</string>
   <string name="supplications_menu_item" maxLength="15">Dua</string>
-  <string name="trans_search_menu_item" maxLength="15">Trans Search</string>
+  <string name="search_settings_menu_item" maxLength="15">Search Settings</string>
+  <string name="search_settings_in_trans" maxLength="15">Search in translation</string>
+  <string name="search_settings_with_vowels" maxLength="15">Search with vowels</string>
   <string name="search_help_menu_item" maxLength="15">Help</string>
   <string name="search_menu_item" maxLength="15">Search</string>
   <string name="goto_menu_item" maxLength="15">Go To</string>
@@ -205,12 +215,12 @@
   <string name="third_party_credits">
     <![CDATA[
       <b>Quranic Text and Translation</b><br/>
-      Noor Ul Huda uses Quranic texts and translations provided by Tanzil Project
+      Noor-ul-Huda uses Quranic texts and translations provided by Tanzil Project
       <a href="https://tanzil.net/download">LINK</a>. To know about the accuracy of the Quranic
       text and keep track of any changes, and for help on text types, pause marks and other topics,
       please visit <a href="https://tanzil.net/docs/">https://tanzil.net/docs</a>.<br/><br/>
       <b>Fonts</b><br/>
-      Noor Ul Huda uses Arabic fonts created by:
+      Noor-ul-Huda uses Arabic fonts created by:
       <ul>
         <li>King Fahd Quran Complex <a href="https://fonts.qurancomplex.gov.sa">LINK</a></li>
         <li>Pakistan Data Management Services <a href="https://pakdata.com/products/arabicfont">LINK</a></li>
@@ -274,7 +284,9 @@
       <ul>
         <li>Visit a maps service like <a href="https://plus.codes/map">plus.codes/map</a> and manually select your location.</li>
         <li>Use an app that makes use of GPS and/or other location services on your device.
-        My Location <a href="https://github.com/mirfatif/MyLocation">LINK</a> is one such open-source app.</li>
+        My Location <a href="https://github.com/mirfatif/MyLocation">LINK</a> is one such open-source app.
+        You can copy the location (coordinates) to clipboard and paste here.
+        </li>
         <li>Search location by name.
       </ul>
       Your query or coordinates are sent to <a href="https://www.geonames.org">geonames.org</a> for (reverse) geocoding.</li>
@@ -297,5 +309,18 @@
   <string name="restore_success" maxLength="20">Restore successful</string>
   <string name="backup_failed" maxLength="20">Backup failed</string>
   <string name="restore_failed" maxLength="20">Restore failed</string>
+
+  <!-- Feedback -->
+  <string name="do_not_ask" maxLength="15">Don\'t ask again</string>
+  <string name="rate" maxLength="10">Rate now</string>
+  <string name="contact" maxLength="10">Write Now</string>
+  <string name="love_using_app" maxLength="20">Liking Noor-ul-Huda?</string>
+  <string name="rate_the_app">Good ratings and reviews help us improve the app and we are able to
+    better serve your needs.
+  </string>
+  <string name="ask_to_provide_feedback">Sorry to hear that. You can help improve the app by
+    contacting us via email or Telegram so that we are able to better serve your needs.
+  </string>
+  <string name="thank_you" maxLength="20">Thank you</string>
 
 </resources>

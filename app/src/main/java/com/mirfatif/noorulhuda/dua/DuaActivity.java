@@ -76,6 +76,8 @@ public class DuaActivity extends BaseActivity {
       params.screenBrightness = SETTINGS.getBrightness();
       window.setAttributes(params);
     }
+
+    SETTINGS.getFontSizeChanged().observe(this, empty -> resetFontSize());
   }
 
   private int mQuranicDuaPos = -1, mMasnoonDuaPos = -1, mOccDuaPos = -1;
@@ -92,7 +94,11 @@ public class DuaActivity extends BaseActivity {
 
   @Override
   protected void onStop() {
+    saveScrollPositions();
     super.onStop();
+  }
+
+  private void saveScrollPositions() {
     if (mQuranicDuaPos >= 0) {
       SETTINGS.setQuranicDuaScrollPosition(mQuranicDuaPos);
     }
@@ -179,5 +185,45 @@ public class DuaActivity extends BaseActivity {
       startActivity(intent);
     }
     finishAfterTransition();
+  }
+
+  private void resetFontSize() {
+    DuaPageFragment frag = getPageFrag(null);
+    if (frag == null) {
+      return;
+    }
+    frag.resetFontSize();
+    int pos = mB.pager.getCurrentItem();
+    for (int page = pos + 2; page < Integer.MAX_VALUE; page++) {
+      frag = getPageFrag(page);
+      if (frag == null) {
+        break;
+      } else {
+        frag.resetFontSize();
+      }
+    }
+    for (int page = pos; page > -Integer.MAX_VALUE; page--) {
+      frag = getPageFrag(page);
+      if (frag == null) {
+        break;
+      } else {
+        frag.resetFontSize();
+      }
+    }
+  }
+
+  // Null page means current page
+  private DuaPageFragment getPageFrag(@Nullable Integer page) {
+    if (page == null) {
+      page = mB.pager.getCurrentItem() + 1;
+    }
+    if (mDuaPageAdapter != null) {
+      String fragTag = "f" + mDuaPageAdapter.getItemId(page - 1);
+      Fragment frag = getSupportFragmentManager().findFragmentByTag(fragTag);
+      if (frag instanceof DuaPageFragment) {
+        return (DuaPageFragment) frag;
+      }
+    }
+    return null;
   }
 }

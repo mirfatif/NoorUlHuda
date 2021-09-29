@@ -1,11 +1,14 @@
 package com.mirfatif.noorulhuda.quran;
 
+import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+import com.mirfatif.noorulhuda.db.DbBuilder;
 
 public class QuranPageAdapter extends FragmentStateAdapter {
 
@@ -33,9 +36,13 @@ public class QuranPageAdapter extends FragmentStateAdapter {
   private int mPageCount;
 
   @SuppressLint("NotifyDataSetChanged")
-  void setPageCount(int pageCount) {
+  void refresh() {
     mIdDiff += mPageCount;
-    mPageCount = pageCount;
+    if (SETTINGS.isSlideModeAndNotInSearch()) {
+      mPageCount = DbBuilder.TOTAL_PAGES;
+    } else {
+      mPageCount = 1;
+    }
     notifyDataSetChanged();
   }
 

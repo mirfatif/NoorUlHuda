@@ -1,5 +1,7 @@
 package com.mirfatif.noorulhuda;
 
+import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -40,6 +42,8 @@ public class App extends Application {
 
           defaultExceptionHandler.uncaughtException(t, e);
         });
+
+    SETTINGS.rebuildDb();
   }
 
   public static Context getCxt() {

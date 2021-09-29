@@ -30,19 +30,21 @@ public class FileDownload {
   private final String mUrl, mFile;
   private final File mFilePath;
   private final Runnable mCallback;
-  private final int mTitleResId;
+  private final int mTitleResId, mMsgResId;
 
   public FileDownload(
       FragmentActivity activity,
       String url,
       String file,
       Runnable callback,
+      @StringRes int msgResId,
       @StringRes int titleResId) {
     mA = activity;
     mUrl = url;
     mFile = file;
     mFilePath = SETTINGS.getDownloadedFile(mFile);
     mCallback = callback;
+    mMsgResId = msgResId;
     mTitleResId = titleResId;
   }
 
@@ -53,10 +55,10 @@ public class FileDownload {
           Builder builder =
               new Builder(mA)
                   .setTitle(R.string.download)
-                  .setMessage(R.string.download_file)
+                  .setMessage(mMsgResId)
                   .setNegativeButton(android.R.string.cancel, null)
                   .setPositiveButton(android.R.string.ok, (d, which) -> downloadFile());
-          new AlertDialogFragment(builder.create()).show(mA, "DOWNLOAD_FILE", false);
+          AlertDialogFragment.show(mA, builder.create(), "DOWNLOAD_FILE");
         });
   }
 
@@ -66,9 +68,9 @@ public class FileDownload {
         () -> {
           DialogProgressBinding b = DialogProgressBinding.inflate(mA.getLayoutInflater());
           Builder builder = new Builder(mA).setTitle(mTitleResId).setView(b.getRoot());
-          AlertDialogFragment dialog = new AlertDialogFragment(builder.create());
+          AlertDialogFragment dialog =
+              AlertDialogFragment.show(mA, builder.create(), "DOWNLOAD_FILE");
           dialog.setCancelable(false);
-          dialog.show(mA, "DOWNLOAD_FILE", false);
 
           Utils.runBg(
               () -> {

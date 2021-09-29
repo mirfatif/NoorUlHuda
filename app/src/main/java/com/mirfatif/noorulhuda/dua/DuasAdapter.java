@@ -17,7 +17,11 @@ import com.mirfatif.noorulhuda.databinding.RvItemAayahBinding;
 import com.mirfatif.noorulhuda.dua.DuasAdapter.ItemViewHolder;
 import com.mirfatif.noorulhuda.quran.AayahAdapter.HafsFontSpan;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 public class DuasAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
@@ -38,12 +42,17 @@ public class DuasAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     }
   }
 
+  private final Map<DuasAdapter.ItemViewHolder, Integer> mViewHolders =
+      Collections.synchronizedMap(new WeakHashMap<>());
+
   @NonNull
   @Override
   public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     LayoutInflater inflater = LayoutInflater.from(parent.getContext());
     RvItemAayahBinding b = RvItemAayahBinding.inflate(inflater, parent, false);
-    return new ItemViewHolder(b);
+    ItemViewHolder holder = new ItemViewHolder(b);
+    mViewHolders.put(holder, null);
+    return holder;
   }
 
   @Override
@@ -59,6 +68,15 @@ public class DuasAdapter extends RecyclerView.Adapter<ItemViewHolder> {
   @Override
   public int getItemCount() {
     return mDuas.size();
+  }
+
+  void resetFontSize() {
+    Set<DuasAdapter.ItemViewHolder> viewHolders = mViewHolders.keySet();
+    for (DuasAdapter.ItemViewHolder holder : viewHolders) {
+      if (holder != null) {
+        holder.resetFontSize();
+      }
+    }
   }
 
   class ItemViewHolder extends ViewHolder implements OnLongClickListener {
@@ -78,24 +96,26 @@ public class DuasAdapter extends RecyclerView.Adapter<ItemViewHolder> {
         mB.refV.setTextColor(color);
       }
 
-      int sizeAr = SETTINGS.getArabicFontSize();
-      int size = SETTINGS.getFontSize();
-
       Typeface typeface = SETTINGS.getTypeface();
       Typeface transTypeface = SETTINGS.getTransTypeface();
 
-      mB.titleV.setTextSize(size);
-      mB.textV.setTextSize(sizeAr * 1.5f);
       mB.textV.setTypeface(typeface);
-      mB.transV.setTextSize(size);
-      if (transTypeface != null) {
-        mB.titleV.setTypeface(transTypeface);
-        mB.transV.setTypeface(transTypeface);
-      }
-      mB.refV.setTextSize(sizeAr * 0.8f);
+      mB.titleV.setTypeface(transTypeface);
+      mB.transV.setTypeface(transTypeface);
       mB.refV.setTypeface(typeface);
 
+      resetFontSize();
+
       mB.getRoot().setOnLongClickListener(this);
+    }
+
+    private void resetFontSize() {
+      int sizeAr = SETTINGS.getArabicFontSize();
+      int size = SETTINGS.getFontSize();
+      mB.titleV.setTextSize(size);
+      mB.textV.setTextSize(sizeAr * 1.5f);
+      mB.transV.setTextSize(size);
+      mB.refV.setTextSize(sizeAr * 0.8f);
     }
 
     void bind(int pos) {
@@ -108,10 +128,10 @@ public class DuasAdapter extends RecyclerView.Adapter<ItemViewHolder> {
         mB.titleV.setText(dua.title);
       }
       mB.textV.setText(applySpan(dua.text));
-      if (dua.trans == null) {
-        mB.transV.setVisibility(View.GONE);
-      } else {
+      if (dua.trans != null && SETTINGS.showTransWithText()) {
         mB.transV.setText(dua.trans);
+      } else {
+        mB.transV.setVisibility(View.GONE);
       }
       mB.refV.setText(dua.ref);
     }

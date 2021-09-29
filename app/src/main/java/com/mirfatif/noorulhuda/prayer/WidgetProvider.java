@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -37,6 +39,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
   @Override
   public void onReceive(Context context, Intent intent) {
+    holdWakeLock();
     mAlarmManager = (AlarmManager) App.getCxt().getSystemService(Context.ALARM_SERVICE);
     mWidgetManager = AppWidgetManager.getInstance(App.getCxt());
 
@@ -46,6 +49,7 @@ public class WidgetProvider extends AppWidgetProvider {
       onUpdate(context, mWidgetManager, ids);
     } else {
       super.onReceive(context, intent);
+      releaseWakeLock();
     }
   }
 
@@ -53,6 +57,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
   @Override
   public synchronized void onUpdate(Context context, AppWidgetManager wm, int[] ids) {
+    holdWakeLock();
     if (mFuture != null) {
       mFuture.cancel(true);
     }
@@ -72,6 +77,7 @@ public class WidgetProvider extends AppWidgetProvider {
           wm.updateAppWidget(id, v);
         }
       }
+      releaseWakeLock();
       return;
     }
 
@@ -96,6 +102,7 @@ public class WidgetProvider extends AppWidgetProvider {
     }
     createView(ids);
     createAlarm();
+    releaseWakeLock();
   }
 
   private void createView(int[] ids) {
@@ -257,6 +264,29 @@ public class WidgetProvider extends AppWidgetProvider {
       flag = PendingIntent.FLAG_NO_CREATE;
     }
     return flag;
+  }
+
+  private final WakeLock mWakeLock;
+
+  {
+    PowerManager pm = (PowerManager) App.getCxt().getSystemService(Context.POWER_SERVICE);
+    mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
+  }
+
+  private void holdWakeLock() {
+    synchronized (mWakeLock) {
+      if (!mWakeLock.isHeld()) {
+        mWakeLock.acquire(10000);
+      }
+    }
+  }
+
+  private void releaseWakeLock() {
+    synchronized (mWakeLock) {
+      if (mWakeLock.isHeld()) {
+        mWakeLock.release();
+      }
+    }
   }
 
   public static void reset() {

@@ -17,7 +17,7 @@ public interface TagsDao {
   @Update
   void updateTag(TagEntity tag);
 
-  @Query("SELECT * FROM TagEntity")
+  @Query("SELECT * FROM TagEntity ORDER BY timeStamp * -1")
   List<TagEntity> getTags();
 
   @Query("SELECT * FROM TagEntity WHERE id = :id")
