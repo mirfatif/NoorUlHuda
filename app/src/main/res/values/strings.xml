@@ -244,12 +244,12 @@
   <string name="asr" translatable="false">عصر</string>
   <string name="maghrib" translatable="false">مغرب</string>
   <string name="isha" translatable="false">عشاء</string>
-  <string name="salat_fajr" translatable="false">الصلاة الفجر</string>
-  <string name="salat_sunrise" translatable="false">الوقت الشروق</string>
-  <string name="salat_zuhr" translatable="false">الصلاة الظهر</string>
-  <string name="salat_asr" translatable="false">الصلاة العصر</string>
-  <string name="salat_maghrib" translatable="false">الصلاة المغرب</string>
-  <string name="salat_isha" translatable="false">الصلاة العشاء</string>
+  <string name="salat_fajr" translatable="false">صلاة الفجر</string>
+  <string name="salat_sunrise" translatable="false">وقت الشروق</string>
+  <string name="salat_zuhr" translatable="false">صلاة الظهر</string>
+  <string name="salat_asr" translatable="false">صلاة العصر</string>
+  <string name="salat_maghrib" translatable="false">صلاة المغرب</string>
+  <string name="salat_isha" translatable="false">صلاة العشاء</string>
   <string name="null_time" translatable="false">00:00</string>
   <string name="invalid_date" translatable="false">---</string>
   <string name="zero" translatable="false">0</string>
