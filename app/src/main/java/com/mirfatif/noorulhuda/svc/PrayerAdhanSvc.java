@@ -220,8 +220,8 @@ public class PrayerAdhanSvc extends Service
     showNotification(true);
   }
 
-  private static final int PRAYER_NOTIF_ID = 113123122;
-  private static final String PRAYER_CHANNEL_ID = "channel_prayer_time_2";
+  private static final int PRAYER_NOTIF_ID = Utils.getInteger(R.integer.channel_prayer_time);
+  private static final String PRAYER_CHANNEL_ID = "channel_prayer_time";
   private static final String PRAYER_CHANNEL_NAME = Utils.getString(R.string.channel_prayer_time);
 
   private void showNotification(boolean afterAdhan) {
