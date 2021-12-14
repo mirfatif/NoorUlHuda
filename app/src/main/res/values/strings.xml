@@ -4,15 +4,15 @@
   <string name="app_name" translatable="false">نور الهدى</string>
 
   <!-- CHAR_LIMIT
-   Button: 10
-   EditText Error: 10
-   Toast/SnackBar: 20
-   Preference title: 20
-   Single line text: 30
-   Progress: 15
-   Dialog/notification title: 15
-   Tooltip: 15
-   Menu item: 15 -->
+     Button: 10
+     EditText Error: 10
+     Toast/SnackBar: 20
+     Preference title: 20
+     Single line text: 30
+     Progress: 15
+     Dialog/notification title: 15
+     Tooltip: 15
+     Menu item: 15 -->
 
   <!-- General strings -->
   <string name="email_address" translatable="false">mirfatif@gmail.com</string>
@@ -72,12 +72,12 @@
   <string name="long_press_to_tag">Long press on an Āyah to tag it</string>
   <string name="press_plus_create_tag">Tap on + to create tag</string>
   <plurals name="aayah_count">
-      <item quantity="one">%d Āyah</item>
-      <item quantity="other">%d Āyahs</item>
+    <item quantity="one">%d Āyah</item>
+    <item quantity="other">%d Āyahs</item>
   </plurals>
   <plurals name="surah_count">
-      <item quantity="one">%1$s from %2$d Surah</item>
-      <item quantity="other">%1$s from %2$d Surahs</item>
+    <item quantity="one">%1$s from %2$d Surah</item>
+    <item quantity="other">%1$s from %2$d Surahs</item>
   </plurals>
   <string name="create_tag" maxLength="15">Create Tag</string>
   <string name="copy" maxLength="15">Copy</string>
@@ -106,21 +106,21 @@
   <string name="crash_report" maxLength="15">Crash Report</string>
   <string name="ask_to_report_crash_small" maxLength="30">Send crash report to the developer</string>
   <string name="ask_to_report_crash">Sorry, a component of the app had a problem and crashed.
-  Send the log file to the developer through email or Telegram so that the bug can be fixed.
-</string>
+    Send the log file to the developer through email or Telegram so that the bug can be fixed.
+  </string>
   <string name="send_report" maxLength="10">Send Report</string>
   <string name="title">Title</string>
   <string name="description">Description</string>
   <string name="double_click_to_edit">Double tap to edit</string>
   <string name="search_help">
-  <![CDATA[
-    Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) operators for complex search.
-    <br/>
-    Following characters can be used in plain Arabic search or with vowels (diacritics). Tap to
-    copy. Or to type them yourself, you can use <i>Urdu for AnySoftKeyboard</i>
-    <a href="https://play.google.com/store/apps/details?id=com.anysoftkeyboard.languagepack.mirfatif.urdu">LINK</a>.
-  ]]>
-</string>
+    <![CDATA[
+      Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) operators for complex search.
+      <br/>
+      Following characters can be used in plain Arabic search or with vowels (diacritics). Tap to
+      copy. Or to type them yourself, you can use <i>Urdu for AnySoftKeyboard</i>
+      <a href="https://play.google.com/store/apps/details?id=com.anysoftkeyboard.languagepack.mirfatif.urdu">LINK</a>.
+    ]]>
+  </string>
 
   <!-- MainActivity Navigation Drawer / Menu items -->
   <string name="menu" maxLength="15">Menu</string>
@@ -193,12 +193,12 @@
   <string name="translations_summary">Want to see the app in your language?</string>
   <string name="translation_link">https://crowdin.com/project/nuh</string>
   <string name="language_credits">
-  <![CDATA[
-    <ul>
-      <li><a href="">Add my language</a></li>
-    </ul>
-  ]]>
-</string>
+    <![CDATA[
+      <ul>
+        <li><a href="">Add my language</a></li>
+      </ul>
+    ]]>
+  </string>
   <string name="share_summary">Share the app with others</string>
   <string name="share_text">Check out this amazing app! %s</string>
   <string name="update" maxLength="15">Update</string>
@@ -213,24 +213,24 @@
   <string name="third_party_res">Third Party Resources</string>
   <string name="third_party_res_summary">Credits and Disclaimer</string>
   <string name="third_party_credits">
-  <![CDATA[
-    <b>Quranic Text and Translation</b><br/>
-    Noor-ul-Huda uses Quranic texts and translations provided by Tanzil Project
-    <a href="https://tanzil.net/download">LINK</a>. To know about the accuracy of the Quranic
-    text and keep track of any changes, and for help on text types, pause marks and other topics,
-    please visit <a href="https://tanzil.net/docs/">https://tanzil.net/docs</a>.<br/><br/>
-    <b>Fonts</b><br/>
-    Noor-ul-Huda uses Arabic fonts created by:
-    <ul>
-      <li>King Fahd Quran Complex <a href="https://fonts.qurancomplex.gov.sa">LINK</a></li>
-      <li>Pakistan Data Management Services <a href="https://pakdata.com/products/arabicfont">LINK</a></li>
-      <li>SIL International <a href="https://software.sil.org/arabicfonts">LINK</a></li>
-      <li>Noor-e-Hidayat <a href="https://www.noorehidayat.org">LINK</a></li>
-      <li>Meor Ridzuan <a href="https://github.com/icikiwir/me_quran">LINK</a></li>
-      <li>Quran Academy <a href="https://github.com/quranacademy/kitab-font">LINK</a></li>
-    </ul>
-  ]]>
-</string>
+    <![CDATA[
+      <b>Quranic Text and Translation</b><br/>
+      Noor-ul-Huda uses Quranic texts and translations provided by Tanzil Project
+      <a href="https://tanzil.net/download">LINK</a>. To know about the accuracy of the Quranic
+      text and keep track of any changes, and for help on text types, pause marks and other topics,
+      please visit <a href="https://tanzil.net/docs/">https://tanzil.net/docs</a>.<br/><br/>
+      <b>Fonts</b><br/>
+      Noor-ul-Huda uses Arabic fonts created by:
+      <ul>
+        <li>King Fahd Quran Complex <a href="https://fonts.qurancomplex.gov.sa">LINK</a></li>
+        <li>Pakistan Data Management Services <a href="https://pakdata.com/products/arabicfont">LINK</a></li>
+        <li>SIL International <a href="https://software.sil.org/arabicfonts">LINK</a></li>
+        <li>Noor-e-Hidayat <a href="https://www.noorehidayat.org">LINK</a></li>
+        <li>Meor Ridzuan <a href="https://github.com/icikiwir/me_quran">LINK</a></li>
+        <li>Quran Academy <a href="https://github.com/quranacademy/kitab-font">LINK</a></li>
+      </ul>
+    ]]>
+  </string>
   <string name="collect_logs" maxLength="15">Collect Logs</string>
   <string name="collect_logs_summary" maxLength="20">Save log to file</string>
   <string name="stop_logging" maxLength="15">Stop Logging</string>
@@ -276,29 +276,29 @@
   <string name="set_location" maxLength="20">Please set location</string>
   <string name="battery_optimization" maxLength="15">Battery Optimization</string>
   <string name="battery_optimization_detail">Do you want to exclude Noor-ul-Huda from Battery
-  Optimization in order to reduce the likelihood of it being killed in background?
-</string>
+    Optimization in order to reduce the likelihood of it being killed in background?
+  </string>
   <string name="location_help">
-  <![CDATA[
-    Noor-ul-Huda does not access your device location. To get coordinates:
-    <ul>
-      <li>Visit a maps service like <a href="https://plus.codes/map">plus.codes/map</a> and manually select your location.</li>
-      <li>Use an app that makes use of GPS and/or other location services on your device.
-      My Location <a href="https://github.com/mirfatif/MyLocation">LINK</a> is one such open-source app.
-      You can copy the location (coordinates) to clipboard and paste here.
-      </li>
-      <li>Search location by name.
-    </ul>
-    Your query or coordinates are sent to <a href="https://www.geonames.org">geonames.org</a> for (reverse) geocoding.</li>
-  ]]>
-</string>
+    <![CDATA[
+      Noor-ul-Huda does not access your device location. To get coordinates:
+      <ul>
+        <li>Visit a maps service like <a href="https://plus.codes/map">plus.codes/map</a> and manually select your location.</li>
+        <li>Use an app that makes use of GPS and/or other location services on your device.
+        My Location <a href="https://github.com/mirfatif/MyLocation">LINK</a> is one such open-source app.
+        You can copy the location (coordinates) to clipboard and paste here.
+        </li>
+        <li>Search location by name.
+      </ul>
+      Your query or coordinates are sent to <a href="https://www.geonames.org">geonames.org</a> for (reverse) geocoding.</li>
+    ]]>
+  </string>
   <string name="calc_help">
-  <![CDATA[
-    Please visit <a
-    href="http://praytimes.org/calculation">praytimes.org/calculation</a> for details on how
-    prayer times are calculated.
-  ]]>
-</string>
+    <![CDATA[
+      Please visit <a
+      href="http://praytimes.org/calculation">praytimes.org/calculation</a> for details on how
+      prayer times are calculated.
+    ]]>
+  </string>
 
   <!-- Backup / Restore -->
   <string name="backup" maxLength="10">Backup</string>
