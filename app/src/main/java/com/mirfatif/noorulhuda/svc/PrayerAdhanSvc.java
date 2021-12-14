@@ -1,6 +1,7 @@
 package com.mirfatif.noorulhuda.svc;
 
 import static androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT;
+import static androidx.core.app.NotificationManagerCompat.IMPORTANCE_HIGH;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.getPrayerData;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 import static com.mirfatif.noorulhuda.svc.PrayerNotifySvc.EXTRA_PRAYER;
@@ -28,6 +29,7 @@ import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.BuildConfig;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.prayer.PrayerTimeActivity;
+import com.mirfatif.noorulhuda.prayer.PrayerTimeFullscreenAlertActivity;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.io.File;
 import java.io.IOException;
@@ -90,7 +92,7 @@ public class PrayerAdhanSvc extends Service
   public static final String ADHAN_FILE = "adhan.mp3";
 
   private static final int ADHAN_NOTIF_ID = Utils.getInteger(R.integer.channel_prayer_adhan);
-  private static final String ADHAN_CHANNEL_ID = "channel_prayer_adhan";
+  private static final String ADHAN_CHANNEL_ID = "channel_prayer_adhan_x";
   private static final String ADHAN_CHANNEL_NAME = Utils.getString(R.string.channel_prayer_adhan);
 
   private final int[] NAMES =
@@ -108,7 +110,7 @@ public class PrayerAdhanSvc extends Service
     NotificationChannelCompat ch = nm.getNotificationChannelCompat(ADHAN_CHANNEL_ID);
     if (ch == null) {
       ch =
-          new NotificationChannelCompat.Builder(ADHAN_CHANNEL_ID, IMPORTANCE_DEFAULT)
+          new NotificationChannelCompat.Builder(ADHAN_CHANNEL_ID, IMPORTANCE_HIGH)
               .setName(ADHAN_CHANNEL_NAME)
               .setLightsEnabled(true)
               .setSound(null, null)
@@ -134,17 +136,29 @@ public class PrayerAdhanSvc extends Service
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentIntent(pi)
             .addAction(0, getString(R.string.stop), pi);
+
+    if (SETTINGS.getPrayerAdhanFullscreenAlert()) {
+      Intent fullscreenIntent =
+          new Intent(App.getCxt(), PrayerTimeFullscreenAlertActivity.class)
+              .setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY)
+              .putExtra("whichAdhan", getString(NAMES[mPrayer]));
+
+      PendingIntent fullScreenPendingIntent =
+          PendingIntent.getActivity(App.getCxt(), 0, fullscreenIntent, 0);
+
+      mNotifBuilder.setFullScreenIntent(fullScreenPendingIntent, true);
+    }
   }
 
-  private PendingIntent createStopSvcIntent() {
+  public static PendingIntent createStopSvcIntent() {
     return PendingIntent.getService(
         App.getCxt(),
         ADHAN_NOTIF_ID,
-        new Intent(App.getCxt(), this.getClass()).setAction(ACTION_STOP),
+        new Intent(App.getCxt(), PrayerAdhanSvc.class).setAction(ACTION_STOP),
         getCancelPiFlag());
   }
 
-  private int getCancelPiFlag() {
+  private static int getCancelPiFlag() {
     return PendingIntent.FLAG_CANCEL_CURRENT;
   }
 
@@ -206,8 +220,8 @@ public class PrayerAdhanSvc extends Service
     showNotification(true);
   }
 
-  private static final int PRAYER_NOTIF_ID = Utils.getInteger(R.integer.channel_prayer_time);
-  private static final String PRAYER_CHANNEL_ID = "channel_prayer_time";
+  private static final int PRAYER_NOTIF_ID = 113123122;
+  private static final String PRAYER_CHANNEL_ID = "channel_prayer_time_2";
   private static final String PRAYER_CHANNEL_NAME = Utils.getString(R.string.channel_prayer_time);
 
   private void showNotification(boolean afterAdhan) {

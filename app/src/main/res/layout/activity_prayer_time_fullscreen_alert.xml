@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:textAlignment="center"
+  android:textDirection="locale"
+  tools:context=".prayer.PrayerTimeFullscreenAlertActivity">
+
+    <LinearLayout
+      android:layout_width="409dp"
+      android:layout_height="729dp"
+      android:gravity="bottom"
+      android:orientation="vertical"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+          android:id="@+id/adhan_label"
+          android:layout_width="match_parent"
+          android:layout_height="69dp"
+          android:gravity="center"
+          android:textAlignment="center"
+          android:autoSizeTextType="uniform"
+          android:lines="1"
+          tools:text="" />
+        <Space
+          android:layout_width="match_parent"
+          android:layout_height="58dp" />
+        <Button
+          android:id="@+id/dismiss_button"
+          android:layout_width="match_parent"
+          android:layout_height="87dp"
+          android:onClick="dismiss"
+          android:textAppearance="?android:attr/textAppearanceButton"
+          android:textColor="@color/fgSharp2"
+          android:letterSpacing="0.1"
+          android:padding="8dp"
+          android:text="@string/dismiss"
+          android:autoSizeMaxTextSize="20dp"
+          android:autoSizeTextType="uniform"
+          />
+        <Space
+          android:layout_width="match_parent"
+          android:layout_height="92dp" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

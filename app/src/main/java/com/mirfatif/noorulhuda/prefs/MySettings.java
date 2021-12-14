@@ -947,6 +947,18 @@ public enum MySettings {
     return "pref_prayer_notify_" + order;
   }
 
+  public boolean getPrayerAdhanFullscreenAlert() {
+    return mPrefs.getBoolean(getPrayerAdhanFullscreenAlertPrefString(), true);
+  }
+
+  public void setPrayerAdhanFullscreenAlert(boolean enabled) {
+    mPrefs.edit().putBoolean(getPrayerAdhanFullscreenAlertPrefString(), enabled).apply();
+  }
+
+  private String getPrayerAdhanFullscreenAlertPrefString() {
+    return "pref_prayer_adhan_fullscreen_alert";
+  }
+
   public boolean getPrayerAdhan(int order) {
     return mPrefs.getBoolean(getPrayerAdhanPrefString(order), false);
   }

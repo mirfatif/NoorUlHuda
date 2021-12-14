@@ -1064,6 +1064,12 @@ public class PrayerTimeActivity extends BaseActivity {
           });
     }
 
+    mB.notifyCont.fullscreenNotifV.setChecked(SETTINGS.getPrayerAdhanFullscreenAlert());
+    mB.notifyCont.fullscreenNotifV.setOnCheckedChangeListener(
+        (v, isChecked) -> {
+          SETTINGS.setPrayerAdhanFullscreenAlert(isChecked);
+        });
+
     mAdhanCheckBoxes =
         new CheckBox[] {
           mB.notifyCont.fajrAdhan,

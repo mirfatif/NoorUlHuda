@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-  <string name="app_name" translatable="false">نور الهدى</string>
+    <string name="app_name" translatable="false">نور الهدى</string>
 
-  <!-- CHAR_LIMIT
+    <!-- CHAR_LIMIT
      Button: 10
      EditText Error: 10
      Toast/SnackBar: 20
@@ -14,105 +14,105 @@
      Tooltip: 15
      Menu item: 15 -->
 
-  <!-- General strings -->
-  <string name="email_address" translatable="false">mirfatif@gmail.com</string>
-  <string name="play_store_url" translatable="false">https://play.google.com/store/apps/details?id=com.mirfatif.noorulhuda</string>
-  <string name="no_email_app_installed" maxLength="20">No email app installed</string>
-  <string name="no_browser_installed" maxLength="20">No web browser app installed</string>
-  <string name="no_maps_installed" maxLength="20">No maps app installed</string>
-  <string name="go" maxLength="10">Go</string>
-  <string name="please_wait">Please wait…</string>
-  <string name="save" maxLength="10">Save</string>
-  <string name="required" maxLength="10">REQUIRED</string>
-  <string name="_default" maxLength="20">Default</string>
-  <string name="quranic" maxLength="10">Quranic</string>
-  <string name="masnoon" maxLength="10">Masnoon</string>
-  <string name="occasions" maxLength="10">Occasions</string>
-  <string name="country">Country</string>
-  <string name="city_area">City / Area</string>
-  <string name="min" maxLength="3">%d min</string>
-  <string name="yes" maxLength="10">Yes</string>
-  <string name="no" maxLength="10">No</string>
-  <string name="stop" maxLength="10">Stop</string>
+    <!-- General strings -->
+    <string name="email_address" translatable="false">mirfatif@gmail.com</string>
+    <string name="play_store_url" translatable="false">https://play.google.com/store/apps/details?id=com.mirfatif.noorulhuda</string>
+    <string name="no_email_app_installed" maxLength="20">No email app installed</string>
+    <string name="no_browser_installed" maxLength="20">No web browser app installed</string>
+    <string name="no_maps_installed" maxLength="20">No maps app installed</string>
+    <string name="go" maxLength="10">Go</string>
+    <string name="please_wait">Please wait…</string>
+    <string name="save" maxLength="10">Save</string>
+    <string name="required" maxLength="10">REQUIRED</string>
+    <string name="_default" maxLength="20">Default</string>
+    <string name="quranic" maxLength="10">Quranic</string>
+    <string name="masnoon" maxLength="10">Masnoon</string>
+    <string name="occasions" maxLength="10">Occasions</string>
+    <string name="country">Country</string>
+    <string name="city_area">City / Area</string>
+    <string name="min" maxLength="3">%d min</string>
+    <string name="yes" maxLength="10">Yes</string>
+    <string name="no" maxLength="10">No</string>
+    <string name="stop" maxLength="10">Stop</string>
 
-  <string name="tasmia" translatable="false">بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيم</string>
-  <string name="surah_name" translatable="false">سورة %s</string>
-  <string name="left_brace" translatable="false">\uFD62</string>
-  <string name="right_brace" translatable="false">\uFD63</string>
-  <string name="makki" translatable="false">مَكِّيَّةٌ</string>
-  <string name="madni" translatable="false">مَدنِيَّةٌ</string>
-  <string name="aayahs" translatable="false">اٰيَاتُهَا</string>
-  <string name="rukus" translatable="false">رُكُوعَاتُهَا</string>
-  <string name="surah" translatable="false">سورة</string>
-  <string name="juz" translatable="false">جُز</string>
-  <string name="manzil" translatable="false">منزِل</string>
-  <string name="page" translatable="false">صفحة</string>
+    <string name="tasmia" translatable="false">بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيم</string>
+    <string name="surah_name" translatable="false">سورة %s</string>
+    <string name="left_brace" translatable="false">\uFD62</string>
+    <string name="right_brace" translatable="false">\uFD63</string>
+    <string name="makki" translatable="false">مَكِّيَّةٌ</string>
+    <string name="madni" translatable="false">مَدنِيَّةٌ</string>
+    <string name="aayahs" translatable="false">اٰيَاتُهَا</string>
+    <string name="rukus" translatable="false">رُكُوعَاتُهَا</string>
+    <string name="surah" translatable="false">سورة</string>
+    <string name="juz" translatable="false">جُز</string>
+    <string name="manzil" translatable="false">منزِل</string>
+    <string name="page" translatable="false">صفحة</string>
 
-  <!-- Fonts -->
-  <string name="font_hafs" translatable="false">حفص</string>
-  <string name="font_warsh" translatable="false">ورش</string>
-  <string name="font_saleem" translatable="false">سليم</string>
-  <string name="font_scheherazade" translatable="false">شهرزاد</string>
-  <string name="font_noor_e_huda" translatable="false">نور هدى</string>
-  <string name="font_me_quran" translatable="false">القرآن</string>
-  <string name="font_kitab" translatable="false">کتاب</string>
+    <!-- Fonts -->
+    <string name="font_hafs" translatable="false">حفص</string>
+    <string name="font_warsh" translatable="false">ورش</string>
+    <string name="font_saleem" translatable="false">سليم</string>
+    <string name="font_scheherazade" translatable="false">شهرزاد</string>
+    <string name="font_noor_e_huda" translatable="false">نور هدى</string>
+    <string name="font_me_quran" translatable="false">القرآن</string>
+    <string name="font_kitab" translatable="false">کتاب</string>
 
-  <!-- Font files -->
-  <string name="font_file_warsh" translatable="false" tools:ignore="Typos">uthmanic_warsh1_ver09</string>
-  <string name="font_file_saleem" translatable="false">saleem</string>
-  <string name="font_file_scheherazade" translatable="false">scheherazade_new_regular</string>
-  <string name="font_file_noor_e_huda" translatable="false">noorehuda</string>
-  <string name="font_file_me_quran" translatable="false">me_quran</string>
-  <string name="font_file_kitab" translatable="false">kitab_regular</string>
-  <string name="font_file_nastaleeq" translatable="false">jameel_noori_nastaleeq</string>
+    <!-- Font files -->
+    <string name="font_file_warsh" translatable="false" tools:ignore="Typos">uthmanic_warsh1_ver09</string>
+    <string name="font_file_saleem" translatable="false">saleem</string>
+    <string name="font_file_scheherazade" translatable="false">scheherazade_new_regular</string>
+    <string name="font_file_noor_e_huda" translatable="false">noorehuda</string>
+    <string name="font_file_me_quran" translatable="false">me_quran</string>
+    <string name="font_file_kitab" translatable="false">kitab_regular</string>
+    <string name="font_file_nastaleeq" translatable="false">jameel_noori_nastaleeq</string>
 
-  <!-- MainActivity -->
-  <string name="nothing_to_show">Nothing to show</string>
-  <string name="long_press_to_bookmark">Long press on an Āyah to bookmark it</string>
-  <string name="long_press_to_tag">Long press on an Āyah to tag it</string>
-  <string name="press_plus_create_tag">Tap on + to create tag</string>
-  <plurals name="aayah_count">
-    <item quantity="one">%d Āyah</item>
-    <item quantity="other">%d Āyahs</item>
-  </plurals>
-  <plurals name="surah_count">
-    <item quantity="one">%1$s from %2$d Surah</item>
-    <item quantity="other">%1$s from %2$d Surahs</item>
-  </plurals>
-  <string name="create_tag" maxLength="15">Create Tag</string>
-  <string name="copy" maxLength="15">Copy</string>
-  <string name="share" maxLength="15">Share</string>
-  <string name="bookmark" maxLength="15">Bookmark</string>
-  <string name="tag" maxLength="15">Tag</string>
-  <string name="translation" maxLength="15">Translation</string>
-  <string name="copied" maxLength="20">Copied</string>
-  <string name="bookmarked" maxLength="20">Bookmarked</string>
-  <string name="remove_filter" maxLength="15">Remove Filter</string>
-  <string name="no_matches">No matches</string>
-  <string name="texts" maxLength="15">Mushaf Text</string>
-  <string name="translations" maxLength="15">Translations</string>
-  <string name="download_db_file">Download database file?</string>
-  <string name="download_font_file">Download font file?</string>
-  <string name="download_audio_file">Download audio file?</string>
-  <string name="downloading_db" maxLength="15">Downloading Database</string>
-  <string name="downloading_font" maxLength="15">Downloading Font</string>
-  <string name="downloading_adhan" maxLength="15">Downloading Adhan</string>
-  <string name="no_internet" maxLength="20">No internet connection</string>
-  <string name="download_failed" maxLength="20">Download failed</string>
-  <string name="extraction_failed" maxLength="20">Extraction failed</string>
-  <string name="results" maxLength="20">%d results</string>
-  <string name="creating_database" maxLength="15">Creating Database</string>
-  <string name="failed_to_build_database" maxLength="20">Failed to build database</string>
-  <string name="crash_report" maxLength="15">Crash Report</string>
-  <string name="ask_to_report_crash_small" maxLength="30">Send crash report to the developer</string>
-  <string name="ask_to_report_crash">Sorry, a component of the app had a problem and crashed.
+    <!-- MainActivity -->
+    <string name="nothing_to_show">Nothing to show</string>
+    <string name="long_press_to_bookmark">Long press on an Āyah to bookmark it</string>
+    <string name="long_press_to_tag">Long press on an Āyah to tag it</string>
+    <string name="press_plus_create_tag">Tap on + to create tag</string>
+    <plurals name="aayah_count">
+        <item quantity="one">%d Āyah</item>
+        <item quantity="other">%d Āyahs</item>
+    </plurals>
+    <plurals name="surah_count">
+        <item quantity="one">%1$s from %2$d Surah</item>
+        <item quantity="other">%1$s from %2$d Surahs</item>
+    </plurals>
+    <string name="create_tag" maxLength="15">Create Tag</string>
+    <string name="copy" maxLength="15">Copy</string>
+    <string name="share" maxLength="15">Share</string>
+    <string name="bookmark" maxLength="15">Bookmark</string>
+    <string name="tag" maxLength="15">Tag</string>
+    <string name="translation" maxLength="15">Translation</string>
+    <string name="copied" maxLength="20">Copied</string>
+    <string name="bookmarked" maxLength="20">Bookmarked</string>
+    <string name="remove_filter" maxLength="15">Remove Filter</string>
+    <string name="no_matches">No matches</string>
+    <string name="texts" maxLength="15">Mushaf Text</string>
+    <string name="translations" maxLength="15">Translations</string>
+    <string name="download_db_file">Download database file?</string>
+    <string name="download_font_file">Download font file?</string>
+    <string name="download_audio_file">Download audio file?</string>
+    <string name="downloading_db" maxLength="15">Downloading Database</string>
+    <string name="downloading_font" maxLength="15">Downloading Font</string>
+    <string name="downloading_adhan" maxLength="15">Downloading Adhan</string>
+    <string name="no_internet" maxLength="20">No internet connection</string>
+    <string name="download_failed" maxLength="20">Download failed</string>
+    <string name="extraction_failed" maxLength="20">Extraction failed</string>
+    <string name="results" maxLength="20">%d results</string>
+    <string name="creating_database" maxLength="15">Creating Database</string>
+    <string name="failed_to_build_database" maxLength="20">Failed to build database</string>
+    <string name="crash_report" maxLength="15">Crash Report</string>
+    <string name="ask_to_report_crash_small" maxLength="30">Send crash report to the developer</string>
+    <string name="ask_to_report_crash">Sorry, a component of the app had a problem and crashed.
     Send the log file to the developer through email or Telegram so that the bug can be fixed.
   </string>
-  <string name="send_report" maxLength="10">Send Report</string>
-  <string name="title">Title</string>
-  <string name="description">Description</string>
-  <string name="double_click_to_edit">Double tap to edit</string>
-  <string name="search_help">
+    <string name="send_report" maxLength="10">Send Report</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="double_click_to_edit">Double tap to edit</string>
+    <string name="search_help">
     <![CDATA[
       Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) operators for complex search.
       <br/>
@@ -122,97 +122,97 @@
     ]]>
   </string>
 
-  <!-- MainActivity Navigation Drawer / Menu items -->
-  <string name="menu" maxLength="15">Menu</string>
-  <string name="theme_menu_item" maxLength="15">Theme</string>
-  <string name="dark_theme_menu_item" maxLength="15">Dark Mode</string>
-  <string name="page_view_menu_item" maxLength="15">Page Mode</string>
-  <string name="page_slide_menu_item" maxLength="15">Page Slide</string>
-  <string name="aayah_breaks_menu_item" maxLength="15">Āyah Breaks</string>
-  <string name="info_header_menu_item" maxLength="15">Page Header</string>
-  <string name="theme_color_green" maxLength="15">Green</string>
-  <string name="theme_color_blue" maxLength="15">Blue</string>
-  <string name="theme_color_red" maxLength="15">Red</string>
-  <string name="theme_color_gray" maxLength="15">Gray</string>
-  <string name="brightness_menu_item" maxLength="15">Brightness</string>
-  <string name="bg_color_menu_item" maxLength="15">Background</string>
-  <string name="text_color_menu_item" maxLength="15">Font Color</string>
-  <string name="font_size_menu_item" maxLength="15">Font Size</string>
-  <string name="font_menu_item" maxLength="15">Font</string>
-  <string name="backup_restore_menu_item" maxLength="15">Backup / Restore</string>
-  <string name="bookmarks_menu_item" maxLength="15">Bookmarks</string>
-  <string name="tags_menu_item" maxLength="15">Tags</string>
-  <string name="texts_menu_item" maxLength="15">Texts</string>
-  <string name="translations_menu_item" maxLength="15">Translations</string>
-  <string name="select_trans_menu_item" maxLength="15">Select Language</string>
-  <string name="trans_with_text_menu_item" maxLength="15">Show Under Text</string>
-  <string name="prayer_time_menu_item" maxLength="15">Prayer Time</string>
-  <string name="supplications_menu_item" maxLength="15">Dua</string>
-  <string name="search_settings_menu_item" maxLength="15">Search Settings</string>
-  <string name="search_settings_in_trans" maxLength="15">Search in translation</string>
-  <string name="search_settings_with_vowels" maxLength="15">Search with vowels</string>
-  <string name="search_help_menu_item" maxLength="15">Help</string>
-  <string name="search_menu_item" maxLength="15">Search</string>
-  <string name="goto_menu_item" maxLength="15">Go To</string>
-  <string name="about_menu_item" maxLength="15">About</string>
+    <!-- MainActivity Navigation Drawer / Menu items -->
+    <string name="menu" maxLength="15">Menu</string>
+    <string name="theme_menu_item" maxLength="15">Theme</string>
+    <string name="dark_theme_menu_item" maxLength="15">Dark Mode</string>
+    <string name="page_view_menu_item" maxLength="15">Page Mode</string>
+    <string name="page_slide_menu_item" maxLength="15">Page Slide</string>
+    <string name="aayah_breaks_menu_item" maxLength="15">Āyah Breaks</string>
+    <string name="info_header_menu_item" maxLength="15">Page Header</string>
+    <string name="theme_color_green" maxLength="15">Green</string>
+    <string name="theme_color_blue" maxLength="15">Blue</string>
+    <string name="theme_color_red" maxLength="15">Red</string>
+    <string name="theme_color_gray" maxLength="15">Gray</string>
+    <string name="brightness_menu_item" maxLength="15">Brightness</string>
+    <string name="bg_color_menu_item" maxLength="15">Background</string>
+    <string name="text_color_menu_item" maxLength="15">Font Color</string>
+    <string name="font_size_menu_item" maxLength="15">Font Size</string>
+    <string name="font_menu_item" maxLength="15">Font</string>
+    <string name="backup_restore_menu_item" maxLength="15">Backup / Restore</string>
+    <string name="bookmarks_menu_item" maxLength="15">Bookmarks</string>
+    <string name="tags_menu_item" maxLength="15">Tags</string>
+    <string name="texts_menu_item" maxLength="15">Texts</string>
+    <string name="translations_menu_item" maxLength="15">Translations</string>
+    <string name="select_trans_menu_item" maxLength="15">Select Language</string>
+    <string name="trans_with_text_menu_item" maxLength="15">Show Under Text</string>
+    <string name="prayer_time_menu_item" maxLength="15">Prayer Time</string>
+    <string name="supplications_menu_item" maxLength="15">Dua</string>
+    <string name="search_settings_menu_item" maxLength="15">Search Settings</string>
+    <string name="search_settings_in_trans" maxLength="15">Search in translation</string>
+    <string name="search_settings_with_vowels" maxLength="15">Search with vowels</string>
+    <string name="search_help_menu_item" maxLength="15">Help</string>
+    <string name="search_menu_item" maxLength="15">Search</string>
+    <string name="goto_menu_item" maxLength="15">Go To</string>
+    <string name="about_menu_item" maxLength="15">About</string>
 
-  <!-- Notification Channels -->
-  <string name="channel_app_update">App Updates</string>
-  <integer name="channel_app_update">100</integer>
-  <string name="channel_crash_report">Crash Report</string>
-  <integer name="channel_crash_report">200</integer>
-  <string name="channel_logcat_collection">Log Collection</string>
-  <integer name="channel_logcat_collection">300</integer>
-  <string name="channel_prayer_widget">Prayer Widget</string>
-  <integer name="channel_prayer_widget">400</integer>
-  <string name="channel_prayer_time">Prayer Time</string>
-  <integer name="channel_prayer_time">500</integer>
-  <string name="channel_prayer_adhan">Prayer Adhan</string>
-  <integer name="channel_prayer_adhan">600</integer>
-  <string name="prayer_notification_group" translatable="false">prayer_notification_group</string>
-  <string name="setting_alarms">Setting Alarms</string>
+    <!-- Notification Channels -->
+    <string name="channel_app_update">App Updates</string>
+    <integer name="channel_app_update">100</integer>
+    <string name="channel_crash_report">Crash Report</string>
+    <integer name="channel_crash_report">200</integer>
+    <string name="channel_logcat_collection">Log Collection</string>
+    <integer name="channel_logcat_collection">300</integer>
+    <string name="channel_prayer_widget">Prayer Widget</string>
+    <integer name="channel_prayer_widget">400</integer>
+    <string name="channel_prayer_time">Prayer Time</string>
+    <integer name="channel_prayer_time">500</integer>
+    <string name="channel_prayer_adhan">Prayer Adhan</string>
+    <integer name="channel_prayer_adhan">600</integer>
+    <string name="prayer_notification_group" translatable="false">prayer_notification_group</string>
+    <string name="setting_alarms">Setting Alarms</string>
 
-  <!-- LogcatService -->
-  <string name="logging" maxLength="15">Logging</string>
-  <string name="logging_msg">Logging will be auto-stopped after 5 minutes.</string>
-  <string name="logging_failed" maxLength="20">Logging failed</string>
+    <!-- LogcatService -->
+    <string name="logging" maxLength="15">Logging</string>
+    <string name="logging_msg">Logging will be auto-stopped after 5 minutes.</string>
+    <string name="logging_failed" maxLength="20">Logging failed</string>
 
-  <!-- AboutActivity -->
-  <string name="email" maxLength="15">Email</string>
-  <string name="telegram_group" maxLength="15">Telegram Group</string>
-  <string name="telegram_link" translatable="false">https://t.me/NoorUlHudaApp</string>
-  <string name="source" maxLength="15">Source</string>
-  <string name="source_url" translatable="false">https://github.com/mirfatif/NoorUlHuda</string>
-  <string name="report_issues" maxLength="15">Report Issues</string>
-  <string name="report_issues_summary" maxLength="20">Bugs, improvements, suggestions…</string>
-  <string name="issues_url" translatable="false">https://github.com/mirfatif/NoorUlHuda/issues</string>
-  <string name="app_rating" maxLength="15">Rate Me</string>
-  <string name="app_rating_summary" maxLength="20">Rating / review on Play Store</string>
-  <string name="privacy_policy" maxLength="20">Privacy Policy</string>
-  <string name="privacy_policy_link" translatable="false">https://mirfatif.github.io/NoorUlHuda/privacy_policy.html</string>
-  <string name="translations_summary">Want to see the app in your language?</string>
-  <string name="translation_link">https://crowdin.com/project/nuh</string>
-  <string name="language_credits">
+    <!-- AboutActivity -->
+    <string name="email" maxLength="15">Email</string>
+    <string name="telegram_group" maxLength="15">Telegram Group</string>
+    <string name="telegram_link" translatable="false">https://t.me/NoorUlHudaApp</string>
+    <string name="source" maxLength="15">Source</string>
+    <string name="source_url" translatable="false">https://github.com/mirfatif/NoorUlHuda</string>
+    <string name="report_issues" maxLength="15">Report Issues</string>
+    <string name="report_issues_summary" maxLength="20">Bugs, improvements, suggestions…</string>
+    <string name="issues_url" translatable="false">https://github.com/mirfatif/NoorUlHuda/issues</string>
+    <string name="app_rating" maxLength="15">Rate Me</string>
+    <string name="app_rating_summary" maxLength="20">Rating / review on Play Store</string>
+    <string name="privacy_policy" maxLength="20">Privacy Policy</string>
+    <string name="privacy_policy_link" translatable="false">https://mirfatif.github.io/NoorUlHuda/privacy_policy.html</string>
+    <string name="translations_summary">Want to see the app in your language?</string>
+    <string name="translation_link">https://crowdin.com/project/nuh</string>
+    <string name="language_credits">
     <![CDATA[
       <ul>
         <li><a href="">Add my language</a></li>
       </ul>
     ]]>
   </string>
-  <string name="share_summary">Share the app with others</string>
-  <string name="share_text">Check out this amazing app! %s</string>
-  <string name="update" maxLength="15">Update</string>
-  <string name="update_summary" maxLength="20">Check for app updates</string>
-  <string name="check_in_progress" maxLength="20">Check in progress</string>
-  <string name="check_for_updates_failed" maxLength="20">Check for updates failed</string>
-  <string name="app_is_up_to_date" maxLength="20">App is up-to-date</string>
-  <string name="new_version_available" maxLength="20">New app version is available</string>
-  <string name="tap_to_download" maxLength="20">Tap to download</string>
-  <string name="download" maxLength="10">Download</string>
-  <string name="auto_update">Update Check</string>
-  <string name="third_party_res">Third Party Resources</string>
-  <string name="third_party_res_summary">Credits and Disclaimer</string>
-  <string name="third_party_credits">
+    <string name="share_summary">Share the app with others</string>
+    <string name="share_text">Check out this amazing app! %s</string>
+    <string name="update" maxLength="15">Update</string>
+    <string name="update_summary" maxLength="20">Check for app updates</string>
+    <string name="check_in_progress" maxLength="20">Check in progress</string>
+    <string name="check_for_updates_failed" maxLength="20">Check for updates failed</string>
+    <string name="app_is_up_to_date" maxLength="20">App is up-to-date</string>
+    <string name="new_version_available" maxLength="20">New app version is available</string>
+    <string name="tap_to_download" maxLength="20">Tap to download</string>
+    <string name="download" maxLength="10">Download</string>
+    <string name="auto_update">Update Check</string>
+    <string name="third_party_res">Third Party Resources</string>
+    <string name="third_party_res_summary">Credits and Disclaimer</string>
+    <string name="third_party_credits">
     <![CDATA[
       <b>Quranic Text and Translation</b><br/>
       Noor-ul-Huda uses Quranic texts and translations provided by Tanzil Project
@@ -231,54 +231,54 @@
       </ul>
     ]]>
   </string>
-  <string name="collect_logs" maxLength="15">Collect Logs</string>
-  <string name="collect_logs_summary" maxLength="20">Save log to file</string>
-  <string name="stop_logging" maxLength="15">Stop Logging</string>
-  <string name="select_log_file" maxLength="20">Select file to save log</string>
-  <string name="logging_stopped" maxLength="20">Logging stopped</string>
+    <string name="collect_logs" maxLength="15">Collect Logs</string>
+    <string name="collect_logs_summary" maxLength="20">Save log to file</string>
+    <string name="stop_logging" maxLength="15">Stop Logging</string>
+    <string name="select_log_file" maxLength="20">Select file to save log</string>
+    <string name="logging_stopped" maxLength="20">Logging stopped</string>
 
-  <!-- PrayerTimeActivity -->
-  <string name="fajr" translatable="false">فجر</string>
-  <string name="sunrise" translatable="false">شروق</string>
-  <string name="zuhr" translatable="false">ظهر</string>
-  <string name="asr" translatable="false">عصر</string>
-  <string name="maghrib" translatable="false">مغرب</string>
-  <string name="isha" translatable="false">عشاء</string>
-  <string name="salat_fajr" translatable="false">الصلاة الفجر</string>
-  <string name="salat_sunrise" translatable="false">الوقت الشروق</string>
-  <string name="salat_zuhr" translatable="false">الصلاة الظهر</string>
-  <string name="salat_asr" translatable="false">الصلاة العصر</string>
-  <string name="salat_maghrib" translatable="false">الصلاة المغرب</string>
-  <string name="salat_isha" translatable="false">الصلاة العشاء</string>
-  <string name="null_time" translatable="false">00:00</string>
-  <string name="invalid_date" translatable="false">---</string>
-  <string name="zero" translatable="false">0</string>
-  <string name="show_notification" maxLength="20">Show Notification</string>
-  <string name="play_adhan" maxLength="20">Play Adhan</string>
-  <string name="notification_adhan_offset" maxLength="20">Notification / Adhan Offset (Minutes)</string>
-  <string name="longitude">Longitude</string>
-  <string name="latitude">Latitude</string>
-  <string name="geocoding_failed" maxLength="20">Failed to get locations</string>
-  <string name="rev_geocoding_failed" maxLength="20">Failed to get address</string>
-  <string name="no_location_found" maxLength="20">No location found</string>
-  <string name="location">Location</string>
-  <string name="calculation">Calculation</string>
-  <string name="notifications">Notifications</string>
-  <string name="select_offset" maxLength="15">Select Offset</string>
-  <string name="prayer_cal_method" maxLength="10">Method</string>
-  <string name="asr_cal_method" maxLength="10">Asr Calculation</string>
-  <string name="high_lat_method" maxLength="10">High Latitude</string>
-  <string name="prayer_adj" maxLength="20">Adjustment (Minutes)</string>
-  <string name="qibla" maxLength="15">Qibla</string>
-  <string name="widget">Widget</string>
-  <string name="show_widget_notification" maxLength="15">Show Notification Widget</string>
-  <string name="home_widget_style" maxLength="10">Home Widget Style</string>
-  <string name="set_location" maxLength="20">Please set location</string>
-  <string name="battery_optimization" maxLength="15">Battery Optimization</string>
-  <string name="battery_optimization_detail">Do you want to exclude Noor-ul-Huda from Battery
+    <!-- PrayerTimeActivity -->
+    <string name="fajr" translatable="false">فجر</string>
+    <string name="sunrise" translatable="false">شروق</string>
+    <string name="zuhr" translatable="false">ظهر</string>
+    <string name="asr" translatable="false">عصر</string>
+    <string name="maghrib" translatable="false">مغرب</string>
+    <string name="isha" translatable="false">عشاء</string>
+    <string name="salat_fajr" translatable="false">الصلاة الفجر</string>
+    <string name="salat_sunrise" translatable="false">الوقت الشروق</string>
+    <string name="salat_zuhr" translatable="false">الصلاة الظهر</string>
+    <string name="salat_asr" translatable="false">الصلاة العصر</string>
+    <string name="salat_maghrib" translatable="false">الصلاة المغرب</string>
+    <string name="salat_isha" translatable="false">الصلاة العشاء</string>
+    <string name="null_time" translatable="false">00:00</string>
+    <string name="invalid_date" translatable="false">---</string>
+    <string name="zero" translatable="false">0</string>
+    <string name="show_notification" maxLength="20">Show Notification</string>
+    <string name="play_adhan" maxLength="20">Play Adhan</string>
+    <string name="notification_adhan_offset" maxLength="20">Notification / Adhan Offset (Minutes)</string>
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="geocoding_failed" maxLength="20">Failed to get locations</string>
+    <string name="rev_geocoding_failed" maxLength="20">Failed to get address</string>
+    <string name="no_location_found" maxLength="20">No location found</string>
+    <string name="location">Location</string>
+    <string name="calculation">Calculation</string>
+    <string name="notifications">Notifications</string>
+    <string name="select_offset" maxLength="15">Select Offset</string>
+    <string name="prayer_cal_method" maxLength="10">Method</string>
+    <string name="asr_cal_method" maxLength="10">Asr Calculation</string>
+    <string name="high_lat_method" maxLength="10">High Latitude</string>
+    <string name="prayer_adj" maxLength="20">Adjustment (Minutes)</string>
+    <string name="qibla" maxLength="15">Qibla</string>
+    <string name="widget">Widget</string>
+    <string name="show_widget_notification" maxLength="15">Show Notification Widget</string>
+    <string name="home_widget_style" maxLength="10">Home Widget Style</string>
+    <string name="set_location" maxLength="20">Please set location</string>
+    <string name="battery_optimization" maxLength="15">Battery Optimization</string>
+    <string name="battery_optimization_detail">Do you want to exclude Noor-ul-Huda from Battery
     Optimization in order to reduce the likelihood of it being killed in background?
   </string>
-  <string name="location_help">
+    <string name="location_help">
     <![CDATA[
       Noor-ul-Huda does not access your device location. To get coordinates:
       <ul>
@@ -292,7 +292,7 @@
       Your query or coordinates are sent to <a href="https://www.geonames.org">geonames.org</a> for (reverse) geocoding.</li>
     ]]>
   </string>
-  <string name="calc_help">
+    <string name="calc_help">
     <![CDATA[
       Please visit <a
       href="http://praytimes.org/calculation">praytimes.org/calculation</a> for details on how
@@ -300,27 +300,29 @@
     ]]>
   </string>
 
-  <!-- Backup / Restore -->
-  <string name="backup" maxLength="10">Backup</string>
-  <string name="restore" maxLength="10">Restore</string>
-  <string name="choose_backup_restore">Backup or restore preferences, tags and bookmarks.</string>
-  <string name="select_backup_file" maxLength="20">Select backup file</string>
-  <string name="backup_success" maxLength="20">Backup successful</string>
-  <string name="restore_success" maxLength="20">Restore successful</string>
-  <string name="backup_failed" maxLength="20">Backup failed</string>
-  <string name="restore_failed" maxLength="20">Restore failed</string>
+    <!-- Backup / Restore -->
+    <string name="backup" maxLength="10">Backup</string>
+    <string name="restore" maxLength="10">Restore</string>
+    <string name="choose_backup_restore">Backup or restore preferences, tags and bookmarks.</string>
+    <string name="select_backup_file" maxLength="20">Select backup file</string>
+    <string name="backup_success" maxLength="20">Backup successful</string>
+    <string name="restore_success" maxLength="20">Restore successful</string>
+    <string name="backup_failed" maxLength="20">Backup failed</string>
+    <string name="restore_failed" maxLength="20">Restore failed</string>
 
-  <!-- Feedback -->
-  <string name="do_not_ask" maxLength="15">Don\'t ask again</string>
-  <string name="rate" maxLength="10">Rate now</string>
-  <string name="contact" maxLength="10">Write Now</string>
-  <string name="love_using_app" maxLength="20">Liking Noor-ul-Huda?</string>
-  <string name="rate_the_app">Good ratings and reviews help us improve the app and we are able to
+    <!-- Feedback -->
+    <string name="do_not_ask" maxLength="15">Don\'t ask again</string>
+    <string name="rate" maxLength="10">Rate now</string>
+    <string name="contact" maxLength="10">Write Now</string>
+    <string name="love_using_app" maxLength="20">Liking Noor-ul-Huda?</string>
+    <string name="rate_the_app">Good ratings and reviews help us improve the app and we are able to
     better serve your needs.
   </string>
-  <string name="ask_to_provide_feedback">Sorry to hear that. You can help improve the app by
+    <string name="ask_to_provide_feedback">Sorry to hear that. You can help improve the app by
     contacting us via email or Telegram so that we are able to better serve your needs.
   </string>
-  <string name="thank_you" maxLength="20">Thank you</string>
+    <string name="thank_you" maxLength="20">Thank you</string>
+    <string name="dismiss">Dismiss</string>
+  <string name="show_fullscreen_alert">Show Fullscreen Alert</string>
 
 </resources>
