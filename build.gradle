@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.1'
+        classpath 'com.android.tools.build:gradle:7.0.4'
 
         // From Time4A/build.gradle
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
