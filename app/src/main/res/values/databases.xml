@@ -9,11 +9,13 @@
   <array name="db_text_names">
     <item order="1">Imlaei (Simple)</item>
     <item order="2">Uthmani (Minimal)</item>
+    <item order="3">Uthmani</item>
   </array>
 
   <array name="db_text_files">
     <item order="1">@string/db_main</item>
     <item order="2">quran-uthmani-min</item>
+    <item order="3">quran-uthmani</item>
   </array>
 
   <array name="db_trans_names">

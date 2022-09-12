@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:layout_gravity="center_horizontal"
-        android:fontFamily="@font/uthmanic_hafs1_ver17"
+        android:fontFamily="@font/uthmanic_hafs_v20"
         android:text="@string/app_name"
         android:textSize="18sp" />
 

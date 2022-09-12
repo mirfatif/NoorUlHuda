@@ -490,7 +490,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
   public static class HafsFontSpan extends MetricAffectingSpan {
 
     private static final Typeface HAFS_TYPEFACE =
-        ResourcesCompat.getFont(App.getCxt(), R.font.uthmanic_hafs1_ver17);
+        ResourcesCompat.getFont(App.getCxt(), R.font.uthmanic_hafs_v20);
 
     @Override
     public void updateMeasureState(TextPaint tp) {
