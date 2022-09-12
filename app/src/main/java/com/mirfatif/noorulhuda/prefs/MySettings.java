@@ -515,7 +515,7 @@ public enum MySettings {
       mTypeface = null;
     }
     if (mTypeface == null) {
-      mTypeface = ResourcesCompat.getFont(App.getCxt(), R.font.uthmanic_hafs1_ver17);
+      mTypeface = ResourcesCompat.getFont(App.getCxt(), R.font.uthmanic_hafs_v20);
     }
     return mTypeface;
   }

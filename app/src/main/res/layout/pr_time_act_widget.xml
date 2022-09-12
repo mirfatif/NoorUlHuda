@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:fontFamily="@font/uthmanic_hafs1_ver17"
+        android:fontFamily="@font/uthmanic_hafs_v20"
         android:textAlignment="viewStart"
         android:textColor="@color/fgSharp1"
         android:textSize="18sp" />
@@ -77,7 +77,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/uthmanic_hafs1_ver17"
+        android:fontFamily="@font/uthmanic_hafs_v20"
         android:maxLines="1"
         android:text="@string/fajr"
         android:textAlignment="center"
@@ -115,7 +115,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/uthmanic_hafs1_ver17"
+        android:fontFamily="@font/uthmanic_hafs_v20"
         android:maxLines="1"
         android:text="@string/sunrise"
         android:textAlignment="center"
@@ -153,7 +153,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/uthmanic_hafs1_ver17"
+        android:fontFamily="@font/uthmanic_hafs_v20"
         android:maxLines="1"
         android:text="@string/zuhr"
         android:textAlignment="center"
@@ -191,7 +191,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/uthmanic_hafs1_ver17"
+        android:fontFamily="@font/uthmanic_hafs_v20"
         android:maxLines="1"
         android:text="@string/asr"
         android:textAlignment="center"
@@ -230,7 +230,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/uthmanic_hafs1_ver17"
+        android:fontFamily="@font/uthmanic_hafs_v20"
         android:maxLines="1"
         android:text="@string/maghrib"
         android:textAlignment="center"
@@ -267,7 +267,7 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/uthmanic_hafs1_ver17"
+        android:fontFamily="@font/uthmanic_hafs_v20"
         android:maxLines="1"
         android:text="@string/isha"
         android:textAlignment="center"
