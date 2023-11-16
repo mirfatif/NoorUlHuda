@@ -4,16 +4,12 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.1'
-
-        // From Time4A/build.gradle
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.android.tools.build:gradle:8.1.1'
     }
 }
 
 plugins {
-    id 'com.github.sherter.google-java-format' version '0.9'
+    id 'com.diffplug.spotless' version '6.21.0' apply true
 }
 
 allprojects {
@@ -22,19 +18,19 @@ allprojects {
         mavenCentral()
     }
 
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
         options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     }
 
     project.ext {
-        compileSdkVer = 30
-        buildToolsVer = "30.0.3"
+        compileSdkVer = 34
+        buildToolsVer = "34.0.0"
         minSdkVer = 24
-        targetSdkVer = 30
-        ndkVer = "22.1.7171670"
+        targetSdkVer = 34
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+spotless {
+    predeclareDeps()
+    java { googleJavaFormat() }
 }

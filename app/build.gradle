@@ -4,12 +4,14 @@ android {
     compileSdk compileSdkVer
     buildToolsVersion buildToolsVer
 
+    namespace "com.mirfatif.noorulhuda"
+
     defaultConfig {
-        applicationId "com.mirfatif.noorulhuda"
+        applicationId namespace
         minSdk minSdkVer
         targetSdk targetSdkVer
         versionCode 102
-        versionName "v1.02"
+        versionName "v1.03-beta1"
 
         buildConfigField "boolean", "GH_VERSION", System.getenv('IS_PS_VERSION') != "true" ? "true" : "false"
     }
@@ -37,6 +39,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 }
 
@@ -44,16 +47,16 @@ dependencies {
     implementation project(path: ':adhan')
     implementation project(path: ':time4j-android')
 
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation("androidx.viewpager2:viewpager2:1.0.0")
-    implementation 'androidx.browser:browser:1.3.0'
-    implementation 'androidx.room:room-runtime:2.3.0'
-    annotationProcessor 'androidx.room:room-compiler:2.3.0'
+    implementation 'androidx.browser:browser:1.7.0'
+    implementation 'androidx.room:room-runtime:2.6.0'
+    annotationProcessor 'androidx.room:room-compiler:2.6.0'
 
     // For Snackbar, TabLayout and BottomSheetDialogFragment.
     // Also includes CoordinatorLayout.
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.material:material:1.10.0'
 
     // To handle hyperlink onClick in TextView
     implementation 'me.saket:better-link-movement-method:2.2.0'
@@ -62,8 +65,8 @@ dependencies {
     implementation("com.google.guava:guava:30.1.1-android")
 
     // Let's behave responsibly
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 }
 
-apply plugin: 'com.github.sherter.google-java-format'
-preBuild.dependsOn(verifyGoogleJavaFormat)
+apply plugin: 'com.diffplug.spotless'
+preBuild.dependsOn(spotlessCheck)
