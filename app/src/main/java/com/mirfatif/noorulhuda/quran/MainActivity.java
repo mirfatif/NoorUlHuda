@@ -81,6 +81,7 @@ import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
 import com.mirfatif.noorulhuda.ui.dialog.MyBaseAdapter.DialogListCallback;
 import com.mirfatif.noorulhuda.ui.dialog.MyBaseAdapter.DialogListItem;
 import com.mirfatif.noorulhuda.util.FileDownload;
+import com.mirfatif.noorulhuda.util.NotifUtils;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.io.BufferedReader;
 import java.io.File;
@@ -143,7 +144,6 @@ public class MainActivity extends BaseActivity {
       window.setAttributes(params);
     }
 
-    PrayerNotifySvc.reset(false);
     WidgetProvider.reset();
     Utils.runBg(() -> new AppUpdate().check(true));
 
@@ -164,6 +164,14 @@ public class MainActivity extends BaseActivity {
       }
     } else {
       buildDbAndRefreshUi();
+    }
+
+    if (!NotifUtils.hasNotifPerm()) {
+      if (SETTINGS.shouldAskForNotifPerm()) {
+        NotifUtils.askForNotifPerm(this);
+      }
+    } else {
+      PrayerNotifySvc.reset(false);
     }
   }
 
@@ -188,10 +196,11 @@ public class MainActivity extends BaseActivity {
       toggleFullScreen(false);
       mControlsShown = true;
       Window window = getWindow();
-      View view;
-      if (window != null && (view = window.getDecorView()) != null) {
-        view.setOnSystemUiVisibilityChangeListener(
-            flags -> mIsFullScreen = (flags & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0);
+      if (window != null) {
+        window
+            .getDecorView()
+            .setOnSystemUiVisibilityChangeListener(
+                flags -> mIsFullScreen = (flags & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0);
       }
     }
   }
@@ -561,10 +570,11 @@ public class MainActivity extends BaseActivity {
     }
 
     Window window = getWindow();
-    View view;
-    if (window == null || (view = window.getDecorView()) == null) {
+    if (window == null) {
       return;
     }
+
+    View view = window.getDecorView();
 
     cancelAutoFullScreen();
     boolean setAutoFullScreen = false;

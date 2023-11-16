@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import com.mirfatif.noorulhuda.svc.PrayerNotifySvc;
+import com.mirfatif.noorulhuda.util.NotifUtils;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -19,8 +20,14 @@ public class BootReceiver extends BroadcastReceiver {
   @Override
   public void onReceive(Context context, Intent intent) {
     if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-      Log.i(TAG, "Starting " + PrayerNotifySvc.TAG);
-      PrayerNotifySvc.reset(true);
+      if (NotifUtils.hasNotifPerm()) {
+        Log.i(TAG, "Starting " + PrayerNotifySvc.TAG);
+        PrayerNotifySvc.reset(true);
+      } else {
+        Log.i(
+            TAG,
+            "Not starting " + PrayerNotifySvc.TAG + " due to notification permission not granted");
+      }
     }
   }
 

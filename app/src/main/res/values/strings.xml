@@ -15,6 +15,12 @@
      Menu item: 15 -->
 
   <!-- General strings -->
+  <string name="crowdin_comment_break_strings_7" translatable="false">Crowdin comment break</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="ok_button">OK</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="cancel_button">Cancel</string>
+
   <string name="email_address" translatable="false">mirfatif.dev@gmail.com</string>
   <string name="play_store_url" translatable="false">https://play.google.com/store/apps/details?id=com.mirfatif.noorulhuda</string>
   <!-- CHAR LIMIT: 20 -->
@@ -63,6 +69,7 @@
   <string name="page" translatable="false">صفحة</string>
 
   <!-- Fonts -->
+  <string name="crowdin_comment_break_strings_8" translatable="false">Crowdin comment break</string>
   <string name="font_hafs" translatable="false">حفص</string>
   <string name="font_warsh" translatable="false">ورش</string>
   <string name="font_saleem" translatable="false">سليم</string>
@@ -72,6 +79,7 @@
   <string name="font_kitab" translatable="false">کتاب</string>
 
   <!-- Font files -->
+  <string name="crowdin_comment_break_strings_9" translatable="false">Crowdin comment break</string>
   <string name="font_file_warsh" translatable="false" tools:ignore="Typos">uthmanic_warsh1_ver09</string>
   <string name="font_file_saleem" translatable="false">saleem</string>
   <string name="font_file_scheherazade" translatable="false">scheherazade_new_regular</string>
@@ -81,6 +89,7 @@
   <string name="font_file_nastaleeq" translatable="false">jameel_noori_nastaleeq</string>
 
   <!-- MainActivity -->
+  <string name="crowdin_comment_break_strings_10" translatable="false">Crowdin comment break</string>
   <string name="nothing_to_show">Nothing to show</string>
   <string name="long_press_to_bookmark">Long press on an Āyah to bookmark it</string>
   <string name="long_press_to_tag">Long press on an Āyah to tag it</string>
@@ -217,6 +226,7 @@
   <string name="about_menu_item">About</string>
 
   <!-- Notification Channels -->
+  <string name="crowdin_comment_break_strings_11" translatable="false">Crowdin comment break</string>
   <string name="channel_app_update">App Updates</string>
   <integer name="channel_app_update">100</integer>
   <string name="channel_crash_report">Crash Report</string>
@@ -299,6 +309,7 @@
   <string name="logging_stopped">Logging stopped</string>
 
   <!-- PrayerTimeActivity -->
+  <string name="crowdin_comment_break_strings_12" translatable="false">Crowdin comment break</string>
   <string name="fajr" translatable="false">فجر</string>
   <string name="sunrise" translatable="false">شروق</string>
   <string name="zuhr" translatable="false">ظهر</string>
@@ -388,5 +399,19 @@
   <string name="ask_to_provide_feedback">Sorry to hear that. You can help improve the app by contacting us via email or Telegram so that we are able to better serve your needs.</string>
   <!-- CHAR LIMIT: 20 -->
   <string name="thank_you">Thank you</string>
+
+  <!-- Notification permission -->
+  <string name="crowdin_comment_break_strings_6" translatable="false">Crowdin comment break</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="notif_perm_dialog_title">Notification permission</string>
+  <string name="notif_perm_dialog_text">NoorUlHuda needs notification permission to show prayer notifications.</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="notif_perm_missing_toast">Notification permission not granted</string>
+
+  <!-- Exact Alarm permission -->
+  <string name="crowdin_comment_break_strings_13" translatable="false">Crowdin comment break</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="alarm_perm_dialog_title">Alarm permission</string>
+  <string name="alarm_perm_dialog_text">NoorUlHuda needs alarm permission to show prayer notifications and update home widget.</string>
 
 </resources>

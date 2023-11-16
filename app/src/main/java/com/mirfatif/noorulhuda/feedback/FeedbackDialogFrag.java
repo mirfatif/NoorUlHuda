@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,7 @@ public class FeedbackDialogFrag extends BottomSheetDialogFragment {
 
     b.neutralButton.setOnClickListener(
         v -> {
-          SETTINGS.setAskForFeedbackTs(Long.MAX_VALUE);
+          SETTINGS.setAskForFeedbackTs(DateUtils.WEEK_IN_MILLIS * 8);
           dismiss();
         });
 

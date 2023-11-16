@@ -29,6 +29,8 @@ import com.mirfatif.noorulhuda.BootReceiver;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.prayer.PrayerData;
 import com.mirfatif.noorulhuda.prayer.PrayerTimeActivity;
+import com.mirfatif.noorulhuda.util.AlarmUtils;
+import com.mirfatif.noorulhuda.util.NotifUtils;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.Calendar;
 import java.util.Locale;
@@ -51,19 +53,16 @@ public class PrayerNotifySvc extends Service {
   private static final Object LOCK = new Object();
   private Future<?> mFuture;
 
-  private AlarmManager mAlarmManager;
-
   @Override
   public synchronized int onStartCommand(Intent intent, int flags, int startId) {
     if (mFuture != null) {
       mFuture.cancel(true);
     }
 
-    mAlarmManager = (AlarmManager) App.getCxt().getSystemService(Context.ALARM_SERVICE);
     synchronized (LOCK) {
       PendingIntent pi = createIntent(true, null, null);
       if (pi != null) {
-        mAlarmManager.cancel(pi);
+        AlarmUtils.cancel(pi);
         pi.cancel();
       }
       mNotifBuilder = null;
@@ -93,8 +92,12 @@ public class PrayerNotifySvc extends Service {
       int prayer = intent.getIntExtra(EXTRA_PRAYER, -1);
       if ((ppTime = intent.getLongExtra(EXTRA_POST_PRAYER_TIME, -1)) > 0) {
         ppn = new PostPrayerNotif(ppTime, prayer);
-      } else if (prayer >= 0) {
-        startService(new Intent(App.getCxt(), PrayerAdhanSvc.class).putExtra(EXTRA_PRAYER, prayer));
+      } else if (prayer >= 0 && NotifUtils.hasNotifPerm()) {
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+          startForegroundService(new Intent(App.getCxt(), PrayerAdhanSvc.class).putExtra(EXTRA_PRAYER, prayer));
+        } else {
+          startService(new Intent(App.getCxt(), PrayerAdhanSvc.class).putExtra(EXTRA_PRAYER, prayer));
+        }
       }
     }
     PostPrayerNotif postPrayerNotif = ppn;
@@ -176,7 +179,7 @@ public class PrayerNotifySvc extends Service {
         // We don't have to show persistent notification and there's
         // no notification or adhan set for any prayer.
         BootReceiver.setState(false);
-      } else {
+      } else if (AlarmUtils.canScheduleExactAlarms()) {
         createAlarm(runFgSvc, postPrayerNotif);
         BootReceiver.setState(true);
       }
@@ -185,7 +188,7 @@ public class PrayerNotifySvc extends Service {
         mNotifBuilder
             .setCustomContentView(createNotifView())
             .setCustomBigContentView(createNotifBigView());
-        NotificationManagerCompat.from(App.getCxt()).notify(WIDGET_NOTIF_ID, mNotifBuilder.build());
+        NotifUtils.notify(WIDGET_NOTIF_ID, mNotifBuilder.build());
       } else {
         // We are not showing a persistent notification.
         stopSelf();
@@ -333,7 +336,7 @@ public class PrayerNotifySvc extends Service {
 
     if (!Thread.interrupted()) {
       PendingIntent pi = createIntent(false, alarmPrayer, ppnTriggerAt);
-      mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi);
+      AlarmUtils.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi);
       Calendar c = Calendar.getInstance();
       c.setTimeInMillis(triggerAt);
       Log.i(
@@ -365,7 +368,11 @@ public class PrayerNotifySvc extends Service {
       long val = ppnTriggerAt;
       intent.putExtra(EXTRA_POST_PRAYER_TIME, val);
     }
-    return PendingIntent.getService(App.getCxt(), WIDGET_NOTIF_ID, intent, getPiFlags(cancel));
+    if (VERSION.SDK_INT >= VERSION_CODES.O) {
+      return PendingIntent.getForegroundService(App.getCxt(), WIDGET_NOTIF_ID, intent, getPiFlags(cancel));
+    } else {
+      return PendingIntent.getService(App.getCxt(), WIDGET_NOTIF_ID, intent, getPiFlags(cancel));
+    }
   }
 
   private final WakeLock mWakeLock;
@@ -405,8 +412,10 @@ public class PrayerNotifySvc extends Service {
   public static void reset(boolean callFg) {
     Intent intent = new Intent(App.getCxt(), PrayerNotifySvc.class);
     if (callFg && VERSION.SDK_INT >= VERSION_CODES.O) {
-      intent.putExtra(EXTRA_RUN_FG, true);
-      App.getCxt().startForegroundService(intent);
+      if (NotifUtils.hasNotifPerm()) {
+        intent.putExtra(EXTRA_RUN_FG, true);
+        App.getCxt().startForegroundService(intent);
+      }
     } else {
       App.getCxt().startService(intent);
     }

@@ -28,6 +28,7 @@ import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.BuildConfig;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.prayer.PrayerTimeActivity;
+import com.mirfatif.noorulhuda.util.NotifUtils;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.io.File;
 import java.io.IOException;
@@ -123,7 +124,7 @@ public class PrayerAdhanSvc extends Service
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setSilent(true)
             .setAutoCancel(true)
-            .setOngoing(false)
+            .setOngoing(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setSmallIcon(R.drawable.notification_icon)
             .setShowWhen(true)
@@ -233,7 +234,7 @@ public class PrayerAdhanSvc extends Service
         mNotifBuilder.setSilent(false);
         mNotifBuilder.setDefaults(NotificationCompat.DEFAULT_SOUND);
       }
-      nm.notify(PRAYER_NOTIF_ID, mNotifBuilder.build());
+      NotifUtils.notify(PRAYER_NOTIF_ID, mNotifBuilder.build());
       cleanUp();
     }
     stopSelf();

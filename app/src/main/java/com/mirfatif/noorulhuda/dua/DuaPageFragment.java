@@ -57,7 +57,7 @@ public class DuaPageFragment extends Fragment {
   @Override
   public void onAttach(@NonNull Context context) {
     super.onAttach(context);
-    mA = (DuaActivity) getActivity();
+    mA = (DuaActivity) requireActivity();
     mRvScaleGestureDetector = new ScaleGestureDetector(mA, new RvScaleGestureListener());
   }
 
@@ -298,7 +298,7 @@ public class DuaPageFragment extends Fragment {
   private class RvScaleGestureListener implements OnScaleGestureListener {
 
     @Override
-    public boolean onScaleBegin(ScaleGestureDetector detector) {
+    public boolean onScaleBegin(@NonNull ScaleGestureDetector detector) {
       mScaleFactor = 1;
       mRvScaling = true;
       return true;
@@ -321,7 +321,7 @@ public class DuaPageFragment extends Fragment {
     }
 
     @Override
-    public void onScaleEnd(ScaleGestureDetector detector) {
+    public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
       mRvScaling = false;
     }
   }

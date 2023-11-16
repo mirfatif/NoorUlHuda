@@ -23,6 +23,7 @@ import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.BuildConfig;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.svc.PrayerNotifySvc;
+import com.mirfatif.noorulhuda.util.AlarmUtils;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -243,8 +244,8 @@ public class WidgetProvider extends AppWidgetProvider {
     cal.add(Calendar.MINUTE, 1);
     cal.set(Calendar.SECOND, 0);
     cal.set(Calendar.MILLISECOND, 0);
-    if (!Thread.interrupted()) {
-      mAlarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pi);
+    if (!Thread.interrupted() && AlarmUtils.canScheduleExactAlarms()) {
+      AlarmUtils.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pi);
     }
   }
 

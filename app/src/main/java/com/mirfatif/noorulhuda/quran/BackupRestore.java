@@ -67,7 +67,7 @@ public class BackupRestore {
     ActivityResultCallback<Uri> backupCallback =
         uri -> Utils.runBg(() -> doBackupRestore(true, uri));
     mBackupLauncher =
-        mA.registerForActivityResult(new ActivityResultContracts.CreateDocument(), backupCallback);
+        mA.registerForActivityResult(new ActivityResultContracts.CreateDocument("*/*"), backupCallback);
 
     ActivityResultCallback<Uri> restoreCallback =
         uri -> Utils.runBg(() -> doBackupRestore(false, uri));

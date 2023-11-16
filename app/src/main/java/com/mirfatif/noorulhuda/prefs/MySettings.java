@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.text.format.DateUtils;
+
 import androidx.annotation.ArrayRes;
 import androidx.annotation.ColorRes;
 import androidx.core.content.res.ResourcesCompat;
@@ -1070,10 +1072,25 @@ public enum MySettings {
       savePref(appLaunchCountId, 0);
       setAskForFeedbackTs(System.currentTimeMillis());
     }
+
+    // Remove Long.MAX_VALUE if set earlier
+    if (lastTS - System.currentTimeMillis() > DateUtils.WEEK_IN_MILLIS * 8) {
+      setAskForFeedbackTs(DateUtils.WEEK_IN_MILLIS * 8);
+    }
+
     return ask;
   }
 
   public void setAskForFeedbackTs(long ts) {
     savePref(R.string.pref_main_ask_for_feedback_ts_nb_key, ts);
+  }
+
+  public boolean shouldAskForNotifPerm() {
+    long lastTS = getLongPref(R.string.pref_main_ask_for_notif_perm_ts_key);
+    return lastTS == 0 || (System.currentTimeMillis() - lastTS) >= TimeUnit.DAYS.toMillis(30);
+  }
+
+  public void setAskForNotifPermTs() {
+    savePref(R.string.pref_main_ask_for_notif_perm_ts_key, System.currentTimeMillis());
   }
 }

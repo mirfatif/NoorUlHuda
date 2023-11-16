@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.mirfatif.noorulhuda.prayer.WidgetProvider;
 import com.mirfatif.noorulhuda.svc.LogcatService;
 import com.mirfatif.noorulhuda.util.Utils;
@@ -57,7 +60,7 @@ public class App extends Application {
   private int mOrientation = -1;
 
   @Override
-  public void onConfigurationChanged(Configuration newConfig) {
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
 
     if (newConfig.orientation != mOrientation) {

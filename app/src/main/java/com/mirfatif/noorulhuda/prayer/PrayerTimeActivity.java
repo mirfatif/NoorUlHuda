@@ -14,7 +14,7 @@ import static com.mirfatif.noorulhuda.prayer.PrayerData.getCalcParams;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.getPrayerData;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 import static com.mirfatif.noorulhuda.svc.PrayerAdhanSvc.ADHAN_FILE;
-import static com.mirfatif.noorulhuda.util.Utils.getPiFlags;
+import static com.mirfatif.noorulhuda.util.NotifUtils.PI_FLAGS;
 import static com.mirfatif.noorulhuda.util.Utils.setNightTheme;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -58,6 +58,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.SearchView.OnSuggestionListener;
+import androidx.core.content.IntentSanitizer;
 import androidx.core.view.MenuCompat;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import com.batoulapps.adhan.CalculationMethod;
@@ -72,7 +73,9 @@ import com.mirfatif.noorulhuda.quran.MainActivity;
 import com.mirfatif.noorulhuda.svc.PrayerNotifySvc;
 import com.mirfatif.noorulhuda.ui.base.BaseActivity;
 import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
+import com.mirfatif.noorulhuda.util.AlarmUtils;
 import com.mirfatif.noorulhuda.util.FileDownload;
+import com.mirfatif.noorulhuda.util.NotifUtils;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,6 +119,13 @@ public class PrayerTimeActivity extends BaseActivity {
     super.onCreate(savedInstanceState);
 
     Intent intent = getIntent();
+
+    intent =
+        new IntentSanitizer.Builder()
+            .allowPackage(BuildConfig.APPLICATION_ID)
+            .build()
+            .sanitize(intent, s -> {});
+
     Bundle extras = intent.getExtras();
     boolean showHome = true;
     if (extras != null) {
@@ -1129,6 +1139,16 @@ public class PrayerTimeActivity extends BaseActivity {
   }
 
   private void resetWidgets() {
+    if (!NotifUtils.hasNotifPerm()) {
+      NotifUtils.askForNotifPerm(this);
+      return;
+    }
+
+    if (!AlarmUtils.canScheduleExactAlarms()) {
+      AlarmUtils.askForExactAlarmPerm(this);
+      return;
+    }
+
     PrayerNotifySvc.reset(false);
     WidgetProvider.reset();
 
@@ -1382,6 +1402,6 @@ public class PrayerTimeActivity extends BaseActivity {
 
   public static PendingIntent getPendingIntent(int reqCode) {
     Intent intent = new Intent(App.getCxt(), PrayerTimeActivity.class).setAction(ACTION_NO_PARENT);
-    return PendingIntent.getActivity(App.getCxt(), reqCode, intent, getPiFlags());
+    return PendingIntent.getActivity(App.getCxt(), reqCode, intent, PI_FLAGS);
   }
 }

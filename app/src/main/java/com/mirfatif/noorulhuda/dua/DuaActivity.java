@@ -116,8 +116,8 @@ public class DuaActivity extends BaseActivity {
     if (hasFocus) {
       toggleFullScreen(true);
       Window window = getWindow();
-      View view;
-      if (window != null && (view = window.getDecorView()) != null) {
+      if (window != null) {
+        View view = window.getDecorView();
         view.setOnSystemUiVisibilityChangeListener(
             flags -> {
               if ((flags & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
@@ -154,10 +154,10 @@ public class DuaActivity extends BaseActivity {
 
   synchronized void toggleFullScreen(Boolean hideControls) {
     Window window = getWindow();
-    View view;
-    if (window == null || (view = window.getDecorView()) == null) {
+    if (window == null) {
       return;
     }
+    View view = window.getDecorView();
 
     int flags;
     if (hideControls == null) {

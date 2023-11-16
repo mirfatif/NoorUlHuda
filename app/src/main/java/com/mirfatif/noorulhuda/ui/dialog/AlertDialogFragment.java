@@ -91,6 +91,7 @@ public class AlertDialogFragment extends AppCompatDialogFragment {
       Fragment fragment = manager.findFragmentByTag(tag);
       if (fragment != null) {
         transaction.remove(fragment);
+        transaction.commit();
       }
 
       frag.mAlertDialog = alertDialog;
@@ -109,7 +110,7 @@ public class AlertDialogFragment extends AppCompatDialogFragment {
           frag.showNow(manager, tag);
         }
       } catch (IllegalStateException e) {
-        Log.w(TAG, "show: " + e.toString());
+        Log.w(TAG, "show: " + e);
       }
       return frag;
     }

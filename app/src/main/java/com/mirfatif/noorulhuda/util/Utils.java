@@ -4,6 +4,7 @@ import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static android.text.style.DynamicDrawableSpan.ALIGN_BASELINE;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.util.NotifUtils.PI_FLAGS;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -398,15 +399,15 @@ public class Utils {
       // DrawableCompat.setTint()
       d.setTint(getAccentColor());
       d.setBounds(0, 0, toPx(12), toPx(12));
-    }
 
-    for (URLSpan span : string.getSpans(0, string.length(), URLSpan.class)) {
-      int start = string.getSpanStart(span);
-      int end = string.getSpanEnd(span);
-      if (!string.toString().substring(start, end).equals("LINK")) {
-        continue;
+      for (URLSpan span : string.getSpans(0, string.length(), URLSpan.class)) {
+        int start = string.getSpanStart(span);
+        int end = string.getSpanEnd(span);
+        if (!string.toString().substring(start, end).equals("LINK")) {
+          continue;
+        }
+        string.setSpan(new ImageSpan(d, ALIGN_BASELINE), start, end, SPAN_EXCLUSIVE_EXCLUSIVE);
       }
-      string.setSpan(new ImageSpan(d, ALIGN_BASELINE), start, end, SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     breakParas(string);
@@ -626,12 +627,10 @@ public class Utils {
   public static void writeCrashLog(String stackTrace) {
     synchronized (CRASH_LOG_LOCK) {
       File logFile = new File(App.getCxt().getExternalFilesDir(null), "NUH_crash.log");
-      boolean append = true;
-      if (!logFile.exists()
-          || logFile.length() > 512 * 1024
-          || logFile.lastModified() < System.currentTimeMillis() - TimeUnit.DAYS.toMillis(90)) {
-        append = false;
-      }
+      boolean append =
+          logFile.exists()
+              && logFile.length() <= 512 * 1024
+              && logFile.lastModified() >= System.currentTimeMillis() - TimeUnit.DAYS.toMillis(90);
       try {
         PrintWriter writer = new PrintWriter(new FileWriter(logFile, append));
         writer.println("=================================");
@@ -661,9 +660,8 @@ public class Utils {
 
     Intent intent = new Intent(Intent.ACTION_SEND);
     intent
-        .setData(logFileUri)
+        .setDataAndType(logFileUri, "text/plain")
         .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        .setType("text/plain")
         .putExtra(Intent.EXTRA_EMAIL, new String[] {getString(R.string.email_address)})
         .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " - Crash Report")
         .putExtra(Intent.EXTRA_TEXT, "Find attachment.")
@@ -692,14 +690,10 @@ public class Utils {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true);
 
-    NotificationManagerCompat.from(App.getCxt()).notify(UNIQUE_ID, nb.build());
+    NotifUtils.notify(UNIQUE_ID, nb.build());
   }
 
   private static PendingIntent getNotifDismissSvcPi(int uniqueId, Intent intent) {
-    return PendingIntent.getService(App.getCxt(), uniqueId, intent, getPiFlags());
-  }
-
-  public static int getPiFlags() {
-    return PendingIntent.FLAG_UPDATE_CURRENT;
+    return PendingIntent.getService(App.getCxt(), uniqueId, intent, PI_FLAGS);
   }
 }

@@ -493,7 +493,7 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
         ResourcesCompat.getFont(App.getCxt(), R.font.uthmanic_hafs1_ver17);
 
     @Override
-    public void updateMeasureState(TextPaint tp) {
+    public void updateMeasureState(@NonNull TextPaint tp) {
       if (!SETTINGS.fontSupportsSymbols()) {
         tp.setTypeface(HAFS_TYPEFACE);
       }

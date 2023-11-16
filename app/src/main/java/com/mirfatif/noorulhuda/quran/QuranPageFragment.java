@@ -84,7 +84,7 @@ public class QuranPageFragment extends Fragment {
   @Override
   public void onAttach(@NonNull Context context) {
     super.onAttach(context);
-    mA = (MainActivity) getActivity();
+    mA = (MainActivity) requireActivity();
     mRvScaleGestureDetector = new ScaleGestureDetector(mA, new RvScaleGestureListener());
   }
 
@@ -648,7 +648,7 @@ public class QuranPageFragment extends Fragment {
             found = true;
           }
           break;
-        } else if (marks.start <= textOffset && marks.end >= textOffset) {
+        } else if (marks.end >= textOffset) {
           updateHeader(marks.entity);
           found = true;
           break;
@@ -892,7 +892,7 @@ public class QuranPageFragment extends Fragment {
   private class RvScaleGestureListener implements OnScaleGestureListener {
 
     @Override
-    public boolean onScaleBegin(ScaleGestureDetector detector) {
+    public boolean onScaleBegin(@NonNull ScaleGestureDetector detector) {
       mOldScaleFactor = 1;
       mRvScaling = true;
       return true;
@@ -915,7 +915,7 @@ public class QuranPageFragment extends Fragment {
     }
 
     @Override
-    public void onScaleEnd(ScaleGestureDetector detector) {
+    public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
       mRvScaling = false;
     }
   }

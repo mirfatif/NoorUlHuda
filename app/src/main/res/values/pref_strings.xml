@@ -62,6 +62,7 @@
   <string name="pref_main_ask_for_feedback_ts_nb_key" translatable="false">pref_main_ask_for_feedback_ts_nb</string>
   <string name="pref_main_app_launch_count_for_feedback_nb_key" translatable="false">pref_main_app_launch_count_for_feedback_nb</string>
   <integer name="pref_main_app_launch_count_for_feedback_nb_default">0</integer>
+  <string name="pref_main_ask_for_notif_perm_ts_key" translatable="false">pref_main_ask_for_notif_perm_ts</string>
 
   <!-- AboutActivity -->
   <string name="pref_settings_check_for_updates_key" translatable="false">pref_settings_check_for_updates</string>

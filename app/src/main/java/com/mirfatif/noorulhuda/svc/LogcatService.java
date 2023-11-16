@@ -2,12 +2,13 @@ package com.mirfatif.noorulhuda.svc;
 
 import static com.mirfatif.noorulhuda.BuildConfig.APPLICATION_ID;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
-import static com.mirfatif.noorulhuda.util.Utils.getPiFlags;
+import static com.mirfatif.noorulhuda.util.NotifUtils.PI_FLAGS;
 
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -18,6 +19,7 @@ import androidx.core.app.NotificationCompat.Builder;
 import androidx.core.app.NotificationManagerCompat;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
+import com.mirfatif.noorulhuda.util.NotifUtils;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -72,7 +74,7 @@ public class LogcatService extends Service {
 
     PendingIntent pi =
         PendingIntent.getService(
-            App.getCxt(), UNIQUE_ID, new Intent(App.getCxt(), LogcatService.class), getPiFlags());
+            App.getCxt(), UNIQUE_ID, new Intent(App.getCxt(), LogcatService.class), PI_FLAGS);
 
     mNotifBuilder =
         new Builder(App.getCxt(), CHANNEL_ID)
@@ -100,7 +102,7 @@ public class LogcatService extends Service {
     String text = String.format(Locale.getDefault(), "%02d:%02d", min, now - min * 60);
     mNotifBuilder.setProgress(TIMEOUT_SEC, now, false);
     mNotifBuilder.setContentText(text);
-    mNotifMgr.notify(UNIQUE_ID, mNotifBuilder.build());
+    NotifUtils.notify(UNIQUE_ID, mNotifBuilder.build());
   }
 
   private void stopSvc() {
@@ -204,7 +206,7 @@ public class LogcatService extends Service {
         writeToLogFile(line);
       }
     } catch (IOException e) {
-      Log.e(TAG, "readLogcatStream: " + e.toString());
+      Log.e(TAG, "readLogcatStream: " + e);
     } finally {
       // If process exited itself
       stopLoggingAndSvc();
@@ -238,7 +240,11 @@ public class LogcatService extends Service {
   public static void sendStartLogIntent(Uri logFile) {
     if (logFile != null) {
       Intent intent = new Intent(ACTION_START_LOG, logFile, App.getCxt(), LogcatService.class);
-      App.getCxt().startService(intent);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        App.getCxt().startForegroundService(intent);
+      } else {
+        App.getCxt().startService(intent);
+      }
     }
   }
 

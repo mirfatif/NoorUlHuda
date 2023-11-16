@@ -1,7 +1,7 @@
 package com.mirfatif.noorulhuda.prefs;
 
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
-import static com.mirfatif.noorulhuda.util.Utils.getPiFlags;
+import static com.mirfatif.noorulhuda.util.NotifUtils.PI_FLAGS;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.BuildConfig;
 import com.mirfatif.noorulhuda.R;
+import com.mirfatif.noorulhuda.util.NotifUtils;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -114,7 +115,7 @@ public class AppUpdate {
             App.getCxt(),
             UNIQUE_ID,
             new Intent(Intent.ACTION_VIEW, Uri.parse(info.url)),
-            getPiFlags());
+                PI_FLAGS);
 
     Builder nb =
         new Builder(App.getCxt(), CHANNEL_ID)
@@ -125,7 +126,7 @@ public class AppUpdate {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true);
 
-    NotificationManagerCompat.from(App.getCxt()).notify(UNIQUE_ID, nb.build());
+    NotifUtils.notify(UNIQUE_ID, nb.build());
   }
 
   public static class UpdateInfo {

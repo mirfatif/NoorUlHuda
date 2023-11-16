@@ -29,6 +29,7 @@ import com.mirfatif.noorulhuda.quran.MainActivity;
 import com.mirfatif.noorulhuda.svc.LogcatService;
 import com.mirfatif.noorulhuda.ui.base.BaseActivity;
 import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
+import com.mirfatif.noorulhuda.util.NotifUtils;
 import com.mirfatif.noorulhuda.util.Utils;
 import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 import me.saket.bettermovementmethod.BetterLinkMovementMethod.OnLinkClickListener;
@@ -61,7 +62,13 @@ public class AboutActivity extends BaseActivity {
     openWebUrl(mB.rating, R.string.play_store_url);
     mB.contact.setOnClickListener(v -> Utils.sendMail(this, null));
     setLogTitle(SETTINGS.isLogging() ? R.string.stop_logging : R.string.collect_logs);
-    mB.logging.setOnClickListener(v -> handleLogging());
+    mB.logging.setOnClickListener(v -> {
+      if (NotifUtils.hasNotifPerm()) {
+        handleLogging();
+      } else {
+        NotifUtils.askForNotifPerm(this);
+      }
+    });
     openWebUrl(mB.privacyPolicy, R.string.privacy_policy_link);
     mB.checkUpdate.setOnClickListener(v -> checkForUpdates());
     mB.translate.setOnClickListener(v -> AlertDialogFragment.show(this, null, TAG_LOCALE));
@@ -69,7 +76,7 @@ public class AboutActivity extends BaseActivity {
 
     // registerForActivityResult() must be called before onStart() is called
     ActivityResultCallback<Uri> callback = LogcatService::sendStartLogIntent;
-    mLoggingLauncher = registerForActivityResult(new CreateDocument(), callback);
+    mLoggingLauncher = registerForActivityResult(new CreateDocument("*/*"), callback);
   }
 
   private void openWebUrl(View view, int linkResId) {
