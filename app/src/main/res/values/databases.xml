@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="db_main">quran-simple</string>
-  <string name="db_meta">quran-data</string>
-  <string name="db_search">quran-simple-clean</string>
-  <string name="db_trans_none">none</string>
+  <string name="db_main" translatable="false">quran-simple</string>
+  <string name="db_meta" translatable="false">quran-data</string>
+  <string name="db_search" translatable="false">quran-simple-clean</string>
+  <string name="db_trans_none" translatable="false">none</string>
 
   <array name="db_text_names">
     <item order="1">Imlaei (Simple)</item>
     <item order="2">Uthmani (Minimal)</item>
   </array>
 
-  <array name="db_text_files">
+  <array name="db_text_files" translatable="false">
     <item order="1">@string/db_main</item>
     <item order="2">quran-uthmani-min</item>
   </array>
@@ -133,9 +133,9 @@
     <item order="113">Uzbek - Мухаммад Содик</item>
   </array>
 
-  <string name="en_transliteration">en.transliteration</string>
+  <string name="en_transliteration" translatable="false">en.transliteration</string>
 
-  <array name="db_trans_files">
+  <array name="db_trans_files" translatable="false">
     <item order="0">@string/db_trans_none</item>
     <item order="1">sq.nahi</item>
     <item order="2">sq.mehdiu</item>
@@ -252,7 +252,7 @@
     <item order="113">uz.sodik</item>
   </array>
 
-  <array name="quranic_duas_trans_arrays">
+  <array name="quranic_duas_trans_arrays" translatable="false">
     <item order="0">0</item>
     <item order="1">0</item>
     <item order="2">0</item>
@@ -369,7 +369,7 @@
     <item order="113">0</item>
   </array>
 
-  <array name="masnoon_duas_trans_arrays">
+  <array name="masnoon_duas_trans_arrays" translatable="false">
     <item order="0">0</item>
     <item order="1">0</item>
     <item order="2">0</item>
@@ -486,7 +486,7 @@
     <item order="113">0</item>
   </array>
 
-  <array name="occasions_duas_trans_arrays">
+  <array name="occasions_duas_trans_arrays" translatable="false">
     <item order="0">0</item>
     <item order="1">0</item>
     <item order="2">0</item>
@@ -603,7 +603,7 @@
     <item order="113">0</item>
   </array>
 
-  <array name="occasions_duas_titles_arrays">
+  <array name="occasions_duas_titles_arrays" translatable="false">
     <item order="0">0</item>
     <item order="1">0</item>
     <item order="2">0</item>
@@ -720,7 +720,7 @@
     <item order="113">0</item>
   </array>
 
-  <array name="trans_font_file_names">
+  <array name="trans_font_file_names" translatable="false">
     <item order="0">0</item>
     <item order="1">0</item>
     <item order="2">0</item>
@@ -839,7 +839,7 @@
 
    <!-- Duas -->
   <!-- sed 's/|/۝|/' | tr -s ' \t' ' ' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/ |/|/g' -e 's/| /|/g' -e 's/ |/|/g' -e 's/| /|/g' -e 's/ؕ/ۚ/g; s/ی/ي/g; s/ک/ك/g; s/ہ/ه/g; s/ھ/ه/g' -->
-  <array name="quranic_duas">
+  <array name="quranic_duas" translatable="false">
     <item order="1">أَعُوذُ بِاللَّهِ أَنْ أَكُونَ مِنَ الْجَاهِلِينَ ۝|2|67</item>
     <item order="2">رَبَّنَا تَقَبَّلْ مِنَّا ۖ إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ ۝|2|127</item>
     <item order="3">وَتُبْ عَلَيْنَا ۖ إِنَّكَ أَنتَ التَّوَّابُ الرَّحِيمُ ۝|2|128</item>
@@ -910,7 +910,7 @@
     <item order="68">رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ وَلَا تَزِدِ الظَّالِمِينَ إِلَّا تَبَارًا ۝|71|28</item>
   </array>
 
-  <array name="quranic_duas_trans_ur">
+  <array name="quranic_duas_trans_ur" translatable="false">
     <item order="1">میں اس سے خدا کی پناہ مانگتا ہوں کہ جاہلوں کی سی باتیں کروں</item>
     <item order="2">اے ہمارے رب، ہم سے یہ خدمت قبول فرما لے، تو سب کی سننے اور سب کچھ جاننے والا ہے</item>
     <item order="3">اور ہماری کوتاہیوں سے در گزر فرما، تو بڑا معاف کرنے والا اور رحم فرمانے والا ہے</item>
@@ -982,7 +982,7 @@
   </array>
 
   <!-- sed -e 's|،|ۚ|g' -e 's|۔|۝|g' -->
-  <array name="masnoon_duas">
+  <array name="masnoon_duas" translatable="false">
     <item order="1">اَللّٰهُمَّ فَقِّهْنِيْ فِي الدِّيْنِ ۝|صحيح البخاري كتاب الوضوء</item>
     <item order="2">اَللّٰهُمَّ حَاسِبْنِيْ حِسَابًا يَّسِيْرًا ۝|مسند احمد</item>
     <item order="3">سُبْحَانَ ﷲ وَبِحَمْدِهِ سُبْحَانَ ﷲ الْعَظِيْمِ ۝|صحيح مسلم كتاب الذكر و الدعاء</item>
@@ -1066,7 +1066,7 @@
     <item order="81">اَللّٰهُمَّ اِنِّيْ اَسْئَلُكَ خَيْرَالْمَسْاَلَةِ وَخَيْرَ الدُّعَاءِ وَخَيْرَ النَّجَاحِ وَخَيْرَ الْعَمَلِ وَخَيْرَ الثَّوَابِ وَخَيْرَ الْحَيَاةِ وَخَيْرَ الْمَمَاتِ وَثَبِّتْنِيْ وَثَقِّلْ مَوَازِيْنِيْ وَحَقِّقْ اِيْمَانِيْ وَارْفَعْ دَرَجَاتِيْ وَتَقَبَّلْ صَلَاتِيْ وَاغْفِرْ خَطِيْئَتِيْ وَاَسْئَلُكَ الدَّرَجَاتِ الْعُلٰي مِنَ الْجَنَّةِۚ اللّٰهُمَّ اِنِّيْ اَسْئَلُكَ فَوَاتِحَ الْخَيْرِ وَخَوَاتِمَهُ وَجَوَامِعَهُ وَاَوَّلَهُ وَظَاهِرَهُ وَبَاطِنَهُ وَالدَّرَجَاتِ الْعُلٰي مِنَ الْجَنَّةِ آمِيْن۝ اَللّٰهُمَّ اِنِّيْ اَسْئَلُكَ خَيْرَ مَا آتِي وَخَيْرَ مَا اَفْعَلُ وَخَيْرَ مَا اَعْمَلُ وَخَيْرَ مَا بَطَنَ وَخَيْرَ مَا ظَهَرَ وَالدَّرَجَاتِ الْعُلٰي مِنَ الْجَنَّةِ آمِيْن۝ اَللّٰهُمَّ اِنِّيْ اَسْئَلُكَ اَنْ تَرْفَعَ ذِكْرِيْ وَتَضَعَ وِزْرِيْ وَتُصْلِحَ اَمْرِيْ وَتُطَهِّرَ قَلْبِيْ وَتُحَصِّنَ فَرْجِيْ وَتُنَوِّرَ لِيْ قَلْبِيْ وَتَغْفِرَ لِيْ ذَنْبِيْ وَاَسْئَلُكَ الدَّرَجَاتِ الْعُلٰي مِنَ الْجَنَّةِ آمِيْن۝ اَللّٰهُمَّ اِنِّيْ اَسْئَلُكَ اَنْ تُبَارِكَ لِيْ فِيْ نَفْسِيْ وَفِيْ سَمْعِيْ وَفِيْ بَصَرِيْ وَفِيْ رُوْحِيْ وَفِيْ خَلْقِيْ وَفِيْ خُلُقِيْ وَفِيْ اَهْلِيْ وَفِيْ مَحْيَايَ وَفِيْ مَمَاتِيْ وَفِيْ عَمَلِيْ فَتَقَبَّلْ حَسَنَاتِيْ وَاَسْئَلُكَ الدَّرَجَاتِ الْعُلٰي مِنَ الْجَنَّةِ آمِيْن ۝|المستدرك للحاكم</item>
   </array>
 
-  <array name="masnoon_duas_trans_ur">
+  <array name="masnoon_duas_trans_ur" translatable="false">
     <item order="1">اے الله! مجھے دین کی سمجھ عطا فرما۔</item>
     <item order="2">اے الله! مجھ سے آسان حساب لینا۔</item>
     <item order="3">پاک ہے الله اور اسی کی تعریف ہے، پاک ہے الله بہت بڑا۔</item>
@@ -1150,22 +1150,22 @@
     <item order="81">اے الله ! بے شک میں تجھ سے بہترین سوال کرنا، بہترین دعا، بہترین نجات، بہترین عمل، بہترین ثواب، بہترین زندگی اور بہترین موت مانگتا ہوں ۔ اور مجھے ثابت قدم رکھ، میرا نامۂ اعمال وزنی کر، میرا ایمان ثابت کر، میرے درجے بلند کر، میری نماز قبول کر اور میری خطا بخش دے ۔ میں تجھ سے جنت کے بلند درجوں کا سوال کرتا ہوں ، اے الله! بے شک میں تجھ سے بھلائی کا آغاز اور اس کا (بھلائی پر) اختتام، اس کاجامع ہونا، اس کی ابتداء ، اس کا ظاہر اور اس کا باطن اور جنت کے بلند درجے مانگتا ہوں، آمین۔ اے الله ! میں تجھ سے سوال کر تا ہوں خیر کا جو تو مجھے دے اور خیر کا جو میں کام کروں اور خیر کا جو میں عمل کروں اور ظاہر و باطن میں خیر کا اور جنت کے بلند درجے مانگتا ہوں، آمین۔ اے الله ! میں تجھ سے سوال کرتا ہوں کہ تو میرا ذکر بلند کر دے ، اور میرے بوجھ اتار دے، میرے کام کی اصلاح کر دے، میرے دل کو پاک کر دے، میری شرم گاہ کو محفوظ رکھ، میرے دل کو میرے لیے منو ّر کر دے ، میر ے گناہ بخش دے اور میں تجھ سے جنت کے بلند درجوں کا سوال کرتا ہوں، آمین۔ اے الله ! بے شک میں تجھ سے سوال کرتا ہوں کہ تو میرے نفس میں، میری سماعت اور میری نگاہ میں، میری روح اور میری تخلیق میں، میرے اخلاق اور میرے گھر والوں میں ، میری زندگی اور میری موت میں اور میرے عمل میں برکت دے ۔ تو میری نیکیاں قبول کر اور میں تجھ سے جنت کے بلند درجوں کا سوال کرتا ہوں ،آمین ۔</item>
   </array>
 
-  <array name="occasion_duas">
+  <array name="occasion_duas" translatable="false">
     <item order="1">اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ ۝|صحيح مسلم</item>
     <item order="1">الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مِنَ الْمُسْلِمِينَ ۝|الترمذي</item>
   </array>
 
-  <array name="occasion_duas_trans_ur">
+  <array name="occasion_duas_trans_ur" translatable="false">
     <item>اے اللہ، میرے لیے اپنی رحمت کے دروازے کھول دے۔</item>
     <item>تمام شکر اللہ کے لیے جس نے ہمیں کھلایا پلایا اور مسلمان بنایا۔</item>
   </array>
 
-  <array name="occasion_duas_titles_en">
+  <array name="occasion_duas_titles_en" translatable="false">
     <item>When entering the Mosque</item>
     <item>After eating the meal</item>
   </array>
 
-  <array name="occasion_duas_titles_ur">
+  <array name="occasion_duas_titles_ur" translatable="false">
     <item>مسجد میں داخل ہوتے وقت</item>
     <item>کھانا کھانے کے بعد</item>
   </array>

@@ -15,25 +15,39 @@
      Menu item: 15 -->
 
   <!-- General strings -->
-  <string name="email_address" translatable="false">mirfatif@gmail.com</string>
+  <string name="email_address" translatable="false">mirfatif.dev@gmail.com</string>
   <string name="play_store_url" translatable="false">https://play.google.com/store/apps/details?id=com.mirfatif.noorulhuda</string>
-  <string name="no_email_app_installed" maxLength="20">No email app installed</string>
-  <string name="no_browser_installed" maxLength="20">No web browser app installed</string>
-  <string name="no_maps_installed" maxLength="20">No maps app installed</string>
-  <string name="go" maxLength="10">Go</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="no_email_app_installed">No email app installed</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="no_browser_installed">No web browser app installed</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="no_maps_installed">No maps app installed</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="go">Go</string>
   <string name="please_wait">Please wait…</string>
-  <string name="save" maxLength="10">Save</string>
-  <string name="required" maxLength="10">REQUIRED</string>
-  <string name="_default" maxLength="20">Default</string>
-  <string name="quranic" maxLength="10">Quranic</string>
-  <string name="masnoon" maxLength="10">Masnoon</string>
-  <string name="occasions" maxLength="10">Occasions</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="save">Save</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="required">REQUIRED</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="_default">Default</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="quranic">Quranic</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="masnoon">Masnoon</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="occasions">Occasions</string>
   <string name="country">Country</string>
   <string name="city_area">City / Area</string>
-  <string name="min" maxLength="3">%d min</string>
-  <string name="yes" maxLength="10">Yes</string>
-  <string name="no" maxLength="10">No</string>
-  <string name="stop" maxLength="10">Stop</string>
+  <!-- CHAR LIMIT: 3 -->
+  <string name="min">%d min</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="yes">Yes</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="no">No</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="stop">Stop</string>
 
   <string name="tasmia" translatable="false">بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيم</string>
   <string name="surah_name" translatable="false">سورة %s</string>
@@ -42,7 +56,7 @@
   <string name="makki" translatable="false">مَكِّيَّةٌ</string>
   <string name="madni" translatable="false">مَدنِيَّةٌ</string>
   <string name="aayahs" translatable="false">اٰيَاتُهَا</string>
-  <string name="rukus" translatable="false">رُكُوعَاتُهَا</string>
+  <string name="rukus" translatable="false">رُكُوعُهَا</string>
   <string name="surah" translatable="false">سورة</string>
   <string name="juz" translatable="false">جُز</string>
   <string name="manzil" translatable="false">منزِل</string>
@@ -79,82 +93,128 @@
     <item quantity="one">%1$s from %2$d Surah</item>
     <item quantity="other">%1$s from %2$d Surahs</item>
   </plurals>
-  <string name="create_tag" maxLength="15">Create Tag</string>
-  <string name="copy" maxLength="15">Copy</string>
-  <string name="share" maxLength="15">Share</string>
-  <string name="bookmark" maxLength="15">Bookmark</string>
-  <string name="tag" maxLength="15">Tag</string>
-  <string name="translation" maxLength="15">Translation</string>
-  <string name="copied" maxLength="20">Copied</string>
-  <string name="bookmarked" maxLength="20">Bookmarked</string>
-  <string name="remove_filter" maxLength="15">Remove Filter</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="create_tag">Create Tag</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="copy">Copy</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="share">Share</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="bookmark">Bookmark</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="tag">Tag</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="translation">Translation</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="copied">Copied</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="bookmarked">Bookmarked</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="remove_filter">Remove Filter</string>
   <string name="no_matches">No matches</string>
-  <string name="texts" maxLength="15">Mushaf Text</string>
-  <string name="translations" maxLength="15">Translations</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="texts">Mushaf Text</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="translations">Translations</string>
   <string name="download_db_file">Download database file?</string>
   <string name="download_font_file">Download font file?</string>
   <string name="download_audio_file">Download audio file?</string>
-  <string name="downloading_db" maxLength="15">Downloading Database</string>
-  <string name="downloading_font" maxLength="15">Downloading Font</string>
-  <string name="downloading_adhan" maxLength="15">Downloading Adhan</string>
-  <string name="no_internet" maxLength="20">No internet connection</string>
-  <string name="download_failed" maxLength="20">Download failed</string>
-  <string name="extraction_failed" maxLength="20">Extraction failed</string>
-  <string name="results" maxLength="20">%d results</string>
-  <string name="creating_database" maxLength="15">Creating Database</string>
-  <string name="failed_to_build_database" maxLength="20">Failed to build database</string>
-  <string name="crash_report" maxLength="15">Crash Report</string>
-  <string name="ask_to_report_crash_small" maxLength="30">Send crash report to the developer</string>
-  <string name="ask_to_report_crash">Sorry, a component of the app had a problem and crashed.
-    Send the log file to the developer through email or Telegram so that the bug can be fixed.
-  </string>
-  <string name="send_report" maxLength="10">Send Report</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="downloading_db">Downloading Database</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="downloading_font">Downloading Font</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="downloading_adhan">Downloading Adhan</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="no_internet">No internet connection</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="download_failed">Download failed</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="extraction_failed">Extraction failed</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="results">%d results</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="creating_database">Creating Database</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="failed_to_build_database">Failed to build database</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="crash_report">Crash Report</string>
+  <!-- CHAR LIMIT: 30 -->
+  <string name="ask_to_report_crash_small">Send crash report to the developer</string>
+  <string name="ask_to_report_crash">Sorry, a component of the app had a problem and crashed. Send the log file to the developer through email or Telegram so that the bug can be fixed.</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="send_report">Send Report</string>
   <string name="title">Title</string>
   <string name="description">Description</string>
   <string name="double_click_to_edit">Double tap to edit</string>
-  <string name="search_help">
-    <![CDATA[
-      Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) operators for complex search.
-      <br/>
-      Following characters can be used in plain Arabic search or with vowels (diacritics). Tap to
-      copy. Or to type them yourself, you can use <i>Urdu for AnySoftKeyboard</i>
-      <a href="https://play.google.com/store/apps/details?id=com.anysoftkeyboard.languagepack.mirfatif.urdu">LINK</a>.
-    ]]>
-  </string>
+  <string name="search_help"><![CDATA[Use <b>&amp;</b> (AND), <b>|</b> (OR) and <b>!</b> (NOT) operators for complex search.<br/>Following characters can be used in plain Arabic search or with vowels (diacritics). Tap to copy. Or to type them yourself, you can use <i>Urdu for AnySoftKeyboard</i><a href="https://play.google.com/store/apps/details?id=com.anysoftkeyboard.languagepack.mirfatif.urdu">LINK</a>.]]></string>
 
   <!-- MainActivity Navigation Drawer / Menu items -->
-  <string name="menu" maxLength="15">Menu</string>
-  <string name="theme_menu_item" maxLength="15">Theme</string>
-  <string name="dark_theme_menu_item" maxLength="15">Dark Mode</string>
-  <string name="page_view_menu_item" maxLength="15">Page Mode</string>
-  <string name="page_slide_menu_item" maxLength="15">Page Slide</string>
-  <string name="aayah_breaks_menu_item" maxLength="15">Āyah Breaks</string>
-  <string name="info_header_menu_item" maxLength="15">Page Header</string>
-  <string name="theme_color_green" maxLength="15">Green</string>
-  <string name="theme_color_blue" maxLength="15">Blue</string>
-  <string name="theme_color_red" maxLength="15">Red</string>
-  <string name="theme_color_gray" maxLength="15">Gray</string>
-  <string name="brightness_menu_item" maxLength="15">Brightness</string>
-  <string name="bg_color_menu_item" maxLength="15">Background</string>
-  <string name="text_color_menu_item" maxLength="15">Font Color</string>
-  <string name="font_size_menu_item" maxLength="15">Font Size</string>
-  <string name="font_menu_item" maxLength="15">Font</string>
-  <string name="backup_restore_menu_item" maxLength="15">Backup / Restore</string>
-  <string name="bookmarks_menu_item" maxLength="15">Bookmarks</string>
-  <string name="tags_menu_item" maxLength="15">Tags</string>
-  <string name="texts_menu_item" maxLength="15">Texts</string>
-  <string name="translations_menu_item" maxLength="15">Translations</string>
-  <string name="select_trans_menu_item" maxLength="15">Select Language</string>
-  <string name="trans_with_text_menu_item" maxLength="15">Show Under Text</string>
-  <string name="prayer_time_menu_item" maxLength="15">Prayer Time</string>
-  <string name="supplications_menu_item" maxLength="15">Dua</string>
-  <string name="search_settings_menu_item" maxLength="15">Search Settings</string>
-  <string name="search_settings_in_trans" maxLength="15">Search in translation</string>
-  <string name="search_settings_with_vowels" maxLength="15">Search with vowels</string>
-  <string name="search_help_menu_item" maxLength="15">Help</string>
-  <string name="search_menu_item" maxLength="15">Search</string>
-  <string name="goto_menu_item" maxLength="15">Go To</string>
-  <string name="about_menu_item" maxLength="15">About</string>
+  <string name="crowdin_comment_break_strings_1" translatable="false">Crowdin comment break</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="menu">Menu</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="theme_menu_item">Theme</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="dark_theme_menu_item">Dark Mode</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="page_view_menu_item">Page Mode</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="page_slide_menu_item">Page Slide</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="aayah_breaks_menu_item">Āyah Breaks</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="info_header_menu_item">Page Header</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="theme_color_green">Green</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="theme_color_blue">Blue</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="theme_color_red">Red</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="theme_color_gray">Gray</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="brightness_menu_item">Brightness</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="bg_color_menu_item">Background</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="text_color_menu_item">Font Color</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="font_size_menu_item">Font Size</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="font_menu_item">Font</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="backup_restore_menu_item">Backup / Restore</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="bookmarks_menu_item">Bookmarks</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="tags_menu_item">Tags</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="texts_menu_item">Texts</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="translations_menu_item">Translations</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="select_trans_menu_item">Select Language</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="trans_with_text_menu_item">Show Under Text</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="prayer_time_menu_item">Prayer Time</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="supplications_menu_item">Dua</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="search_settings_menu_item">Search Settings</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="search_settings_in_trans">Search in translation</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="search_settings_with_vowels">Search with vowels</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="search_help_menu_item">Help</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="search_menu_item">Search</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="goto_menu_item">Go To</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="about_menu_item">About</string>
 
   <!-- Notification Channels -->
   <string name="channel_app_update">App Updates</string>
@@ -173,69 +233,70 @@
   <string name="setting_alarms">Setting Alarms</string>
 
   <!-- LogcatService -->
-  <string name="logging" maxLength="15">Logging</string>
+  <string name="crowdin_comment_break_strings_2" translatable="false">Crowdin comment break</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="logging">Logging</string>
   <string name="logging_msg">Logging will be auto-stopped after 5 minutes.</string>
-  <string name="logging_failed" maxLength="20">Logging failed</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="logging_failed">Logging failed</string>
 
   <!-- AboutActivity -->
-  <string name="email" maxLength="15">Email</string>
-  <string name="telegram_group" maxLength="15">Telegram Group</string>
+  <string name="crowdin_comment_break_strings_3" translatable="false">Crowdin comment break</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="email">Email</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="telegram_group">Telegram Group</string>
   <string name="telegram_link" translatable="false">https://t.me/NoorUlHudaApp</string>
-  <string name="source" maxLength="15">Source</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="source">Source</string>
   <string name="source_url" translatable="false">https://github.com/mirfatif/NoorUlHuda</string>
-  <string name="report_issues" maxLength="15">Report Issues</string>
-  <string name="report_issues_summary" maxLength="20">Bugs, improvements, suggestions…</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="report_issues">Report Issues</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="report_issues_summary">Bugs, improvements, suggestions…</string>
   <string name="issues_url" translatable="false">https://github.com/mirfatif/NoorUlHuda/issues</string>
-  <string name="app_rating" maxLength="15">Rate Me</string>
-  <string name="app_rating_summary" maxLength="20">Rating / review on Play Store</string>
-  <string name="privacy_policy" maxLength="20">Privacy Policy</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="app_rating">Rate Me</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="app_rating_summary">Rating / review on Play Store</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="privacy_policy">Privacy Policy</string>
   <string name="privacy_policy_link" translatable="false">https://mirfatif.github.io/NoorUlHuda/privacy_policy.html</string>
   <string name="translations_summary">Want to see the app in your language?</string>
   <string name="translation_link">https://crowdin.com/project/nuh</string>
-  <string name="language_credits">
-    <![CDATA[
-      <ul>
-        <li><a href="">Add my language</a></li>
-      </ul>
-    ]]>
-  </string>
+  <string name="language_credits"><![CDATA[<ul><li><a href="">Add my language</a></li></ul>]]></string>
   <string name="share_summary">Share the app with others</string>
   <string name="share_text">Check out this amazing app! %s</string>
-  <string name="update" maxLength="15">Update</string>
-  <string name="update_summary" maxLength="20">Check for app updates</string>
-  <string name="check_in_progress" maxLength="20">Check in progress</string>
-  <string name="check_for_updates_failed" maxLength="20">Check for updates failed</string>
-  <string name="app_is_up_to_date" maxLength="20">App is up-to-date</string>
-  <string name="new_version_available" maxLength="20">New app version is available</string>
-  <string name="tap_to_download" maxLength="20">Tap to download</string>
-  <string name="download" maxLength="10">Download</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="update">Update</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="update_summary">Check for app updates</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="check_in_progress">Check in progress</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="check_for_updates_failed">Check for updates failed</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="app_is_up_to_date">App is up-to-date</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="new_version_available">New app version is available</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="tap_to_download">Tap to download</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="download">Download</string>
   <string name="auto_update">Update Check</string>
   <string name="third_party_res">Third Party Resources</string>
   <string name="third_party_res_summary">Credits and Disclaimer</string>
-  <string name="third_party_credits">
-    <![CDATA[
-      <b>Quranic Text and Translation</b><br/>
-      Noor-ul-Huda uses Quranic texts and translations provided by Tanzil Project
-      <a href="https://tanzil.net/download">LINK</a>. To know about the accuracy of the Quranic
-      text and keep track of any changes, and for help on text types, pause marks and other topics,
-      please visit <a href="https://tanzil.net/docs/">https://tanzil.net/docs</a>.<br/><br/>
-      <b>Fonts</b><br/>
-      Noor-ul-Huda uses Arabic fonts created by:
-      <ul>
-        <li>King Fahd Quran Complex <a href="https://fonts.qurancomplex.gov.sa">LINK</a></li>
-        <li>Pakistan Data Management Services <a href="https://pakdata.com/products/arabicfont">LINK</a></li>
-        <li>SIL International <a href="https://software.sil.org/arabicfonts">LINK</a></li>
-        <li>Noor-e-Hidayat <a href="https://www.noorehidayat.org">LINK</a></li>
-        <li>Meor Ridzuan <a href="https://github.com/icikiwir/me_quran">LINK</a></li>
-        <li>Quran Academy <a href="https://github.com/quranacademy/kitab-font">LINK</a></li>
-      </ul>
-    ]]>
-  </string>
-  <string name="collect_logs" maxLength="15">Collect Logs</string>
-  <string name="collect_logs_summary" maxLength="20">Save log to file</string>
-  <string name="stop_logging" maxLength="15">Stop Logging</string>
-  <string name="select_log_file" maxLength="20">Select file to save log</string>
-  <string name="logging_stopped" maxLength="20">Logging stopped</string>
+  <string name="third_party_credits"><![CDATA[<b>Quranic Text and Translation</b><br/>Noor-ul-Huda uses Quranic texts and translations provided by Tanzil Project <a href="https://tanzil.net/download">LINK</a>. To know about the accuracy of the Quranic text and keep track of any changes, and for help on text types, pause marks and other topics, please visit <a href="https://tanzil.net/docs/">https://tanzil.net/docs</a>.<br/><br/><b>Fonts</b><br/>Noor-ul-Huda uses Arabic fonts created by:<ul><li>King Fahd Quran Complex <a href="https://fonts.qurancomplex.gov.sa">LINK</a></li><li>Pakistan Data Management Services <a href="https://pakdata.com/products/arabicfont">LINK</a></li><li>SIL International <a href="https://software.sil.org/arabicfonts">LINK</a></li><li>Noor-e-Hidayat <a href="https://www.noorehidayat.org">LINK</a></li><li>Meor Ridzuan <a href="https://github.com/icikiwir/me_quran">LINK</a></li><li>Quran Academy <a href="https://github.com/quranacademy/kitab-font">LINK</a></li></ul>]]></string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="collect_logs">Collect Logs</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="collect_logs_summary">Save log to file</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="stop_logging">Stop Logging</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="select_log_file">Select file to save log</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="logging_stopped">Logging stopped</string>
 
   <!-- PrayerTimeActivity -->
   <string name="fajr" translatable="false">فجر</string>
@@ -244,83 +305,88 @@
   <string name="asr" translatable="false">عصر</string>
   <string name="maghrib" translatable="false">مغرب</string>
   <string name="isha" translatable="false">عشاء</string>
-  <string name="salat_fajr" translatable="false">الصلاة الفجر</string>
-  <string name="salat_sunrise" translatable="false">الوقت الشروق</string>
-  <string name="salat_zuhr" translatable="false">الصلاة الظهر</string>
-  <string name="salat_asr" translatable="false">الصلاة العصر</string>
-  <string name="salat_maghrib" translatable="false">الصلاة المغرب</string>
-  <string name="salat_isha" translatable="false">الصلاة العشاء</string>
+  <string name="salat_fajr" translatable="false">صلاة الفجر</string>
+  <string name="salat_sunrise" translatable="false">وقت الشروق</string>
+  <string name="salat_zuhr" translatable="false">صلاة الظهر</string>
+  <string name="salat_asr" translatable="false">صلاة العصر</string>
+  <string name="salat_maghrib" translatable="false">صلاة المغرب</string>
+  <string name="salat_isha" translatable="false">صلاة العشاء</string>
   <string name="null_time" translatable="false">00:00</string>
   <string name="invalid_date" translatable="false">---</string>
   <string name="zero" translatable="false">0</string>
-  <string name="show_notification" maxLength="20">Show Notification</string>
-  <string name="play_adhan" maxLength="20">Play Adhan</string>
-  <string name="notification_adhan_offset" maxLength="20">Notification / Adhan Offset (Minutes)</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="show_notification">Show Notification</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="play_adhan">Play Adhan</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="notification_adhan_offset">Notification / Adhan Offset (Minutes)</string>
   <string name="longitude">Longitude</string>
   <string name="latitude">Latitude</string>
-  <string name="geocoding_failed" maxLength="20">Failed to get locations</string>
-  <string name="rev_geocoding_failed" maxLength="20">Failed to get address</string>
-  <string name="no_location_found" maxLength="20">No location found</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="geocoding_failed">Failed to get locations</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="rev_geocoding_failed">Failed to get address</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="no_location_found">No location found</string>
   <string name="location">Location</string>
   <string name="calculation">Calculation</string>
   <string name="notifications">Notifications</string>
-  <string name="select_offset" maxLength="15">Select Offset</string>
-  <string name="prayer_cal_method" maxLength="10">Method</string>
-  <string name="asr_cal_method" maxLength="10">Asr Calculation</string>
-  <string name="high_lat_method" maxLength="10">High Latitude</string>
-  <string name="prayer_adj" maxLength="20">Adjustment (Minutes)</string>
-  <string name="qibla" maxLength="15">Qibla</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="select_offset">Select Offset</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="prayer_cal_method">Method</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="asr_cal_method">Asr Calculation</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="high_lat_method">High Latitude</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="prayer_adj">Adjustment (Minutes)</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="qibla">Qibla</string>
   <string name="widget">Widget</string>
-  <string name="show_widget_notification" maxLength="15">Show Notification Widget</string>
-  <string name="home_widget_style" maxLength="10">Home Widget Style</string>
-  <string name="set_location" maxLength="20">Please set location</string>
-  <string name="battery_optimization" maxLength="15">Battery Optimization</string>
-  <string name="battery_optimization_detail">Do you want to exclude Noor-ul-Huda from Battery
-    Optimization in order to reduce the likelihood of it being killed in background?
-  </string>
-  <string name="location_help">
-    <![CDATA[
-      Noor-ul-Huda does not access your device location. To get coordinates:
-      <ul>
-        <li>Visit a maps service like <a href="https://plus.codes/map">plus.codes/map</a> and manually select your location.</li>
-        <li>Use an app that makes use of GPS and/or other location services on your device.
-        My Location <a href="https://github.com/mirfatif/MyLocation">LINK</a> is one such open-source app.
-        You can copy the location (coordinates) to clipboard and paste here.
-        </li>
-        <li>Search location by name.
-      </ul>
-      Your query or coordinates are sent to <a href="https://www.geonames.org">geonames.org</a> for (reverse) geocoding.</li>
-    ]]>
-  </string>
-  <string name="calc_help">
-    <![CDATA[
-      Please visit <a
-      href="http://praytimes.org/calculation">praytimes.org/calculation</a> for details on how
-      prayer times are calculated.
-    ]]>
-  </string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="show_widget_notification">Show Notification Widget</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="home_widget_style">Home Widget Style</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="set_location">Please set location</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="battery_optimization">Battery Optimization</string>
+  <string name="battery_optimization_detail">Do you want to exclude Noor-ul-Huda from Battery Optimization in order to reduce the risk of it being killed in background?</string>
+  <string name="location_help"><![CDATA[Noor-ul-Huda does not access your device location. To get coordinates:<ul><li>Visit a maps service like <a href="https://plus.codes/map">plus.codes/map</a> and manually select your location.</li> <li>Use an app that makes use of GPS and/or other location services on your device. My Location <a href="https://github.com/mirfatif/MyLocation">LINK</a> is one such open-source app. You can copy the location (coordinates) to clipboard and paste here.</li><li>Search location by name.</ul>Your query or coordinates are sent to <a href="https://www.geonames.org">geonames.org</a> for (reverse) geocoding.</li>]]></string>
+  <string name="calc_help"><![CDATA[Please visit <a href="http://praytimes.org/calculation">praytimes.org/calculation</a> for details on how prayer times are calculated.]]></string>
 
   <!-- Backup / Restore -->
-  <string name="backup" maxLength="10">Backup</string>
-  <string name="restore" maxLength="10">Restore</string>
+  <string name="crowdin_comment_break_strings_4" translatable="false">Crowdin comment break</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="backup">Backup</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="restore">Restore</string>
   <string name="choose_backup_restore">Backup or restore preferences, tags and bookmarks.</string>
-  <string name="select_backup_file" maxLength="20">Select backup file</string>
-  <string name="backup_success" maxLength="20">Backup successful</string>
-  <string name="restore_success" maxLength="20">Restore successful</string>
-  <string name="backup_failed" maxLength="20">Backup failed</string>
-  <string name="restore_failed" maxLength="20">Restore failed</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="select_backup_file">Select backup file</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="backup_success">Backup successful</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="restore_success">Restore successful</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="backup_failed">Backup failed</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="restore_failed">Restore failed</string>
 
   <!-- Feedback -->
-  <string name="do_not_ask" maxLength="15">Don\'t ask again</string>
-  <string name="rate" maxLength="10">Rate now</string>
-  <string name="contact" maxLength="10">Write Now</string>
-  <string name="love_using_app" maxLength="20">Liking Noor-ul-Huda?</string>
-  <string name="rate_the_app">Good ratings and reviews help us improve the app and we are able to
-    better serve your needs.
-  </string>
-  <string name="ask_to_provide_feedback">Sorry to hear that. You can help improve the app by
-    contacting us via email or Telegram so that we are able to better serve your needs.
-  </string>
-  <string name="thank_you" maxLength="20">Thank you</string>
+  <string name="crowdin_comment_break_strings_5" translatable="false">Crowdin comment break</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="do_not_ask">Don\'t ask again</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="rate">Rate now</string>
+  <!-- CHAR LIMIT: 10 -->
+  <string name="contact">Write Now</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="love_using_app">Liking Noor-ul-Huda?</string>
+  <string name="rate_the_app">Good ratings and reviews help us improve the app and we are able to better serve your needs.</string>
+  <string name="ask_to_provide_feedback">Sorry to hear that. You can help improve the app by contacting us via email or Telegram so that we are able to better serve your needs.</string>
+  <!-- CHAR LIMIT: 20 -->
+  <string name="thank_you">Thank you</string>
 
 </resources>
