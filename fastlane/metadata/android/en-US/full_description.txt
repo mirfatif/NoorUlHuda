@@ -1,8 +1,9 @@
-Noor-Ul-Huda is a simple, open source Quran reader app with extras, completely free forever.
+Noor-Ul-Huda is an offline Quran app with Prayer Time and Duas (supplications), made with ❤️ and تقوٰى.
 
 <b>Features</b>
 Customize your reading experience the way you want:
 
+* Choose Quranic <b>script</b>: Imla'ei or Uthmani
 * Choose from different Arabic <b>fonts</b>, adjust font contrast and <b>size</b>
 * Set comfortable <b>background tone</b> and screen brightness
 * Choose from <b>Page Mode</b> or continuous reading
