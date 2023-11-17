@@ -258,9 +258,11 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
       if (SETTINGS.showSingleAayah()) {
         mB.getRoot().setOnLongClickListener(this);
         mB.textV.setOnLongClickListener(null);
+        mB.textV.setLongClickable(false);
       } else {
         mB.getRoot().setOnLongClickListener(null);
         mB.textV.setOnLongClickListener(this);
+        mB.textV.setLongClickable(true);
       }
     }
 
