@@ -1,11 +1,13 @@
 package com.mirfatif.noorulhuda.prefs;
 
-import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
-import static com.mirfatif.noorulhuda.util.NotifUtils.PI_FLAGS;
+import static com.mirfatif.noorulhuda.util.Utils.getString;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.Builder;
@@ -28,18 +30,105 @@ public class AppUpdate {
 
   private static final String TAG = "AppUpdate";
 
-  private static final String CHECK_URL =
-      "https://api.github.com/repos/mirfatif/NoorUlHuda/releases/latest";
-  private static final String DOWNLOAD_URL =
-      "https://github.com/mirfatif/NoorUlHuda/releases/latest";
+  private static final String CHECK_URL = "https://mirfatif.github.io/mirfatif/nuh_version.json";
 
-  private static final String VERSION_TAG = "tag_name";
+  private static final String VERSION_TAG = "message";
 
-  public UpdateInfo check(boolean notify) {
-    if (notify && !SETTINGS.shouldCheckForUpdates()) {
+  @SuppressWarnings("ConstantConditions")
+  public static AppUpdateResult check(boolean notify) {
+    if (notify && !MySettings.SETTINGS.shouldCheckForUpdates()) {
       return null;
     }
 
+    String updateUrl;
+    boolean checkFailed = false;
+
+    try {
+      String oldVerStr = BuildConfig.VERSION_NAME;
+      int oldVer = getVersion(oldVerStr);
+
+      String newVerStr = new JSONObject(getData()).getString(VERSION_TAG);
+      int newVer = getVersion(newVerStr);
+
+      boolean oldIsBeta = oldVerStr.contains("-beta");
+      boolean newIsBeta = newVerStr.contains("-beta");
+
+      /*
+       * Must update scenarios:
+       * - v1.10(-beta1) -> v1.12(-beta1)
+       *   If version diff is more than 1.
+       * - v1.10(-beta1) -> v1.11
+       *   If version diff is 1 and new version is not beta.
+       * - v1.10-beta2 -> v1.11-beta1
+       *   If version diff is 1 and both versions are beta.
+       * - v1.10-beta1 -> v1.10
+       *   If version is same and old version is beta and new is not.
+       * - v1.10-beta1 -> v1.10-beta2
+       *   If version is same and both versions are beta and new beta is grater than old.
+       *
+       * Only beta update scenario:
+       * - v1.10 -> v1.11-beta1
+       *   If version diff is 1 and old is not beta and new is beta.
+       */
+      if (newVer > oldVer + 1
+          || (newVer > oldVer && (!newIsBeta || (newIsBeta && oldIsBeta)))
+          || (newVer == oldVer
+              && ((oldIsBeta && !newIsBeta)
+                  || (oldIsBeta
+                      && newIsBeta
+                      && getBetaSubVersion(newVerStr) > getBetaSubVersion(oldVerStr))))) {
+        Log.i(TAG, "check(): New update is available: " + oldVerStr + " -> " + newVerStr);
+        if (!BuildConfig.GH_VERSION) {
+          updateUrl = getString(R.string.play_store_url);
+        } else {
+          updateUrl = getString(R.string.source_url);
+        }
+      } else if (newVer > oldVer && !oldIsBeta && newIsBeta) {
+        Log.i(TAG, "check(): New update is available: " + oldVerStr + " -> " + newVerStr);
+        if (notify) {
+          return null;
+        } else {
+          updateUrl = getString(R.string.source_url);
+        }
+      } else {
+        Log.i(TAG, "check(): App is up-to-date: " + oldVerStr + " -> " + newVerStr);
+        return null;
+      }
+
+      if (notify && NotifUtils.hasNotifPerm()) {
+        showNotification(newVerStr, updateUrl);
+      }
+
+      return new AppUpdateResult(false, newVerStr, updateUrl);
+    } catch (IOException | JSONException | NumberFormatException e) {
+      Log.e(TAG, "check(): " + e);
+      checkFailed = true;
+      return new AppUpdateResult(true, null, null);
+    } finally {
+      if (notify && !checkFailed) {
+        MySettings.SETTINGS.setCheckForUpdatesTs(System.currentTimeMillis());
+      }
+    }
+  }
+
+  // Convert (beta) version name to version code (v1.12-beta2 to 112)
+  private static int getVersion(String version) throws NumberFormatException {
+    return Integer.parseInt(version.substring(1, 5).replace(".", ""));
+  }
+
+  private static int getBetaSubVersion(String version) throws NumberFormatException {
+    version = version.replaceFirst(".*-beta", "");
+    for (int i = 0; i < version.length(); i++) {
+      char c = version.charAt(i);
+      if (c < '0' || c > '9') {
+        version = version.substring(0, i);
+        break;
+      }
+    }
+    return Integer.parseInt(version);
+  }
+
+  private static String getData() throws IOException {
     HttpURLConnection connection = null;
     InputStream inputStream = null;
     try {
@@ -50,13 +139,11 @@ public class AppUpdate {
 
       int status = connection.getResponseCode();
       if (status != HttpURLConnection.HTTP_OK) {
-        Log.e(
-            TAG,
-            "Response code:"
+        throw new IOException(
+            "Response code: "
                 + connection.getResponseCode()
                 + ", msg: "
                 + connection.getResponseMessage());
-        return null;
       }
 
       inputStream = connection.getInputStream();
@@ -66,31 +153,7 @@ public class AppUpdate {
       while ((line = reader.readLine()) != null) {
         builder.append(line);
       }
-
-      UpdateInfo info = new UpdateInfo();
-
-      String ver = new JSONObject(builder.toString()).getString(VERSION_TAG);
-      // Convert tag name to version code (v1.01-beta to 101)
-      int version = Integer.parseInt(ver.substring(1, 5).replace(".", ""));
-      if (version <= BuildConfig.VERSION_CODE) {
-        Log.i(TAG, "App is up-to-date");
-      } else {
-        Log.i(TAG, "New update is available: " + ver);
-        info.version = ver;
-        if (!BuildConfig.GH_VERSION) {
-          info.url = Utils.getString(R.string.play_store_url);
-        } else {
-          info.url = DOWNLOAD_URL;
-        }
-        if (notify) {
-          showNotification(info);
-          SETTINGS.setCheckForUpdatesTs(System.currentTimeMillis());
-        }
-      }
-      return info;
-    } catch (IOException | JSONException | NumberFormatException e) {
-      Log.e(TAG, e.toString());
-      return null;
+      return builder.toString();
     } finally {
       try {
         if (inputStream != null) {
@@ -104,33 +167,48 @@ public class AppUpdate {
     }
   }
 
-  private void showNotification(UpdateInfo info) {
+  private static void showNotification(String version, String updateUrl) {
     final String CHANNEL_ID = "channel_app_update";
-    final String CHANNEL_NAME = Utils.getString(R.string.channel_app_update);
+    final String CHANNEL_NAME = getString(R.string.channel_app_update);
     final int UNIQUE_ID = Utils.getInteger(R.integer.channel_app_update);
 
-    Utils.createNotifChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManagerCompat.IMPORTANCE_HIGH);
+    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl));
     PendingIntent pi =
-        PendingIntent.getActivity(
-            App.getCxt(),
-            UNIQUE_ID,
-            new Intent(Intent.ACTION_VIEW, Uri.parse(info.url)),
-                PI_FLAGS);
+        PendingIntent.getActivity(App.getCxt(), UNIQUE_ID, intent, NotifUtils.PI_FLAGS);
 
-    Builder nb =
-        new Builder(App.getCxt(), CHANNEL_ID)
-            .setSmallIcon(R.drawable.notification_icon)
-            .setContentTitle(Utils.getString(R.string.new_version_available))
-            .setContentText(Utils.getString(R.string.tap_to_download) + " " + info.version)
-            .setContentIntent(pi)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true);
+    NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(App.getCxt());
 
-    NotifUtils.notify(UNIQUE_ID, nb.build());
+    NotificationChannel channel = mNotificationManager.getNotificationChannel(CHANNEL_ID);
+    if (channel == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      channel =
+          new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+      mNotificationManager.createNotificationChannel(channel);
+    }
+
+    Builder notificationBuilder = new Builder(App.getCxt(), CHANNEL_ID);
+    notificationBuilder
+        .setSmallIcon(R.drawable.notification_icon)
+        .setColor(Utils.getAccentColor())
+        .setContentTitle(getString(R.string.new_version_available))
+        .setContentText(getString(R.string.tap_to_download) + " " + version)
+        .setContentIntent(pi)
+        .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setAutoCancel(true)
+        .addAction(0, getString(R.string.download), pi);
+
+    NotifUtils.notify(UNIQUE_ID, notificationBuilder.build());
   }
 
-  public static class UpdateInfo {
+  public static class AppUpdateResult {
 
-    public String version, url;
+    public final boolean failed;
+    public final String version, updateUrl;
+
+    private AppUpdateResult(boolean failed, String version, String updateUrl) {
+      this.failed = failed;
+      this.version = version;
+      this.updateUrl = updateUrl;
+    }
   }
 }

@@ -13,6 +13,7 @@ import android.view.View;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
@@ -24,7 +25,6 @@ import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.ActivityAboutBinding;
 import com.mirfatif.noorulhuda.databinding.TranslationDialogBinding;
 import com.mirfatif.noorulhuda.prefs.AppUpdate;
-import com.mirfatif.noorulhuda.prefs.AppUpdate.UpdateInfo;
 import com.mirfatif.noorulhuda.quran.MainActivity;
 import com.mirfatif.noorulhuda.svc.LogcatService;
 import com.mirfatif.noorulhuda.ui.base.BaseActivity;
@@ -62,13 +62,14 @@ public class AboutActivity extends BaseActivity {
     openWebUrl(mB.rating, R.string.play_store_url);
     mB.contact.setOnClickListener(v -> Utils.sendMail(this, null));
     setLogTitle(SETTINGS.isLogging() ? R.string.stop_logging : R.string.collect_logs);
-    mB.logging.setOnClickListener(v -> {
-      if (NotifUtils.hasNotifPerm()) {
-        handleLogging();
-      } else {
-        NotifUtils.askForNotifPerm(this);
-      }
-    });
+    mB.logging.setOnClickListener(
+        v -> {
+          if (NotifUtils.hasNotifPerm()) {
+            handleLogging();
+          } else {
+            NotifUtils.askForNotifPerm(this);
+          }
+        });
     openWebUrl(mB.privacyPolicy, R.string.privacy_policy_link);
     mB.checkUpdate.setOnClickListener(v -> checkForUpdates());
     mB.translate.setOnClickListener(v -> AlertDialogFragment.show(this, null, TAG_LOCALE));
@@ -112,17 +113,17 @@ public class AboutActivity extends BaseActivity {
   }
 
   private void checkForUpdatesInBg() {
-    AppUpdate appUpdate = new AppUpdate();
-    UpdateInfo info = appUpdate.check(false);
+    AppUpdate.AppUpdateResult res = AppUpdate.check(false);
 
-    int messageResId;
+    @StringRes int msg;
     boolean showDialog = false;
-    if (info == null) {
-      messageResId = R.string.check_for_updates_failed;
-    } else if (info.version == null) {
-      messageResId = R.string.app_is_up_to_date;
+
+    if (res == null) {
+      msg = R.string.app_is_up_to_date;
+    } else if (res.failed) {
+      msg = R.string.check_for_updates_failed;
     } else {
-      messageResId = R.string.new_version_available;
+      msg = R.string.new_version_available;
       showDialog = true;
     }
 
@@ -130,17 +131,17 @@ public class AboutActivity extends BaseActivity {
     mCheckForUpdateInProgress = false;
 
     if (!showDialog || !getLifecycle().getCurrentState().isAtLeast(State.INITIALIZED)) {
-      Utils.showToast(messageResId);
+      Utils.showToast(msg);
       return;
     }
 
     Builder builder =
         new Builder(this)
             .setTitle(R.string.update)
-            .setMessage(Utils.getString(messageResId) + ": " + info.version)
+            .setMessage(Utils.getString(msg) + ": " + res.version)
             .setPositiveButton(
                 R.string.download,
-                (d, w) -> Utils.runUi(this, () -> Utils.openWebUrl(this, info.url)))
+                (d, w) -> Utils.runUi(this, () -> Utils.openWebUrl(this, res.updateUrl)))
             .setNegativeButton(android.R.string.cancel, null);
     Utils.runUi(this, () -> AlertDialogFragment.show(this, builder.create(), "APP_UPDATE"));
   }

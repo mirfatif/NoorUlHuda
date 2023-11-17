@@ -560,7 +560,7 @@ public class Utils {
     // InetAddress#isReachable() is not reliable.
     HttpURLConnection conn = null;
     try {
-      conn = (HttpURLConnection) new URL("https://api.github.com/users/mirfatif").openConnection();
+      conn = (HttpURLConnection) new URL("https://mirfatif.github.io").openConnection();
       conn.setConnectTimeout(5000);
       if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
         return true;
