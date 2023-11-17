@@ -31,6 +31,8 @@ allprojects {
 }
 
 spotless {
-    predeclareDeps()
-    java { googleJavaFormat() }
+    java {
+        target("src/**/*.java")
+        googleJavaFormat()
+    }
 }

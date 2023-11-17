@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.mirfatif.noorulhuda.prayer.WidgetProvider;
 import com.mirfatif.noorulhuda.svc.LogcatService;
 import com.mirfatif.noorulhuda.util.Utils;

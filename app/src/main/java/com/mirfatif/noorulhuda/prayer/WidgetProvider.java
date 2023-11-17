@@ -3,6 +3,7 @@ package com.mirfatif.noorulhuda.prayer;
 import static android.util.TypedValue.COMPLEX_UNIT_SP;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.getPrayerData;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.util.NotifUtils.PI_FLAGS;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -260,9 +261,9 @@ public class WidgetProvider extends AppWidgetProvider {
   }
 
   public static int getPiFlags(boolean cancel) {
-    int flag = PendingIntent.FLAG_CANCEL_CURRENT;
+    int flag = PI_FLAGS | PendingIntent.FLAG_CANCEL_CURRENT;
     if (cancel) {
-      flag = PendingIntent.FLAG_NO_CREATE;
+      flag = PI_FLAGS | PendingIntent.FLAG_NO_CREATE;
     }
     return flag;
   }

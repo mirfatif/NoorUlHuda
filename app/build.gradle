@@ -69,4 +69,10 @@ dependencies {
 }
 
 apply plugin: 'com.diffplug.spotless'
+spotless {
+    java {
+        target("src/**/*.java")
+        googleJavaFormat()
+    }
+}
 preBuild.dependsOn(spotlessCheck)

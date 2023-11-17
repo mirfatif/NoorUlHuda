@@ -9,7 +9,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.text.format.DateUtils;
-
 import androidx.annotation.ArrayRes;
 import androidx.annotation.ColorRes;
 import androidx.core.content.res.ResourcesCompat;

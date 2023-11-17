@@ -123,6 +123,7 @@ public class PrayerTimeActivity extends BaseActivity {
     intent =
         new IntentSanitizer.Builder()
             .allowPackage(BuildConfig.APPLICATION_ID)
+            .allowAnyComponent()
             .build()
             .sanitize(intent, s -> {});
 

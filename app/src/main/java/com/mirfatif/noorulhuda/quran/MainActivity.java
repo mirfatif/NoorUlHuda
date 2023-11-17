@@ -145,7 +145,7 @@ public class MainActivity extends BaseActivity {
     }
 
     WidgetProvider.reset();
-    Utils.runBg(() -> new AppUpdate().check(true));
+    Utils.runBg(() -> AppUpdate.check(true));
 
     SETTINGS.getFontSizeChanged().observe(this, empty -> refreshUi());
 

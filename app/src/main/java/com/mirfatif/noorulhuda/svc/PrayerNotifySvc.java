@@ -93,11 +93,7 @@ public class PrayerNotifySvc extends Service {
       if ((ppTime = intent.getLongExtra(EXTRA_POST_PRAYER_TIME, -1)) > 0) {
         ppn = new PostPrayerNotif(ppTime, prayer);
       } else if (prayer >= 0 && NotifUtils.hasNotifPerm()) {
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-          startForegroundService(new Intent(App.getCxt(), PrayerAdhanSvc.class).putExtra(EXTRA_PRAYER, prayer));
-        } else {
-          startService(new Intent(App.getCxt(), PrayerAdhanSvc.class).putExtra(EXTRA_PRAYER, prayer));
-        }
+        startService(new Intent(App.getCxt(), PrayerAdhanSvc.class).putExtra(EXTRA_PRAYER, prayer));
       }
     }
     PostPrayerNotif postPrayerNotif = ppn;
@@ -368,11 +364,7 @@ public class PrayerNotifySvc extends Service {
       long val = ppnTriggerAt;
       intent.putExtra(EXTRA_POST_PRAYER_TIME, val);
     }
-    if (VERSION.SDK_INT >= VERSION_CODES.O) {
-      return PendingIntent.getForegroundService(App.getCxt(), WIDGET_NOTIF_ID, intent, getPiFlags(cancel));
-    } else {
-      return PendingIntent.getService(App.getCxt(), WIDGET_NOTIF_ID, intent, getPiFlags(cancel));
-    }
+    return PendingIntent.getService(App.getCxt(), WIDGET_NOTIF_ID, intent, getPiFlags(cancel));
   }
 
   private final WakeLock mWakeLock;

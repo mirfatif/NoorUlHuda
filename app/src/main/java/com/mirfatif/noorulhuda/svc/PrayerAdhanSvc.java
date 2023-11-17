@@ -124,7 +124,6 @@ public class PrayerAdhanSvc extends Service
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setSilent(true)
             .setAutoCancel(true)
-            .setOngoing(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setSmallIcon(R.drawable.notification_icon)
             .setShowWhen(true)
@@ -142,11 +141,7 @@ public class PrayerAdhanSvc extends Service
         App.getCxt(),
         ADHAN_NOTIF_ID,
         new Intent(App.getCxt(), this.getClass()).setAction(ACTION_STOP),
-        getCancelPiFlag());
-  }
-
-  private int getCancelPiFlag() {
-    return PendingIntent.FLAG_CANCEL_CURRENT;
+        NotifUtils.PI_FLAGS | PendingIntent.FLAG_CANCEL_CURRENT);
   }
 
   private AudioFocusRequest mFocusRequest;
@@ -194,6 +189,7 @@ public class PrayerAdhanSvc extends Service
       if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
         mMediaPlayer.start();
         if (mNotifBuilder != null) {
+          mNotifBuilder.setOngoing(true);
           startForeground(ADHAN_NOTIF_ID, mNotifBuilder.build());
         }
         return;
@@ -225,6 +221,7 @@ public class PrayerAdhanSvc extends Service
       }
 
       mNotifBuilder
+          .setOngoing(false)
           .setChannelId(PRAYER_CHANNEL_ID)
           .setCategory(null)
           .setContentIntent(PrayerTimeActivity.getPendingIntent(ADHAN_NOTIF_ID))

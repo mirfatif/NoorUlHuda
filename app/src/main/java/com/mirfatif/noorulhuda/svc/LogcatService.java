@@ -81,6 +81,7 @@ public class LogcatService extends Service {
             .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setOnlyAlertOnce(true)
+            .setOngoing(true)
             .setSmallIcon(R.drawable.notification_icon)
             .setContentTitle(Utils.getString(R.string.logging))
             .setColor(Utils.getAccentColor())

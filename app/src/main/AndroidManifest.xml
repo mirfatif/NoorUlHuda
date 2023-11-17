@@ -3,6 +3,8 @@
   xmlns:tools="http://schemas.android.com/tools">
 
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
   <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -54,15 +56,26 @@
 
     <service
       android:name=".svc.PrayerNotifySvc"
-      android:exported="false" />
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="This service is explicitly started by the user. Its persistent notification shows the prayer time of ongoing, passed and upcoming prayer." />
+    </service>
 
     <service
       android:name=".svc.PrayerAdhanSvc"
-      android:exported="false" />
+      android:exported="false"
+      android:foregroundServiceType="mediaPlayback" />
 
     <service
       android:name=".svc.LogcatService"
-      android:exported="false" />
+      android:exported="false"
+      android:foregroundServiceType="specialUse">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="This service is explicitly started by the user. It may run up to maximum 5 minutes and collects logs in a text file while the user is interacting with the app which includes navigating between different screens and closing the app. User can tap the stop button on the notification anytime to stop the service." />
+    </service>
 
     <receiver
       android:name=".BootReceiver"
