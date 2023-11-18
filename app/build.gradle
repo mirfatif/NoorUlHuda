@@ -10,8 +10,8 @@ android {
         applicationId namespace
         minSdk minSdkVer
         targetSdk targetSdkVer
-        versionCode 102
-        versionName "v1.03-beta1"
+        versionCode 103
+        versionName "v1.03"
 
         buildConfigField "boolean", "GH_VERSION", System.getenv('IS_PS_VERSION') != "true" ? "true" : "false"
     }
