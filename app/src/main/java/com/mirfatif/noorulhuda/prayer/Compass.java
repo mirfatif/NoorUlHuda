@@ -13,7 +13,7 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.FragmentActivity;
-import com.batoulapps.adhan.Qibla;
+import com.batoulapps.adhan2.Qibla;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.databinding.CompassBinding;
@@ -46,7 +46,7 @@ public class Compass implements SensorEventListener {
     mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
     mCompassView = CompassBinding.inflate(mA.getLayoutInflater());
     mQibla = new Qibla(SETTINGS.getLngLat());
-    float angle = (float) mQibla.direction;
+    float angle = (float) mQibla.getDirection();
     if (angle > 180) {
       angle -= 360;
     }
@@ -99,7 +99,7 @@ public class Compass implements SensorEventListener {
 
     if (SensorManager.getRotationMatrix(R_, I_, mGravity, mGeomagnetic)) {
       SensorManager.getOrientation(R_, mOrientation);
-      float angle = (float) (mQibla.direction - Math.toDegrees(mOrientation[0]));
+      float angle = (float) (mQibla.getDirection() - Math.toDegrees(mOrientation[0]));
       angle -= getRotation();
       if (mCompassView != null && (mLastAngle == null || Math.abs(angle - mLastAngle) >= 1)) {
         mCompassView.arrowQibla.setRotation(angle);

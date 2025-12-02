@@ -1,6 +1,3 @@
-[submodule "adhan-java"]
-	path = adhan-java
-	url = https://github.com/mirfatif/adhan-java.git
-[submodule "Time4A"]
-	path = Time4A
-	url = https://github.com/mirfatif/Time4A.git
+[submodule "adhan-kotlin"]
+	path = adhan-kotlin
+	url = https://github.com/batoulapps/adhan-kotlin

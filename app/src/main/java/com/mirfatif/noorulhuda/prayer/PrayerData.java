@@ -1,22 +1,27 @@
 package com.mirfatif.noorulhuda.prayer;
 
-import static com.batoulapps.adhan.CalculationMethod.DUBAI;
-import static com.batoulapps.adhan.CalculationMethod.EGYPTIAN;
-import static com.batoulapps.adhan.CalculationMethod.FRANCE;
-import static com.batoulapps.adhan.CalculationMethod.GULF;
-import static com.batoulapps.adhan.CalculationMethod.JAFARI;
-import static com.batoulapps.adhan.CalculationMethod.KARACHI;
-import static com.batoulapps.adhan.CalculationMethod.KUWAIT;
-import static com.batoulapps.adhan.CalculationMethod.MOON_SIGHTING_COMMITTEE;
-import static com.batoulapps.adhan.CalculationMethod.MUSLIM_WORLD_LEAGUE;
-import static com.batoulapps.adhan.CalculationMethod.NORTH_AMERICA;
-import static com.batoulapps.adhan.CalculationMethod.QATAR;
-import static com.batoulapps.adhan.CalculationMethod.RUSSIA;
-import static com.batoulapps.adhan.CalculationMethod.SINGAPORE;
-import static com.batoulapps.adhan.CalculationMethod.TEHRAN;
-import static com.batoulapps.adhan.CalculationMethod.TURKEY;
-import static com.batoulapps.adhan.CalculationMethod.UMM_AL_QURA;
+import static com.batoulapps.adhan2.CalculationMethod.DUBAI;
+import static com.batoulapps.adhan2.CalculationMethod.EGYPTIAN;
+import static com.batoulapps.adhan2.CalculationMethod.FRANCE;
+import static com.batoulapps.adhan2.CalculationMethod.GULF;
+import static com.batoulapps.adhan2.CalculationMethod.JAFARI;
+import static com.batoulapps.adhan2.CalculationMethod.KARACHI;
+import static com.batoulapps.adhan2.CalculationMethod.KUWAIT;
+import static com.batoulapps.adhan2.CalculationMethod.MOON_SIGHTING_COMMITTEE;
+import static com.batoulapps.adhan2.CalculationMethod.MUSLIM_WORLD_LEAGUE;
+import static com.batoulapps.adhan2.CalculationMethod.NORTH_AMERICA;
+import static com.batoulapps.adhan2.CalculationMethod.QATAR;
+import static com.batoulapps.adhan2.CalculationMethod.RUSSIA;
+import static com.batoulapps.adhan2.CalculationMethod.SINGAPORE;
+import static com.batoulapps.adhan2.CalculationMethod.TEHRAN;
+import static com.batoulapps.adhan2.CalculationMethod.TURKEY;
+import static com.batoulapps.adhan2.CalculationMethod.UMM_AL_QURA;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
+import static com.mirfatif.noorulhuda.util.UtilsKt.fajrTimeMillis;
+import static com.mirfatif.noorulhuda.util.UtilsKt.getPrayerCalcParams;
+import static com.mirfatif.noorulhuda.util.UtilsKt.kotlinEnumOrdinal;
+import static com.mirfatif.noorulhuda.util.UtilsKt.nextPrayer;
+import static com.mirfatif.noorulhuda.util.UtilsKt.timeForPrayerMillis;
 
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -25,14 +30,14 @@ import android.text.Spanned;
 import android.text.format.DateUtils;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
-import com.batoulapps.adhan.CalculationMethod;
-import com.batoulapps.adhan.CalculationParameters;
-import com.batoulapps.adhan.Coordinates;
-import com.batoulapps.adhan.HighLatitudeRule;
-import com.batoulapps.adhan.Madhab;
-import com.batoulapps.adhan.Prayer;
-import com.batoulapps.adhan.PrayerTimes;
-import com.batoulapps.adhan.data.DateComponents;
+import com.batoulapps.adhan2.CalculationMethod;
+import com.batoulapps.adhan2.CalculationParameters;
+import com.batoulapps.adhan2.Coordinates;
+import com.batoulapps.adhan2.HighLatitudeRule;
+import com.batoulapps.adhan2.Madhab;
+import com.batoulapps.adhan2.Prayer;
+import com.batoulapps.adhan2.PrayerTimes;
+import com.batoulapps.adhan2.data.DateComponents;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import java.text.SimpleDateFormat;
@@ -103,15 +108,15 @@ public class PrayerData {
 
     long nextTime;
     int current;
-    Prayer next = times.nextPrayer(gregCal.getTime());
+    Prayer next = nextPrayer(times, gregCal.toInstant());
     if (next != Prayer.NONE) {
-      nextTime = times.timeForPrayer(next).getTime();
-      current = next.ordinal() - 2;
+      nextTime = timeForPrayerMillis(times, next);
+      current = kotlinEnumOrdinal(next) - 2;
       if (current < 0) {
         current = 5;
       }
     } else {
-      nextTime = times.fajr.getTime() + DateUtils.DAY_IN_MILLIS;
+      nextTime = fajrTimeMillis(times) + DateUtils.DAY_IN_MILLIS;
       current = 5;
     }
 
@@ -123,7 +128,7 @@ public class PrayerData {
 
     Prayer[] prayers = Prayer.values();
     for (int i = 0; i < 6; i++) {
-      Date time = times.timeForPrayer(prayers[i + 1]);
+      Date time = new Date(timeForPrayerMillis(times, prayers[i + 1]));
       data.times[i] = time.getTime();
       String strTime = formatter.format(time);
       data.strTimes[i] = setSpan(strTime, false, false);
@@ -141,7 +146,7 @@ public class PrayerData {
       if (SETTINGS.getPrayerNotify(nextAlarmPrayer) || SETTINGS.getPrayerAdhan(nextAlarmPrayer)) {
         data.nextAlarm = new NextAlarm();
         data.nextAlarm.prayer = nextAlarmPrayer;
-        data.nextAlarm.time = times.timeForPrayer(prayers[nextAlarmPrayer + 1]).getTime();
+        data.nextAlarm.time = timeForPrayerMillis(times, prayers[nextAlarmPrayer + 1]);
         if (nextDay) {
           data.nextAlarm.time += DateUtils.DAY_IN_MILLIS;
         }
@@ -150,7 +155,7 @@ public class PrayerData {
       nextAlarmPrayer++;
     }
 
-    SolarTime solarTime = SolarTime.ofLocation(location.latitude, location.longitude);
+    SolarTime solarTime = SolarTime.ofLocation(location.getLatitude(), location.getLongitude());
     StartOfDay dayStart = StartOfDay.definedBy(solarTime.sunset());
     // HijriCalendar#nowInSystemTime()
     HijriCalendar hijriCal =
@@ -196,16 +201,7 @@ public class PrayerData {
   }
 
   public static CalculationParameters getCalcParams() {
-    CalculationParameters params = CALC_METHODS[SETTINGS.getCalcMethod()].getParameters();
-    params.adjustments.fajr = SETTINGS.getPrayerAdj(0);
-    params.adjustments.sunrise = SETTINGS.getPrayerAdj(1);
-    params.adjustments.dhuhr = SETTINGS.getPrayerAdj(2);
-    params.adjustments.asr = SETTINGS.getPrayerAdj(3);
-    params.adjustments.maghrib = SETTINGS.getPrayerAdj(4);
-    params.adjustments.isha = SETTINGS.getPrayerAdj(5);
-    params.madhab = ASR_CALC_METHODS[SETTINGS.getAsrCalcMethod()];
-    params.highLatitudeRule = HIGH_LAT_METHODS[SETTINGS.getHighLatMethod()];
-    return params;
+    return getPrayerCalcParams();
   }
 
   //////////////////////////////////////////////////////////////////
@@ -265,7 +261,6 @@ public class PrayerData {
 
   public static final HighLatitudeRule[] HIGH_LAT_METHODS =
       new HighLatitudeRule[] {
-        HighLatitudeRule.NONE,
         HighLatitudeRule.MIDDLE_OF_THE_NIGHT,
         HighLatitudeRule.SEVENTH_OF_THE_NIGHT,
         HighLatitudeRule.TWILIGHT_ANGLE

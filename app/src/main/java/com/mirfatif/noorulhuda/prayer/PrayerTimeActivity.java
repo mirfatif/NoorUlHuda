@@ -1,7 +1,7 @@
 package com.mirfatif.noorulhuda.prayer;
 
-import static com.batoulapps.adhan.CalculationMethod.JAFARI;
-import static com.batoulapps.adhan.CalculationMethod.TEHRAN;
+import static com.batoulapps.adhan2.CalculationMethod.JAFARI;
+import static com.batoulapps.adhan2.CalculationMethod.TEHRAN;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.ASR_CALC_NAMES;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.CALC_METHODS;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.CALC_METHOD_NAMES;
@@ -61,9 +61,9 @@ import androidx.appcompat.widget.SearchView.OnSuggestionListener;
 import androidx.core.content.IntentSanitizer;
 import androidx.core.view.MenuCompat;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
-import com.batoulapps.adhan.CalculationMethod;
-import com.batoulapps.adhan.CalculationParameters;
-import com.batoulapps.adhan.Coordinates;
+import com.batoulapps.adhan2.CalculationMethod;
+import com.batoulapps.adhan2.CalculationParameters;
+import com.batoulapps.adhan2.Coordinates;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.BuildConfig;
 import com.mirfatif.noorulhuda.R;
@@ -338,8 +338,8 @@ public class PrayerTimeActivity extends BaseActivity {
     if (loc == null) {
       lngStr = latStr = "-";
     } else {
-      float lng = (float) loc.longitude;
-      float lat = (float) loc.latitude;
+      float lng = (float) loc.getLongitude();
+      float lat = (float) loc.getLatitude();
       lngStr = String.valueOf(lng);
       latStr = String.valueOf(lat);
     }
@@ -350,25 +350,26 @@ public class PrayerTimeActivity extends BaseActivity {
   private void updateParamsViews() {
     String text;
     CalculationParameters params = getCalcParams();
-    text = String.format(Locale.getDefault(), "%.1f%c", params.fajrAngle, 176);
+    text = String.format(Locale.getDefault(), "%.1f%c", params.getFajrAngle(), 176);
     mB.calcCont.fajrParams.setText(text);
 
-    if (params.methodAdjustments.sunrise != 0) {
-      text = getString(R.string.min, params.methodAdjustments.sunrise);
+    if (params.getMethodAdjustments().getSunrise() != 0) {
+      text = getString(R.string.min, params.getMethodAdjustments().getSunrise());
     } else {
       text = "-";
     }
     mB.calcCont.sunParams.setText(text);
 
-    if (params.methodAdjustments.dhuhr != 0) {
-      text = getString(R.string.min, params.methodAdjustments.dhuhr);
+    if (params.getMethodAdjustments().getDhuhr() != 0) {
+      text = getString(R.string.min, params.getMethodAdjustments().getDhuhr());
     } else {
       text = "-";
     }
     mB.calcCont.zuhrParams.setText(text);
 
-    if (params.methodAdjustments.asr != 0) {
-      mB.calcCont.asrParams.setText(getString(R.string.min, params.methodAdjustments.asr));
+    if (params.getMethodAdjustments().getAsr() != 0) {
+      mB.calcCont.asrParams.setText(
+          getString(R.string.min, params.getMethodAdjustments().getAsr()));
     } else {
       mB.calcCont.asrParams.setText("-");
     }
@@ -376,16 +377,16 @@ public class PrayerTimeActivity extends BaseActivity {
     CalculationMethod method = CALC_METHODS[SETTINGS.getCalcMethod()];
     text = "-";
     if (method == JAFARI || method == TEHRAN) {
-      text = String.format(Locale.getDefault(), "%.1f%c", params.maghribAngle, 176);
-    } else if (params.methodAdjustments.maghrib != 0) {
-      text = getString(R.string.min, params.methodAdjustments.maghrib);
+      text = String.format(Locale.getDefault(), "%.1f%c", params.getMaghribAngle(), 176);
+    } else if (params.getMethodAdjustments().getMaghrib() != 0) {
+      text = getString(R.string.min, params.getMethodAdjustments().getMaghrib());
     }
     mB.calcCont.maghribParams.setText(text);
 
-    if (params.ishaInterval > 0) {
-      text = getString(R.string.min, params.ishaInterval);
+    if (params.getIshaInterval() > 0) {
+      text = getString(R.string.min, params.getIshaInterval());
     } else {
-      text = String.format(Locale.getDefault(), "%.1f%c", params.ishaAngle, 176);
+      text = String.format(Locale.getDefault(), "%.1f%c", params.getIshaAngle(), 176);
     }
     mB.calcCont.ishaParams.setText(text);
   }
@@ -536,7 +537,7 @@ public class PrayerTimeActivity extends BaseActivity {
         v -> {
           Coordinates location = SETTINGS.getLngLat();
           if (location != null) {
-            String loc = location.latitude + "," + location.longitude;
+            String loc = location.getLatitude() + "," + location.getLongitude();
             String uri = "geo:" + loc + "?q=" + loc + "(" + mCity + ")";
             try {
               startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
@@ -1246,18 +1247,18 @@ public class PrayerTimeActivity extends BaseActivity {
       return;
     }
     Location loc1 = new Location("");
-    loc1.setLatitude(location.latitude);
-    loc1.setLongitude(location.longitude);
+    loc1.setLatitude(location.getLatitude());
+    loc1.setLongitude(location.getLongitude());
     Location loc2 = new Location("");
     float minDist = Float.MAX_VALUE;
     int order = -1;
     for (int i = 0; i < METHOD_LOCATIONS.length; i++) {
       Coordinates lngLat = METHOD_LOCATIONS[i];
-      if (lngLat.latitude == 0 && lngLat.longitude == 0) {
+      if (lngLat.getLatitude() == 0 && lngLat.getLongitude() == 0) {
         continue;
       }
-      loc2.setLatitude(lngLat.latitude);
-      loc2.setLongitude(lngLat.longitude);
+      loc2.setLatitude(lngLat.getLatitude());
+      loc2.setLongitude(lngLat.getLongitude());
       float dist = loc1.distanceTo(loc2);
       if (dist < minDist) {
         minDist = dist;

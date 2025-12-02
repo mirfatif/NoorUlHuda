@@ -1,7 +1,12 @@
-/.gradle/
-/.idea/
+**/.gradle/
+**/.idea/
 
-/build/
+**/build/
+
+**/src/*/resources/libs/
+**/src/*/jniLibs/
+
+**/.kotlin/
 
 /local.properties
 

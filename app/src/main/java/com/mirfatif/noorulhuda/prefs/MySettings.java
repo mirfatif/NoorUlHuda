@@ -16,7 +16,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 import androidx.room.RoomDatabase.Builder;
-import com.batoulapps.adhan.Coordinates;
+import com.batoulapps.adhan2.Coordinates;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.db.DbBuilder;
