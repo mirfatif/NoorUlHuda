@@ -1,4 +1,14 @@
-pluginManagement { includeBuild("${System.getenv("JAVA_LIBS_DIR")!!}/build_logic") }
+pluginManagement {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    gradlePluginPortal()
+    maven { setUrl("https://jitpack.io") }
+  }
+
+  includeBuild("${System.getenv("JAVA_LIBS_DIR")!!}/build_logic")
+}
 
 plugins { id("settings-conventions") }
 
