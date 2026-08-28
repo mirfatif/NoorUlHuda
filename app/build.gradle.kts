@@ -5,8 +5,8 @@ android {
 
   defaultConfig {
     applicationId = namespace
-    versionCode = 103
-    versionName = "v1.03"
+    versionCode = 104
+    versionName = "v1.04"
 
     buildConfigField(
         "boolean", "GH_VERSION", if (System.getenv("IS_PS_VERSION") != "true") "true" else "false")
