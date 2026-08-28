@@ -27,7 +27,7 @@ android {
 dependencies {
   implementation(project(path = ":adhan"))
 
-  implementation("net.time4j:time4j-android:4.7.2-2020e")
+  implementation(libs.time4j.android)
 
   implementation(libs.androidx.appcompat)
   implementation(libs.androidx.recyclerview)
