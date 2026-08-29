@@ -41,7 +41,6 @@ public class WidgetProvider extends AppWidgetProvider {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-    holdWakeLock();
     mAlarmManager = (AlarmManager) App.getCxt().getSystemService(Context.ALARM_SERVICE);
     mWidgetManager = AppWidgetManager.getInstance(App.getCxt());
 
@@ -50,6 +49,7 @@ public class WidgetProvider extends AppWidgetProvider {
           mWidgetManager.getAppWidgetIds(new ComponentName(App.getCxt(), WidgetProvider.class));
       onUpdate(context, mWidgetManager, ids);
     } else {
+      holdWakeLock();
       super.onReceive(context, intent);
       releaseWakeLock();
     }
@@ -71,7 +71,7 @@ public class WidgetProvider extends AppWidgetProvider {
     }
 
     if (SETTINGS.getLngLat() == null || ids == null || ids.length == 0) {
-      if (ids != null) {
+      if (ids != null && ids.length != 0) {
         RemoteViews v = new RemoteViews(BuildConfig.APPLICATION_ID, R.layout.pr_time_widget_dummy);
         pi = PrayerTimeActivity.getPendingIntent(REQUEST_CODE_OPEN_APP);
         v.setOnClickPendingIntent(R.id.widget_root_v, pi);

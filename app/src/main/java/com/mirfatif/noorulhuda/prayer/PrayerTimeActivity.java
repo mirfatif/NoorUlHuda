@@ -58,7 +58,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.SearchView.OnSuggestionListener;
-import androidx.core.content.IntentSanitizer;
 import androidx.core.view.MenuCompat;
 import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import com.batoulapps.adhan2.CalculationMethod;
@@ -124,26 +123,18 @@ public class PrayerTimeActivity extends BaseActivity {
 
     Intent intent = getIntent();
 
-    intent =
-        new IntentSanitizer.Builder()
-            .allowPackage(BuildConfig.APPLICATION_ID)
-            .allowAnyComponent()
-            .build()
-            .sanitize(intent, s -> {});
-
-    Bundle extras = intent.getExtras();
     boolean showHome = true;
-    if (extras != null) {
-      int id = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
-      if (id > 0) {
-        setResult(RESULT_OK, intent);
-        if (SETTINGS.getLngLat() != null) {
-          finish();
-          return;
-        }
-        Utils.showToast(R.string.set_location);
-        showHome = false;
+    int id =
+        intent.getIntExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+    if (id != AppWidgetManager.INVALID_APPWIDGET_ID) {
+      setResult(RESULT_OK, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id));
+      if (SETTINGS.getLngLat() != null) {
+        finish();
+        return;
       }
+      Utils.showToast(R.string.set_location);
+      showHome = false;
     }
 
     if (setNightTheme(this)) {
