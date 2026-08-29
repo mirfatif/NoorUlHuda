@@ -603,6 +603,8 @@ public class Utils {
   }
 
   // https://stackoverflow.com/a/63455547/9165920
+  // Need to keep in proguard-rules.pro
+  /** {@link ViewPager2#mRecyclerView} {@link RecyclerView#mTouchSlop} */
   public static void reduceDragSensitivity(ViewPager2 pager) {
     try {
       Field field = ViewPager2.class.getDeclaredField("mRecyclerView");

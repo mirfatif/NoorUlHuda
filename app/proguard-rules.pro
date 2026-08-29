@@ -16,3 +16,11 @@
 -keepclassmembers class net.time4j.android.spi.AndroidResourceLoader {
   <init>();
 }
+
+-keepclassmembers class androidx.viewpager2.widget.ViewPager2 {
+  androidx.recyclerview.widget.RecyclerView mRecyclerView;
+}
+
+-keepclassmembers class androidx.recyclerview.widget.RecyclerView {
+  int mTouchSlop;
+}
