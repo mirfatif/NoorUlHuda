@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mirfatif.noorulhuda.ui.base.MyLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+  <View
+    android:id="@+id/status_bar_bg"
+    android:layout_width="match_parent"
+    android:layout_height="0.dp"
+    android:background="?attr/accent" />
+
+  <FrameLayout
+    android:id="@+id/cont"
+    android:layout_width="match_parent"
+    android:layout_height="0.dp"
+    android:layout_weight="1">
+    <View
+      android:id="@+id/status_bar_bg_overlapping"
+      android:layout_width="match_parent"
+      android:layout_height="0.dp"
+      android:layout_gravity="top"
+      android:background="?attr/accent" />
+  </FrameLayout>
+
+  <View
+    android:id="@+id/nav_bar_bg"
+    android:layout_width="match_parent"
+    android:layout_height="0.dp"
+    android:background="?attr/accentTrans1" />
+
+</com.mirfatif.noorulhuda.ui.base.MyLinearLayout>

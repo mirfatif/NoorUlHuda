@@ -102,6 +102,10 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod;
 
 public class MainActivity extends BaseActivity {
 
+  public MainActivity() {
+    super(false);
+  }
+
   private static final String TAG = "MainActivity";
 
   private ActivityMainBinding mB;
@@ -118,7 +122,7 @@ public class MainActivity extends BaseActivity {
     }
     mB = ActivityMainBinding.inflate(getLayoutInflater());
     setBgColor();
-    setContentView(mB.getRoot());
+    setContentView(mB);
 
     ActionBar actionbar = getSupportActionBar();
     if (actionbar != null) {

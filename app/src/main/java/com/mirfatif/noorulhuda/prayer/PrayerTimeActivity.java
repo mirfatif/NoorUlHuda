@@ -101,6 +101,10 @@ import org.json.JSONObject;
 
 public class PrayerTimeActivity extends BaseActivity {
 
+  public PrayerTimeActivity() {
+    super(true);
+  }
+
   private static final String TAG = "PrayerTimeActivity";
 
   private static final String INVALID_DATE = Utils.getString(R.string.invalid_date);
@@ -147,7 +151,7 @@ public class PrayerTimeActivity extends BaseActivity {
     }
 
     mB = ActivityPrayerTimeBinding.inflate(getLayoutInflater());
-    setContentView(mB.getRoot());
+    setContentView(mB);
 
     ActionBar actionbar = getSupportActionBar();
     if (actionbar != null) {

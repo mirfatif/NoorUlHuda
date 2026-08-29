@@ -36,6 +36,10 @@ import me.saket.bettermovementmethod.BetterLinkMovementMethod.OnLinkClickListene
 
 public class AboutActivity extends BaseActivity {
 
+  public AboutActivity() {
+    super(true);
+  }
+
   private ActivityAboutBinding mB;
   private ActivityResultLauncher<String> mLoggingLauncher;
 
@@ -43,7 +47,7 @@ public class AboutActivity extends BaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mB = ActivityAboutBinding.inflate(getLayoutInflater());
-    setContentView(mB.getRoot());
+    setContentView(mB);
 
     if (setNightTheme(this)) {
       return;

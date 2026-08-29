@@ -27,6 +27,10 @@ import com.mirfatif.noorulhuda.ui.base.BaseActivity;
 
 public class DuaActivity extends BaseActivity {
 
+  public DuaActivity() {
+    super(false);
+  }
+
   private ActivityDuaBinding mB;
   private DuaPageAdapter mDuaPageAdapter;
 
@@ -44,7 +48,7 @@ public class DuaActivity extends BaseActivity {
     }
 
     mB = ActivityDuaBinding.inflate(getLayoutInflater());
-    setContentView(mB.getRoot());
+    setContentView(mB);
 
     ActionBar actionbar = getSupportActionBar();
     if (actionbar != null) {
