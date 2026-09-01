@@ -5,9 +5,15 @@ Noor-Ul-Huda is an offline Quran app with Prayer Time and Duas (supplications), 
 <a href="https://play.google.com/store/apps/details?id=com.mirfatif.noorulhuda"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="100"></a>
 <a href="https://apt.izzysoft.de/fdroid/index/apk/com.mirfatif.noorulhuda"><img alt="Get it on F-Droid" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="100"></a>
 
-[![Github](https://img.shields.io/github/v/release/mirfatif/NoorUlHuda?label="Github")](https://github.com/mirfatif/NoorUlHuda/releases/latest) [![F-Droid](https://img.shields.io/f-droid/v/com.mirfatif.noorulhuda.svg?label="F-Droid")](https://f-droid.org/packages/com.mirfatif.noorulhuda) [![IzzyOnDroid](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.mirfatif.noorulhuda)](https://apt.izzysoft.de/fdroid/index/apk/com.mirfatif.noorulhuda) [![Telegram](https://img.shields.io/endpoint?url=https://mirfatif.github.io/mirfatif/nuh_version.json)](https://t.me/mirfatifApps)
+[![Github](https://img.shields.io/github/v/release/mirfatif/NoorUlHuda?label="Github")](https://github.com/mirfatif/NoorUlHuda/releases/latest) [![F-Droid](https://img.shields.io/f-droid/v/com.mirfatif.noorulhuda.svg?label="F-Droid")](https://f-droid.org/packages/com.mirfatif.noorulhuda) [![IzzyOnDroid](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.mirfatif.noorulhuda)](https://apt.izzysoft.de/fdroid/index/apk/com.mirfatif.noorulhuda) [![Telegram](https://img.shields.io/badge/Telegram-latest-blue)](https://t.me/mirfatifApps)
 
 <sup>* Join [Telegram support group](https://t.me/NoorUlHudaApp/) to get instant updates and test beta releases.</sup>
+
+---
+
+**Note:**
+
+All releases are open-source. But currently the gradle build system depends on internal modules and plugins. So build won't succeed unless the `settings.gradle.kts` and `build.gradle.kts` files are fixed.
 
 ## Features
 Customize your reading experience the way you want:
