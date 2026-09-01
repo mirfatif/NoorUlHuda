@@ -24,3 +24,5 @@
 -keepclassmembers class androidx.recyclerview.widget.RecyclerView {
   int mTouchSlop;
 }
+
+-dontobfuscate
