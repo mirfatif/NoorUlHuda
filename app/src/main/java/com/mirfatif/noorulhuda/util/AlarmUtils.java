@@ -43,7 +43,7 @@ public class AlarmUtils {
     App.getCxt().getSystemService(AlarmManager.class).cancel(pi);
   }
 
-  public static void askForExactAlarmPerm(FragmentActivity activity) {
+  public static void askForExactAlarmPerm(FragmentActivity activity, int requestCode) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || canScheduleExactAlarms()) {
       return;
     }
@@ -55,8 +55,8 @@ public class AlarmUtils {
             .setPositiveButton(
                 R.string.ok_button,
                 (d, w) ->
-                    activity.startActivity(
-                        new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)))
+                    activity.startActivityForResult(
+                        new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM), requestCode))
             .setNegativeButton(R.string.cancel_button, null);
 
     AlertDialogFragment.show(activity, builder.create(), EXACT_ALARM_PERM_DIALOG_TAG);

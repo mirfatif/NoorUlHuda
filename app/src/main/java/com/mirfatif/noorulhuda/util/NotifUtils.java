@@ -31,12 +31,16 @@ public class NotifUtils {
   }
 
   public static void askForNotifPerm(FragmentActivity activity) {
+    askForNotifPerm(activity, 0);
+  }
+
+  public static void askForNotifPerm(FragmentActivity activity, int requestCode) {
     if (!hasNotifPerm()) {
       String perm = Manifest.permission.POST_NOTIFICATIONS;
 
       if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, perm)) {
         Utils.showToast(R.string.notif_perm_missing_toast);
-        activity.requestPermissions(new String[] {perm}, 0);
+        activity.requestPermissions(new String[] {perm}, requestCode);
       } else {
         AlertDialog.Builder builder =
             new AlertDialog.Builder(activity)
@@ -44,7 +48,7 @@ public class NotifUtils {
                 .setMessage(R.string.notif_perm_dialog_text)
                 .setPositiveButton(
                     R.string.ok_button,
-                    (d, w) -> activity.requestPermissions(new String[] {perm}, 0))
+                    (d, w) -> activity.requestPermissions(new String[] {perm}, requestCode))
                 .setNegativeButton(R.string.cancel_button, null);
 
         AlertDialogFragment.show(activity, builder.create(), NOTIFICATION_PERM_DIALOG_TAG);

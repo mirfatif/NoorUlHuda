@@ -51,8 +51,11 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.annotation.WorkerThread;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
@@ -100,6 +103,9 @@ import org.json.JSONObject;
 
 public class PrayerTimeActivity extends BaseActivity {
 
+  private static final int REQUEST_CODE_NOTIF = Integer.MAX_VALUE;
+  private static final int REQUEST_CODE_ALARM = REQUEST_CODE_NOTIF - 1;
+
   public PrayerTimeActivity() {
     super(true);
   }
@@ -129,11 +135,12 @@ public class PrayerTimeActivity extends BaseActivity {
             AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
     if (id != AppWidgetManager.INVALID_APPWIDGET_ID) {
       setResult(RESULT_OK, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id));
-      if (SETTINGS.getLngLat() != null) {
+      if (SETTINGS.getLngLat() == null) {
+        Utils.showToast(R.string.set_location);
+      } else if (resetWidgets()) {
         finish();
         return;
       }
-      Utils.showToast(R.string.set_location);
       showHome = false;
     }
 
@@ -232,6 +239,23 @@ public class PrayerTimeActivity extends BaseActivity {
           .create();
     }
     return super.createDialog(tag, dialogFragment);
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == REQUEST_CODE_ALARM && AlarmUtils.canScheduleExactAlarms()) {
+      resetWidgets();
+    }
+  }
+
+  @Override
+  public void onRequestPermissionsResult(
+      int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if (requestCode == REQUEST_CODE_NOTIF && NotifUtils.hasNotifPerm()) {
+      resetWidgets();
+    }
   }
 
   //////////////////////////////////////////////////////////////////
@@ -650,7 +674,7 @@ public class PrayerTimeActivity extends BaseActivity {
     Utils.runBg(
         () -> {
           setNearestMethod();
-          onParamsChanged();
+          Utils.runUi(this::onParamsChanged);
         });
   }
 
@@ -1135,28 +1159,32 @@ public class PrayerTimeActivity extends BaseActivity {
     }
   }
 
-  private void resetWidgets() {
-    if (!NotifUtils.hasNotifPerm()) {
-      NotifUtils.askForNotifPerm(this);
-      return;
+  @MainThread
+  private boolean resetWidgets() {
+    var hasLoc = SETTINGS.getLngLat() != null;
+
+    if (hasLoc && !NotifUtils.hasNotifPerm()) {
+      NotifUtils.askForNotifPerm(this, REQUEST_CODE_NOTIF);
+      return false;
     }
 
-    if (!AlarmUtils.canScheduleExactAlarms()) {
-      AlarmUtils.askForExactAlarmPerm(this);
-      return;
+    if (hasLoc && !AlarmUtils.canScheduleExactAlarms()) {
+      AlarmUtils.askForExactAlarmPerm(this, REQUEST_CODE_ALARM);
+      return false;
     }
 
     PrayerNotifySvc.reset(false);
     WidgetProvider.reset();
 
-    if (!SETTINGS.shouldAskToExcBatteryOpt() || SETTINGS.getLngLat() == null) {
-      return;
+    if (hasLoc && SETTINGS.shouldAskToExcBatteryOpt()) {
+      PowerManager pm = (PowerManager) App.getCxt().getSystemService(Context.POWER_SERVICE);
+      if (!pm.isIgnoringBatteryOptimizations(getPackageName())) {
+        AlertDialogFragment.show(this, null, TAG_BATTERY_OPT);
+        return false;
+      }
     }
 
-    PowerManager pm = (PowerManager) App.getCxt().getSystemService(Context.POWER_SERVICE);
-    if (!pm.isIgnoringBatteryOptimizations(getPackageName())) {
-      Utils.runUi(this, () -> AlertDialogFragment.show(this, null, TAG_BATTERY_OPT));
-    }
+    return true;
   }
 
   //////////////////////////////////////////////////////////////////
@@ -1236,6 +1264,7 @@ public class PrayerTimeActivity extends BaseActivity {
         });
   }
 
+  @WorkerThread
   private void setNearestMethod() {
     Coordinates location = SETTINGS.getLngLat();
     if (location == null) {
@@ -1267,8 +1296,9 @@ public class PrayerTimeActivity extends BaseActivity {
     }
   }
 
+  @MainThread
   private void onParamsChanged() {
-    Utils.runUi(this, this::updateParamsViews);
+    updateParamsViews();
     Utils.runBg(this::updateWidget);
     resetWidgets();
   }
