@@ -342,7 +342,7 @@ public class PrayerNotifySvc extends Service {
               + "-"
               + (c.get(Calendar.MONTH) + 1)
               + " "
-              + c.get(Calendar.HOUR)
+              + c.get(Calendar.HOUR_OF_DAY)
               + ":"
               + c.get(Calendar.MINUTE)
               + ":"

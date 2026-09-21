@@ -137,17 +137,15 @@ public class PrayerData {
     }
 
     int nextAlarmPrayer = current + 1;
-    boolean nextDay = false;
     for (int i = 0; i < 6; i++) {
       if (nextAlarmPrayer > 5) {
         nextAlarmPrayer = 0;
-        nextDay = true;
       }
       if (SETTINGS.getPrayerNotify(nextAlarmPrayer) || SETTINGS.getPrayerAdhan(nextAlarmPrayer)) {
         data.nextAlarm = new NextAlarm();
         data.nextAlarm.prayer = nextAlarmPrayer;
         data.nextAlarm.time = timeForPrayerMillis(times, prayers[nextAlarmPrayer + 1]);
-        if (nextDay) {
+        if (data.nextAlarm.time <= System.currentTimeMillis()) {
           data.nextAlarm.time += DateUtils.DAY_IN_MILLIS;
         }
         break;
