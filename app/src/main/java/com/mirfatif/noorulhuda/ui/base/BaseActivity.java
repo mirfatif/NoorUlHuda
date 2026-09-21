@@ -146,7 +146,9 @@ public class BaseActivity extends AppCompatActivity {
                   .bottom;
           b.navBarBg.setLayoutParams(lp);
 
-          return WindowInsetsCompat.CONSUMED;
+          // setOnApplyWindowInsetsListener() won't work if we
+          // return WindowInsetsCompat.CONSUMED here.
+          return insets.inset(0, 0, 0, lp.height);
         });
   }
 }
