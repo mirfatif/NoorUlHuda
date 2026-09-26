@@ -45,8 +45,7 @@ public class PrayerAdhanSvc extends Service
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    boolean stop = ACTION_STOP.equals(intent.getAction());
-    if (stop) {
+    if (ACTION_STOP.equals(intent.getAction())) {
       // User has noted, do not show notification.
       if (mMediaPlayer != null) {
         mMediaPlayer.setOnCompletionListener(null);
@@ -66,7 +65,7 @@ public class PrayerAdhanSvc extends Service
     createNotification();
 
     if (!SETTINGS.getPrayerAdhan(prayer)) {
-      showNotification(false);
+      showFinalNotification(false);
       return START_NOT_STICKY;
     }
 
@@ -80,7 +79,7 @@ public class PrayerAdhanSvc extends Service
       }
     }
     // File does not exist or failed to read.
-    showNotification(false);
+    showFinalNotification(false);
     return START_NOT_STICKY;
   }
 
@@ -133,6 +132,8 @@ public class PrayerAdhanSvc extends Service
             .setGroup(getString(R.string.prayer_notification_group))
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentIntent(pi)
+            .setOngoing(false)
+            .setDeleteIntent(pi)
             .addAction(0, getString(R.string.stop), pi);
   }
 
@@ -189,25 +190,24 @@ public class PrayerAdhanSvc extends Service
       if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
         mMediaPlayer.start();
         if (mNotifBuilder != null) {
-          mNotifBuilder.setOngoing(true);
           startForeground(ADHAN_NOTIF_ID, mNotifBuilder.build());
         }
         return;
       }
     }
-    showNotification(false);
+    showFinalNotification(false);
   }
 
   @Override
   public void onCompletion(MediaPlayer mp) {
-    showNotification(true);
+    showFinalNotification(true);
   }
 
   private static final int PRAYER_NOTIF_ID = Utils.getInteger(R.integer.channel_prayer_time);
   private static final String PRAYER_CHANNEL_ID = "channel_prayer_time";
   private static final String PRAYER_CHANNEL_NAME = Utils.getString(R.string.channel_prayer_time);
 
-  private void showNotification(boolean afterAdhan) {
+  private void showFinalNotification(boolean afterAdhan) {
     if (SETTINGS.getPrayerNotify(mPrayer) && mNotifBuilder != null) {
       NotificationManagerCompat nm = NotificationManagerCompat.from(App.getCxt());
       NotificationChannelCompat ch = nm.getNotificationChannelCompat(PRAYER_CHANNEL_ID);
@@ -221,10 +221,10 @@ public class PrayerAdhanSvc extends Service
       }
 
       mNotifBuilder
-          .setOngoing(false)
           .setChannelId(PRAYER_CHANNEL_ID)
           .setCategory(null)
           .setContentIntent(PrayerTimeActivity.getPendingIntent(ADHAN_NOTIF_ID))
+          .setDeleteIntent(null)
           .clearActions();
 
       if (!afterAdhan) {

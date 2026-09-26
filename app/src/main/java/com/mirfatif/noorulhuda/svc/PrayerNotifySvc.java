@@ -45,6 +45,7 @@ public class PrayerNotifySvc extends Service {
   }
 
   private static final String ACTION_RESCHEDULE = APPLICATION_ID + ".action.RESCHEDULE";
+  private static final String ACTION_DELETED = APPLICATION_ID + ".action.DELETED";
   public static final String EXTRA_PRAYER = APPLICATION_ID + ".extra.PRAYER";
   private static final String EXTRA_POST_PRAYER_TIME = APPLICATION_ID + ".extra.POST_PRAYER_TIME";
   public static final String EXTRA_RUN_FG = APPLICATION_ID + ".extra.RUN_FG";
@@ -55,6 +56,15 @@ public class PrayerNotifySvc extends Service {
 
   @Override
   public synchronized int onStartCommand(Intent intent, int flags, int startId) {
+    if (ACTION_DELETED.equals(intent.getAction())) {
+      if (mNotifBuilder != null) {
+        NotifUtils.notify(WIDGET_NOTIF_ID, mNotifBuilder.build());
+        return START_STICKY;
+      } else {
+        return START_NOT_STICKY;
+      }
+    }
+
     if (mFuture != null) {
       mFuture.cancel(true);
     }
@@ -145,6 +155,12 @@ public class PrayerNotifySvc extends Service {
           .setContentIntent(PrayerTimeActivity.getPendingIntent(WIDGET_NOTIF_ID))
           .setAutoCancel(false)
           .setOngoing(true)
+          .setDeleteIntent(
+              PendingIntent.getService(
+                  App.getCxt(),
+                  WIDGET_NOTIF_ID + 1,
+                  new Intent(App.getCxt(), PrayerNotifySvc.class).setAction(ACTION_DELETED),
+                  getPiFlags(false)))
           .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
           .setStyle(new DecoratedCustomViewStyle())
           .setShowWhen(false)
