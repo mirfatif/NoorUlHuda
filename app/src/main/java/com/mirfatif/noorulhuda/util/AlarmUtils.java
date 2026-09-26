@@ -6,11 +6,14 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 import com.mirfatif.noorulhuda.App;
 import com.mirfatif.noorulhuda.R;
 import com.mirfatif.noorulhuda.ui.dialog.AlertDialogFragment;
+import java.util.Calendar;
 
 public class AlarmUtils {
 
@@ -24,19 +27,44 @@ public class AlarmUtils {
   }
 
   @SuppressLint("ScheduleExactAlarm")
-  public static void setExact(int type, long triggerAt, PendingIntent pi) {
+  public static void setExact(int type, long triggerAt, PendingIntent pi, @Nullable String tag) {
     if (canScheduleExactAlarms()) {
       App.getCxt().getSystemService(AlarmManager.class).setExact(type, triggerAt, pi);
+      logAlarm(tag, triggerAt);
     }
   }
 
   @SuppressLint("ScheduleExactAlarm")
-  public static void setExactAndAllowWhileIdle(int type, long triggerAt, PendingIntent pi) {
+  public static void setExactAndAllowWhileIdle(
+      int type, long triggerAt, PendingIntent pi, @Nullable String tag) {
     if (canScheduleExactAlarms()) {
       App.getCxt()
           .getSystemService(AlarmManager.class)
           .setExactAndAllowWhileIdle(type, triggerAt, pi);
+      logAlarm(tag, triggerAt);
     }
+  }
+
+  private static void logAlarm(@Nullable String tag, long triggerAt) {
+    if (tag == null) {
+      return;
+    }
+    Calendar c = Calendar.getInstance();
+    c.setTimeInMillis(triggerAt);
+    Log.i(
+        tag,
+        "Alarm set at "
+            + c.get(Calendar.DAY_OF_MONTH)
+            + "-"
+            + (c.get(Calendar.MONTH) + 1)
+            + " "
+            + c.get(Calendar.HOUR_OF_DAY)
+            + ":"
+            + c.get(Calendar.MINUTE)
+            + ":"
+            + c.get(Calendar.SECOND)
+            + ":"
+            + c.get(Calendar.MILLISECOND));
   }
 
   public static void cancel(PendingIntent pi) {

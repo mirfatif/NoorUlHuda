@@ -53,6 +53,8 @@ import net.time4j.engine.StartOfDay;
 
 public class PrayerData {
 
+  public static final String CLOCK_FORMAT = "hh:mmaa";
+
   public long[] times = new long[6];
 
   public Spannable[] strTimes = new Spannable[6];
@@ -103,7 +105,7 @@ public class PrayerData {
             gregCal.get(Calendar.DAY_OF_MONTH));
     PrayerTimes times = new PrayerTimes(location, comp, getCalcParams());
 
-    SimpleDateFormat formatter = new SimpleDateFormat("hh:mmaa", Locale.ENGLISH);
+    SimpleDateFormat formatter = new SimpleDateFormat(CLOCK_FORMAT, Locale.ENGLISH);
     formatter.setTimeZone(gregCal.getTimeZone());
 
     long nextTime;
@@ -131,9 +133,9 @@ public class PrayerData {
       Date time = new Date(timeForPrayerMillis(times, prayers[i + 1]));
       data.times[i] = time.getTime();
       String strTime = formatter.format(time);
-      data.strTimes[i] = setSpan(strTime, false, false);
-      data.boldTimes[i] = setSpan(strTime, false, i == current);
-      data.compactTimes[i] = setSpan(strTime, true, false);
+      data.strTimes[i] = setSmallerAmPmSpan(strTime, false, false);
+      data.boldTimes[i] = setSmallerAmPmSpan(strTime, false, i == current);
+      data.compactTimes[i] = setSmallerAmPmSpan(strTime, true, false);
     }
 
     int nextAlarmPrayer = current + 1;
@@ -168,7 +170,7 @@ public class PrayerData {
     data.hijYear = String.valueOf(hijriCal.getYear());
 
     data.day = gregCal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-    data.time = setSpan(formatter.format(gregCal.getTime()), false, false);
+    data.time = setSmallerAmPmSpan(formatter.format(gregCal.getTime()), false, false);
     formatter = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
     data.date = formatter.format(gregCal.getTime());
 
@@ -184,14 +186,16 @@ public class PrayerData {
 
   private static final RelativeSizeSpan SPAN = new RelativeSizeSpan(0.5f);
 
-  private static Spannable setSpan(String time, boolean compact, boolean bold) {
-    int start = time.length() - 2, len = time.length();
+  private static Spannable setSmallerAmPmSpan(String time, boolean compact, boolean bold) {
     if (compact) {
       time = time.substring(0, time.length() - 1);
-      len--;
     }
-    SpannableString string = new SpannableString(time);
-    string.setSpan(SPAN, start, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    return setSmallerAmPmSpan(new SpannableString(time), bold);
+  }
+
+  public static Spannable setSmallerAmPmSpan(SpannableString string, boolean bold) {
+    var len = string.length();
+    string.setSpan(SPAN, 5, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     if (bold) {
       string.setSpan(new StyleSpan(Typeface.BOLD), 0, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }

@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
+import android.text.SpannableString;
 import android.view.View;
 import android.widget.RemoteViews;
 import androidx.annotation.ColorRes;
@@ -28,7 +29,6 @@ import com.mirfatif.noorulhuda.svc.PrayerNotifySvc;
 import com.mirfatif.noorulhuda.util.AlarmUtils;
 import com.mirfatif.noorulhuda.util.Utils;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Future;
@@ -116,12 +116,13 @@ public class WidgetProvider extends AppWidgetProvider {
         return;
       }
     }
-    createView(ids);
-    createAlarm();
+    PrayerData data = getPrayerData();
+    createView(ids, data);
+    createAlarm(data);
     releaseWakeLock();
   }
 
-  private void createView(int[] ids) {
+  private void createView(int[] ids, PrayerData d) {
     RemoteViews view = new RemoteViews(BuildConfig.APPLICATION_ID, R.layout.pr_time_widget);
 
     PendingIntent pi = PrayerTimeActivity.getPendingIntent(REQUEST_CODE_OPEN_APP);
@@ -153,8 +154,6 @@ public class WidgetProvider extends AppWidgetProvider {
     int col2 = getColor(darkText ? R.color.widgetTextDark2 : R.color.widgetTextLight2);
     int col3 = getColor(darkText ? R.color.widgetTextDark3 : R.color.widgetTextLight3);
 
-    PrayerData d = getPrayerData();
-
     view.setChronometer(
         R.id.rem_time_v, SystemClock.elapsedRealtime() + d.untilNextPrayer() + DELAY, null, true);
     view.setChronometerCountDown(R.id.rem_time_v, true);
@@ -173,11 +172,16 @@ public class WidgetProvider extends AppWidgetProvider {
     view.setTextViewText(R.id.city_name_v, SETTINGS.getCityName());
     view.setTextViewText(R.id.date_v, d.date);
     view.setTextViewText(R.id.day_v, d.day);
-    view.setTextViewText(R.id.time_v, d.time);
+
+    var clockFormat =
+        PrayerData.setSmallerAmPmSpan(new SpannableString(PrayerData.CLOCK_FORMAT), false);
+    // RemoteViewsCompat.setTextClockFormat12Hour()
+    view.setCharSequence(R.id.clock_v, "setFormat12Hour", clockFormat);
+
     view.setTextColor(R.id.city_name_v, col1);
     view.setTextColor(R.id.date_v, col1);
     view.setTextColor(R.id.day_v, col1);
-    view.setTextColor(R.id.time_v, col1);
+    view.setTextColor(R.id.clock_v, col1);
 
     for (int id : ids) {
       Bundle opts = mWidgetManager.getAppWidgetOptions(id);
@@ -248,20 +252,18 @@ public class WidgetProvider extends AppWidgetProvider {
       ALL_IDS.add(R.id.city_name_v);
       ALL_IDS.add(R.id.date_v);
       ALL_IDS.add(R.id.day_v);
-      ALL_IDS.add(R.id.time_v);
+      ALL_IDS.add(R.id.clock_v);
     }
     return ALL_IDS;
   }
 
-  private void createAlarm() {
-    PendingIntent pi = createIntent(false);
-    Calendar cal = Calendar.getInstance();
-    cal.add(Calendar.MINUTE, 1);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MILLISECOND, 0);
-    if (!Thread.interrupted() && AlarmUtils.canScheduleExactAlarms()) {
-      AlarmUtils.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pi);
+  private void createAlarm(PrayerData d) {
+    if (Thread.interrupted()) {
+      return;
     }
+    long triggerAt = Math.min(d.nextPrayerTime, d.midnightTime);
+    PendingIntent pi = createIntent(false);
+    AlarmUtils.setExact(AlarmManager.RTC, triggerAt, pi, TAG);
   }
 
   private static final String ACTION_UPDATE = BuildConfig.APPLICATION_ID + ".action.WIDGET_UPDATE";

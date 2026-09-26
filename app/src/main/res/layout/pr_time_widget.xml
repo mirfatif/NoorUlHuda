@@ -217,8 +217,8 @@
         android:maxLines="1"
         android:textAlignment="center" />
 
-      <TextView
-        android:id="@+id/time_v"
+      <TextClock
+        android:id="@+id/clock_v"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

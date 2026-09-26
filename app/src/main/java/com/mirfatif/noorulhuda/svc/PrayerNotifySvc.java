@@ -17,7 +17,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
-import android.util.Log;
 import android.widget.RemoteViews;
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
@@ -33,7 +32,6 @@ import com.mirfatif.noorulhuda.prayer.WidgetProvider;
 import com.mirfatif.noorulhuda.util.AlarmUtils;
 import com.mirfatif.noorulhuda.util.NotifUtils;
 import com.mirfatif.noorulhuda.util.Utils;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.concurrent.Future;
 
@@ -338,23 +336,7 @@ public class PrayerNotifySvc extends Service {
 
     if (!Thread.interrupted()) {
       PendingIntent pi = createIntent(false, alarmPrayer, ppnTriggerAt);
-      AlarmUtils.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi);
-      Calendar c = Calendar.getInstance();
-      c.setTimeInMillis(triggerAt);
-      Log.i(
-          TAG,
-          "Alarm set at "
-              + c.get(Calendar.DAY_OF_MONTH)
-              + "-"
-              + (c.get(Calendar.MONTH) + 1)
-              + " "
-              + c.get(Calendar.HOUR_OF_DAY)
-              + ":"
-              + c.get(Calendar.MINUTE)
-              + ":"
-              + c.get(Calendar.SECOND)
-              + ":"
-              + c.get(Calendar.MILLISECOND));
+      AlarmUtils.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi, TAG);
     }
   }
 
@@ -363,12 +345,10 @@ public class PrayerNotifySvc extends Service {
     Intent intent = new Intent(App.getCxt(), this.getClass()).setAction(ACTION_RESCHEDULE);
 
     if (alarmPrayer != null) {
-      int val = alarmPrayer;
-      intent.putExtra(EXTRA_PRAYER, val);
+      intent.putExtra(EXTRA_PRAYER, alarmPrayer);
     }
     if (ppnTriggerAt != null) {
-      long val = ppnTriggerAt;
-      intent.putExtra(EXTRA_POST_PRAYER_TIME, val);
+      intent.putExtra(EXTRA_POST_PRAYER_TIME, ppnTriggerAt);
     }
     return PendingIntent.getService(App.getCxt(), WIDGET_NOTIF_ID, intent, getPiFlags(cancel));
   }
