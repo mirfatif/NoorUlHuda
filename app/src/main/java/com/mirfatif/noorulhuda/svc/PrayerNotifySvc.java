@@ -49,7 +49,6 @@ public class PrayerNotifySvc extends Service {
   public static final String EXTRA_PRAYER = APPLICATION_ID + ".extra.PRAYER";
   private static final String EXTRA_POST_PRAYER_TIME = APPLICATION_ID + ".extra.POST_PRAYER_TIME";
   public static final String EXTRA_RUN_FG = APPLICATION_ID + ".extra.RUN_FG";
-  public static final String EXTRA_NO_WIDGET_RESET = APPLICATION_ID + ".extra.NO_WIDGET_RESET";
 
   private static final Object LOCK = new Object();
   private Future<?> mFuture;
@@ -69,9 +68,7 @@ public class PrayerNotifySvc extends Service {
       mFuture.cancel(true);
     }
 
-    if (!intent.getBooleanExtra(EXTRA_NO_WIDGET_RESET, false)) {
-      WidgetProvider.reset();
-    }
+    WidgetProvider.reset();
 
     synchronized (LOCK) {
       PendingIntent pi = createIntent(true, null, null);
@@ -403,11 +400,8 @@ public class PrayerNotifySvc extends Service {
     }
   }
 
-  public static void reset(boolean callFg, boolean noWidgetReset) {
+  public static void reset(boolean callFg) {
     Intent intent = new Intent(App.getCxt(), PrayerNotifySvc.class);
-    if (noWidgetReset) {
-      intent.putExtra(EXTRA_NO_WIDGET_RESET, true);
-    }
     if (callFg && VERSION.SDK_INT >= VERSION_CODES.O) {
       if (NotifUtils.hasNotifPerm()) {
         intent.putExtra(EXTRA_RUN_FG, true);
@@ -416,9 +410,5 @@ public class PrayerNotifySvc extends Service {
     } else {
       App.getCxt().startService(intent);
     }
-  }
-
-  public static void reset(boolean callFg) {
-    reset(callFg, false);
   }
 }

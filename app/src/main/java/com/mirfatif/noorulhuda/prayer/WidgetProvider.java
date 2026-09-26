@@ -3,7 +3,6 @@ package com.mirfatif.noorulhuda.prayer;
 import static android.util.TypedValue.COMPLEX_UNIT_SP;
 import static com.mirfatif.noorulhuda.prayer.PrayerData.getPrayerData;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
-import static com.mirfatif.noorulhuda.svc.PrayerNotifySvc.EXTRA_NO_WIDGET_RESET;
 import static com.mirfatif.noorulhuda.util.NotifUtils.PI_FLAGS;
 
 import android.app.AlarmManager;
@@ -42,20 +41,15 @@ public class WidgetProvider extends AppWidgetProvider {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-    var noWidgetReset = intent.getBooleanExtra(EXTRA_NO_WIDGET_RESET, false);
-
     mAlarmManager = (AlarmManager) App.getCxt().getSystemService(Context.ALARM_SERVICE);
     mWidgetManager = AppWidgetManager.getInstance(App.getCxt());
 
     if (ACTION_UPDATE.equals(intent.getAction())) {
       int[] ids =
           mWidgetManager.getAppWidgetIds(new ComponentName(App.getCxt(), WidgetProvider.class));
-      onUpdate(mWidgetManager, ids, noWidgetReset);
+      onUpdate(context, mWidgetManager, ids);
     } else {
       holdWakeLock();
-      if (!noWidgetReset) {
-        WidgetProvider.reset();
-      }
       super.onReceive(context, intent);
       releaseWakeLock();
     }
@@ -65,17 +59,9 @@ public class WidgetProvider extends AppWidgetProvider {
 
   @Override
   public synchronized void onUpdate(Context context, AppWidgetManager wm, int[] ids) {
-    onUpdate(wm, ids, false);
-  }
-
-  private synchronized void onUpdate(AppWidgetManager wm, int[] ids, boolean noWidgetReset) {
     holdWakeLock();
     if (mFuture != null) {
       mFuture.cancel(true);
-    }
-
-    if (!noWidgetReset) {
-      PrayerNotifySvc.reset(false, true);
     }
 
     PendingIntent pi = createIntent(true);
@@ -307,15 +293,8 @@ public class WidgetProvider extends AppWidgetProvider {
     }
   }
 
-  public static void reset(boolean noWidgetReset) {
-    Intent intent = new Intent(App.getCxt(), WidgetProvider.class);
-    if (noWidgetReset) {
-      intent.putExtra(EXTRA_NO_WIDGET_RESET, true);
-    }
-    App.getCxt().sendBroadcast(intent.setAction(ACTION_UPDATE));
-  }
-
   public static void reset() {
-    reset(false);
+    Intent intent = new Intent(App.getCxt(), WidgetProvider.class);
+    App.getCxt().sendBroadcast(intent.setAction(ACTION_UPDATE));
   }
 }
