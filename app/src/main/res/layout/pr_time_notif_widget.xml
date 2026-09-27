@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layoutDirection="rtl"
@@ -25,8 +26,12 @@
       style="@style/TextAppearance.Compat.Notification"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:autoSizeMaxTextSize="14sp"
+      android:autoSizeMinTextSize="8sp"
+      android:autoSizeTextType="uniform"
       android:maxLines="1"
-      android:textAlignment="center" />
+      android:textAlignment="center"
+      tools:targetApi="26" />
 
   </LinearLayout>
 
@@ -50,8 +55,12 @@
       style="@style/TextAppearance.Compat.Notification"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:autoSizeMaxTextSize="14sp"
+      android:autoSizeMinTextSize="8sp"
+      android:autoSizeTextType="uniform"
       android:maxLines="1"
-      android:textAlignment="center" />
+      android:textAlignment="center"
+      tools:targetApi="26" />
 
   </LinearLayout>
 
@@ -75,8 +84,12 @@
       style="@style/TextAppearance.Compat.Notification"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:autoSizeMaxTextSize="14sp"
+      android:autoSizeMinTextSize="8sp"
+      android:autoSizeTextType="uniform"
       android:maxLines="1"
-      android:textAlignment="center" />
+      android:textAlignment="center"
+      tools:targetApi="26" />
 
   </LinearLayout>
 
@@ -94,8 +107,12 @@
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
       android:layoutDirection="locale"
+      android:autoSizeMaxTextSize="14sp"
+      android:autoSizeMinTextSize="8sp"
+      android:autoSizeTextType="uniform"
       android:maxLines="1"
-      android:textAlignment="center" />
+      android:textAlignment="center"
+      tools:targetApi="26" />
 
   </FrameLayout>
 
@@ -119,8 +136,12 @@
       style="@style/TextAppearance.Compat.Notification"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:autoSizeMaxTextSize="14sp"
+      android:autoSizeMinTextSize="8sp"
+      android:autoSizeTextType="uniform"
       android:maxLines="1"
-      android:textAlignment="center" />
+      android:textAlignment="center"
+      tools:targetApi="26" />
 
   </LinearLayout>
 
@@ -144,8 +165,12 @@
       style="@style/TextAppearance.Compat.Notification"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:autoSizeMaxTextSize="14sp"
+      android:autoSizeMinTextSize="8sp"
+      android:autoSizeTextType="uniform"
       android:maxLines="1"
-      android:textAlignment="center" />
+      android:textAlignment="center"
+      tools:targetApi="26" />
 
   </LinearLayout>
 
@@ -169,8 +194,12 @@
       style="@style/TextAppearance.Compat.Notification"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:autoSizeMaxTextSize="14sp"
+      android:autoSizeMinTextSize="8sp"
+      android:autoSizeTextType="uniform"
       android:maxLines="1"
-      android:textAlignment="center" />
+      android:textAlignment="center"
+      tools:targetApi="26" />
 
   </LinearLayout>
 

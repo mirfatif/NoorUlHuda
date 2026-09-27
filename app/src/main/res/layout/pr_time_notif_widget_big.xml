@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical">
 
   <LinearLayout
@@ -67,8 +68,12 @@
         style="@style/TextAppearance.Compat.Notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="14sp"
+        android:autoSizeMinTextSize="8sp"
+        android:autoSizeTextType="uniform"
         android:maxLines="1"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        tools:targetApi="26" />
 
     </LinearLayout>
 
@@ -92,8 +97,12 @@
         style="@style/TextAppearance.Compat.Notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="14sp"
+        android:autoSizeMinTextSize="8sp"
+        android:autoSizeTextType="uniform"
         android:maxLines="1"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        tools:targetApi="26" />
 
     </LinearLayout>
 
@@ -117,8 +126,12 @@
         style="@style/TextAppearance.Compat.Notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="14sp"
+        android:autoSizeMinTextSize="8sp"
+        android:autoSizeTextType="uniform"
         android:maxLines="1"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        tools:targetApi="26" />
 
     </LinearLayout>
 
@@ -142,8 +155,12 @@
         style="@style/TextAppearance.Compat.Notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="14sp"
+        android:autoSizeMinTextSize="8sp"
+        android:autoSizeTextType="uniform"
         android:maxLines="1"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        tools:targetApi="26" />
 
     </LinearLayout>
 
@@ -167,8 +184,12 @@
         style="@style/TextAppearance.Compat.Notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="14sp"
+        android:autoSizeMinTextSize="8sp"
+        android:autoSizeTextType="uniform"
         android:maxLines="1"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        tools:targetApi="26" />
 
     </LinearLayout>
 
@@ -192,8 +213,12 @@
         style="@style/TextAppearance.Compat.Notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="14sp"
+        android:autoSizeMinTextSize="8sp"
+        android:autoSizeTextType="uniform"
         android:maxLines="1"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        tools:targetApi="26" />
 
     </LinearLayout>
 
