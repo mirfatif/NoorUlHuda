@@ -6,7 +6,6 @@ import static com.mirfatif.noorulhuda.prayer.PrayerData.getPrayerData;
 import static com.mirfatif.noorulhuda.prayer.WidgetProvider.getPiFlags;
 import static com.mirfatif.noorulhuda.prefs.MySettings.SETTINGS;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -55,7 +54,7 @@ public class PrayerNotifySvc extends Service {
 
   @Override
   public synchronized int onStartCommand(Intent intent, int flags, int startId) {
-    if (ACTION_DELETED.equals(intent.getAction())) {
+    if (intent != null && ACTION_DELETED.equals(intent.getAction())) {
       if (mNotifBuilder != null) {
         NotifUtils.notify(WIDGET_NOTIF_ID, mNotifBuilder.build());
         return START_STICKY;
@@ -349,7 +348,7 @@ public class PrayerNotifySvc extends Service {
 
     if (!Thread.interrupted()) {
       PendingIntent pi = createIntent(false, alarmPrayer, ppnTriggerAt);
-      AlarmUtils.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi, TAG);
+      AlarmUtils.setAlarmClock(triggerAt, pi, TAG);
     }
   }
 

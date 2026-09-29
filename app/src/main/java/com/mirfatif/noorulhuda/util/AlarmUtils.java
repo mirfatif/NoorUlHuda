@@ -35,12 +35,11 @@ public class AlarmUtils {
   }
 
   @SuppressLint("ScheduleExactAlarm")
-  public static void setExactAndAllowWhileIdle(
-      int type, long triggerAt, PendingIntent pi, @Nullable String tag) {
+  public static void setAlarmClock(long triggerAt, PendingIntent pi, @Nullable String tag) {
     if (canScheduleExactAlarms()) {
       App.getCxt()
           .getSystemService(AlarmManager.class)
-          .setExactAndAllowWhileIdle(type, triggerAt, pi);
+          .setAlarmClock(new AlarmManager.AlarmClockInfo(triggerAt, null), pi);
       logAlarm(tag, triggerAt);
     }
   }
