@@ -91,6 +91,8 @@
   <string name="pref_prayer_loc_timezone_default" translatable="false">null</string>
   <string name="pref_prayer_widget_notif_key" translatable="false">pref_prayer_widget_notif</string>
   <bool name="pref_prayer_widget_notif_default">true</bool>
+  <string name="pref_prayer_widget_notif_small_key" translatable="false">pref_prayer_widget_notif_small</string>
+  <bool name="pref_prayer_widget_notif_small_default">true</bool>
   <string name="pref_prayer_ask_to_exclude_batt_opt_nb_key" translatable="false">pref_prayer_ask_to_exclude_batt_opt_nb</string>
   <bool name="pref_prayer_ask_to_exclude_batt_opt_nb_default">true</bool>
   <string name="pref_prayer_home_widget_style_key" translatable="false">pref_prayer_home_widget_style</string>

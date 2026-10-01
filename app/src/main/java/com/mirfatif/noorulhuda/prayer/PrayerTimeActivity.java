@@ -1312,6 +1312,16 @@ public class PrayerTimeActivity extends BaseActivity {
     mB.widgetCont.widgetNotifV.setOnCheckedChangeListener(
         (v, isChecked) -> {
           SETTINGS.setShowWidgetNotif(isChecked);
+          mB.widgetCont.widgetNotifSmallVCont.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+          resetWidgets();
+        });
+
+    mB.widgetCont.widgetNotifSmallVCont.setVisibility(
+        SETTINGS.getShowWidgetNotif() ? View.VISIBLE : View.GONE);
+    mB.widgetCont.widgetNotifSmallV.setChecked(SETTINGS.getShowWidgetNotifSmall());
+    mB.widgetCont.widgetNotifSmallV.setOnCheckedChangeListener(
+        (v, isChecked) -> {
+          SETTINGS.setShowWidgetNotifSmall(isChecked);
           resetWidgets();
         });
 

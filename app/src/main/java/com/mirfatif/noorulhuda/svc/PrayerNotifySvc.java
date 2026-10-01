@@ -239,7 +239,12 @@ public class PrayerNotifySvc extends Service {
       };
 
   private RemoteViews createNotifView() {
-    RemoteViews view = new RemoteViews(APPLICATION_ID, R.layout.pr_time_notif_widget);
+    var small = SETTINGS.getShowWidgetNotifSmall();
+
+    RemoteViews view =
+        new RemoteViews(
+            APPLICATION_ID,
+            small ? R.layout.pr_time_notif_widget_small : R.layout.pr_time_notif_widget);
     view.setChronometer(
         R.id.rem_time_v,
         SystemClock.elapsedRealtime() + mData.untilNextPrayer() + DELAY,
@@ -247,18 +252,27 @@ public class PrayerNotifySvc extends Service {
         true);
     view.setChronometerCountDown(R.id.rem_time_v, true);
 
-    int order = mData.curPrayer - 2;
-    if (order < 0) {
-      order += 6;
-    }
-    for (int i = 0; i < 6; i++) {
-      if (order > 5) {
-        order = 0;
+    if (small) {
+      view.setTextViewText(R.id.curr_prayer_name, getString(NAMES[mData.curPrayer]));
+      view.setTextViewText(R.id.curr_prayer_time, mData.strTimes[mData.curPrayer]);
+
+      view.setTextViewText(R.id.next_prayer_name, getString(NAMES[mData.nextPrayer]));
+      view.setTextViewText(R.id.next_prayer_time, mData.strTimes[mData.nextPrayer]);
+    } else {
+      int order = mData.curPrayer - 2;
+      if (order < 0) {
+        order += 6;
       }
-      view.setTextViewText(NAME_VIEWS[i], getString(NAMES[order]));
-      view.setTextViewText(TIME_VIEWS[i], mData.compactTimes[order]);
-      order++;
+      for (int i = 0; i < 6; i++) {
+        if (order > 5) {
+          order = 0;
+        }
+        view.setTextViewText(NAME_VIEWS[i], getString(NAMES[order]));
+        view.setTextViewText(TIME_VIEWS[i], mData.compactTimes[order]);
+        order++;
+      }
     }
+
     return view;
   }
 

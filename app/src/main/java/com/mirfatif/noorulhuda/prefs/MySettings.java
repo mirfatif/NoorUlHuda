@@ -1016,6 +1016,14 @@ public enum MySettings {
     savePref(R.string.pref_prayer_widget_notif_key, show);
   }
 
+  public boolean getShowWidgetNotifSmall() {
+    return getBoolPref(R.string.pref_prayer_widget_notif_small_key);
+  }
+
+  public void setShowWidgetNotifSmall(boolean showSmall) {
+    savePref(R.string.pref_prayer_widget_notif_small_key, showSmall);
+  }
+
   public boolean shouldAskToExcBatteryOpt() {
     return getShowWidgetNotif() && getBoolPref(R.string.pref_prayer_ask_to_exclude_batt_opt_nb_key);
   }

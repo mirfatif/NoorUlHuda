@@ -357,6 +357,8 @@
   <string name="widget">Widget</string>
   <!-- CHAR LIMIT: 15 -->
   <string name="show_widget_notification">Show Notification Widget</string>
+  <!-- CHAR LIMIT: 15 -->
+  <string name="show_widget_notification_small">Show Small Notification Widget</string>
   <!-- CHAR LIMIT: 10 -->
   <string name="home_widget_style">Home Widget Style</string>
   <!-- CHAR LIMIT: 20 -->
