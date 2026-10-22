@@ -362,6 +362,14 @@ public enum MySettings {
     savePref(R.string.pref_main_trans_with_text_key, transWithText);
   }
 
+  public boolean showLatinDigits() {
+    return getBoolPref(R.string.pref_main_show_Latin_Digits);
+  }
+
+  public void setshowLatinDigits(boolean LatinDigits) {
+    savePref(R.string.pref_main_show_Latin_Digits, LatinDigits);
+  }
+
   public String getTransDbName() {
     return getStringPref(R.string.pref_main_trans_db_nb_key);
   }

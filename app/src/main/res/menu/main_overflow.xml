@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
     android:id="@+id/action_theme"
@@ -73,6 +74,11 @@
           android:id="@+id/action_trans_with_text"
           android:checkable="true"
           android:title="@string/trans_with_text_menu_item" />
+        <item
+            android:id="@+id/action_Latin_digits"
+            android:checkable="true"
+            android:title="@string/Western_Arabic_numerals" />
+
       </menu>
 
     </item>

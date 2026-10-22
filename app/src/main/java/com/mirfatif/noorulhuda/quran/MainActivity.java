@@ -804,6 +804,7 @@ public class MainActivity extends BaseActivity {
       setOptionalIconsVisible(menu);
       menu.findItem(R.id.action_dark_theme).setChecked(SETTINGS.getForceDarkMode());
       menu.findItem(R.id.action_trans_with_text).setChecked(SETTINGS.showTransWithText());
+      menu.findItem(R.id.action_Latin_digits).setChecked(SETTINGS.showLatinDigits());
 
       String themeColor = SETTINGS.getThemeColor();
       if (themeColor.equals(getString(R.string.theme_color_green))) {
@@ -955,6 +956,13 @@ public class MainActivity extends BaseActivity {
     if (itemId == R.id.action_trans_with_text) {
       item.setChecked(!item.isChecked());
       SETTINGS.setShowTransWithText(item.isChecked());
+      refreshUi(RestorePosType.CURRENT);
+      return true;
+    }
+
+    if (itemId == R.id.action_Latin_digits) {
+      item.setChecked(!item.isChecked());
+      SETTINGS.setshowLatinDigits(item.isChecked());
       refreshUi(RestorePosType.CURRENT);
       return true;
     }

@@ -328,6 +328,9 @@ public class Utils {
   }
 
   public static String getArNum(int num) {
+    if (SETTINGS.showLatinDigits()) {
+      return String.format(new Locale("en"), "%d", num);
+    }
     return String.format(new Locale("ar"), "%d", num);
   }
 

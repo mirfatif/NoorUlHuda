@@ -316,7 +316,22 @@ public class AayahAdapter extends RecyclerView.Adapter<ItemViewHolder> {
             end++;
           }
 
-          text.append((char) (entity.aayahNum + 64511));
+          if (SETTINGS.showLatinDigits()) {
+            text.append((char) (64863));
+            if (entity.aayahNum > 99) {
+              text.append((char) ((entity.aayahNum / 100) + 65296));
+              end++;
+            }
+            if (entity.aayahNum > 9) {
+              text.append((char) (((entity.aayahNum % 100) / 10) + 65296));
+              end++;
+            }
+            text.append((char) ((entity.aayahNum % 10) + 65296));
+            text.append((char) (64862));
+            end += 2;
+          } else {
+            text.append((char) (entity.aayahNum + 64511));
+          }
           end++;
 
           // Superscript Ain (2262) char doesn't work with all fonts.

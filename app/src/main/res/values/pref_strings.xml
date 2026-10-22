@@ -51,6 +51,8 @@
   <bool name="pref_main_vowels_search_default">false</bool>
   <string name="pref_main_trans_with_text_key" translatable="false">pref_main_trans_with_text</string>
   <bool name="pref_main_trans_with_text_default">true</bool>
+  <string name="pref_main_show_Latin_Digits" translatable="false">pref_main_show_Latin_Digits</string>
+  <bool name="pref_main_show_Latin_Digits_default">false</bool>
   <string name="pref_main_last_quranic_dua_key" translatable="false">pref_main_last_quranic_dua</string>
   <integer name="pref_main_last_quranic_dua_default">0</integer>
   <string name="pref_main_last_masnoon_dua_key" translatable="false">pref_main_last_masnoon_dua</string>

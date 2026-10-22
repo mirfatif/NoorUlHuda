@@ -207,6 +207,8 @@
   <!-- CHAR LIMIT: 15 -->
   <string name="trans_with_text_menu_item">Show Under Text</string>
   <!-- CHAR LIMIT: 15 -->
+  <string name="Western_Arabic_numerals">Latin digits</string>
+  <!-- CHAR LIMIT: 15 -->
   <string name="prayer_time_menu_item">Prayer Time</string>
   <!-- CHAR LIMIT: 15 -->
   <string name="supplications_menu_item">Dua</string>
